@@ -13,4 +13,4 @@ router.post("/addUser", async (ctx: Context) => {
   const user = ctx.request.body;
   ctx.body = `欢迎!${user.username}`;
 });
-export default router;
+module.exports = router;
