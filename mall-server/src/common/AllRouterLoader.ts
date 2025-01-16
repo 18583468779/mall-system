@@ -1,15 +1,21 @@
-import Koa from "koa";
+/**
+ *  自动路由引入
+ */
+import Koa, { Context } from "koa";
 import path from "path";
 import fs from "fs";
 import Router from "koa-router";
 import body from "koa-body";
 import json from "koa-json";
+import globalException from "./GlobalExce";
+
 class AllRouterLoader {
   app!: Koa;
   static allRouterLoader = new AllRouterLoader();
   // 初始化方法
   init(app: Koa) {
     this.app = app;
+    this.app.use(globalException); // 处理全局异常
     const rootRouter = this.loadAllRouterWrapper();
     // 4.监听方法
     this.listen(rootRouter);
@@ -53,7 +59,7 @@ class AllRouterLoader {
   }
   loadAllRouter(allFullFilePaths: Array<string>, rootRouter: Router) {
     for (const fullFilePath of allFullFilePaths) {
-      const module = require(fullFilePath);
+      const module = require(fullFilePath); // 获取到路由模块
       if (this.isRouter(module)) {
         rootRouter.use(module.routes(), module.allowedMethods());
       }
