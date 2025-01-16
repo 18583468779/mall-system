@@ -2,13 +2,15 @@ import Koa from "koa";
 import body from "koa-body";
 import json from "koa-json";
 import Router from "koa-router";
-
+import userRouter from "./router/user";
 const app = new Koa();
 const router = new Router();
 
 router.prefix("/dang");
 app.use(json());
 app.use(body());
+
+router.use(userRouter.routes(), userRouter.allowedMethods());
 
 router.get("/test", async (ctx: Koa.Context, next: Koa.Next) => {
   ctx.body = "第一个请求test";
