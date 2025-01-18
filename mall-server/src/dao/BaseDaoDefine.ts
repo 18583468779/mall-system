@@ -2,7 +2,7 @@
  * 链接数据库
  */
 import { Dialect, Sequelize } from "sequelize";
-import dbConConf from "@/config/dbconfig";
+import dbConConf from "../config/dbconfig";
 
 class BaseDaoDefine {
   static baseDaoOrm: BaseDaoDefine = new BaseDaoDefine();
