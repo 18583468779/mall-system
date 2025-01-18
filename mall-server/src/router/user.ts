@@ -13,7 +13,7 @@ router.get("/findUserinfo/:username", async (ctx: Context) => {
 
 router.post("/addUser", async (ctx: Context) => {
   const userinfo: Userinfo = ctx.request.body;
-  const dbUserinfo = addUser(userinfo);
+  const dbUserinfo = await addUser(userinfo);
   ctx.body = success(dbUserinfo);
 });
 module.exports = router;

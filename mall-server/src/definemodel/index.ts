@@ -6,7 +6,7 @@ import { DataTypes } from "sequelize";
 
 class Userinfo {
   static createModel() {
-    return sequelize.define(
+    const model = sequelize.define(
       "userinfo",
       {
         userid: {
@@ -41,17 +41,9 @@ class Userinfo {
         timestamps: true, // 带上时间戳属性
       }
     );
+    model.sync({ force: false }); // 设置 force: true 会删除现有表并重新创建
+    return model;
   }
 }
 
 export const model = Userinfo.createModel();
-
-// 同步模型到数据库
-(async () => {
-  try {
-    await sequelize.sync({ force: false }); // 设置 force: true 会删除现有表并重新创建
-    console.log("数据库表同步成功");
-  } catch (error) {
-    console.error("数据库表同步失败:", error);
-  }
-})();
