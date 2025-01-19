@@ -1,9 +1,11 @@
 import { success } from "../common/ResResult";
 import {
   addUser,
+  countUserinfo,
   findAllUser,
   findByLike,
   findByProps,
+  findByUsmAndAddr,
   findByUsmAndPsw,
   Userinfo,
 } from "../dao/UserDaoDefine";
@@ -42,9 +44,24 @@ router.post("/findByUsmAndPsw", async (ctx: Context) => {
   ctx.body = success(dbUserOne);
 });
 
-router.get("/findByLike", async (ctx: Context) => {
+router.get("/findByLike/:key", async (ctx: Context) => {
   // 模糊查询
-  const dbAllUser = await findByLike();
+  const { key } = ctx.params;
+  const dbAllUser = await findByLike(key);
   ctx.body = success(dbAllUser);
 });
+
+router.get("/findByUsmAndAddr/:username/:address", async (ctx: Context) => {
+  // or模糊查询
+  const { username, address } = ctx.params;
+  const dbAllUser = await findByUsmAndAddr(username, address);
+  ctx.body = success(dbAllUser);
+});
+
+router.get("/countTotal", async (ctx: Context) => {
+  // 聚合查询->count
+  const dbAllUser = await countUserinfo();
+  ctx.body = success(dbAllUser);
+});
+
 module.exports = router;

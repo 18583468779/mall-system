@@ -1,4 +1,4 @@
-import { Op } from "sequelize";
+import { Op, Sequelize } from "sequelize";
 import { model } from "../definemodel";
 
 class UserDaoDefine {
@@ -25,13 +25,47 @@ class UserDaoDefine {
       },
     });
   }
-  static findByLike() {
+  static findByLike(key: string) {
     return model.findAll({
       raw: true,
       where: {
         username: {
-          [Op.like]: "王%", //模糊查询
+          [Op.like]: `${key}%`, //模糊查询
         },
+      },
+    });
+  }
+  static findByUsmAndAddr(username: string, address: string) {
+    // 模糊查询，姓名或者地址
+    return model.findAll({
+      raw: true,
+      where: {
+        [Op.or]: [
+          {
+            username: {
+              [Op.like]: `%${username}%`,
+            },
+          },
+          {
+            address: {
+              [Op.like]: `%${address}%`,
+            },
+          },
+        ],
+      },
+    });
+  }
+  static countUserinfo() {
+    // address分组获取有效的数量
+    return model.findAll({
+      raw: true,
+      group: "address",
+      attributes: [
+        "address",
+        [Sequelize.fn("count", Sequelize.col("valid")), "totalCount"],
+      ],
+      where: {
+        valid: 1,
       },
     });
   }
@@ -42,6 +76,8 @@ export const {
   findByProps,
   findByUsmAndPsw,
   findByLike,
+  findByUsmAndAddr,
+  countUserinfo,
 } = UserDaoDefine;
 export type Userinfo = {
   userid: number;
