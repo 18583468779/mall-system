@@ -19,7 +19,7 @@ export default class UserinfoModel extends Model<UserinfoModel> {
     field: "username",
     allowNull: false,
   })
-  username!: string;
+  public username!: string;
   @Column({
     type: DataTypes.STRING(20),
     field: "password",

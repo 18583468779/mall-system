@@ -1,3 +1,4 @@
+import userDaoOrm from "../dao/UserDaoOrm";
 import { success } from "../common/ResResult";
 import {
   addUser,
@@ -29,7 +30,8 @@ router.post("/addUser", async (ctx: Context) => {
 
 router.get("/findAllUser", async (ctx: Context) => {
   // 查询所有用户
-  const dbAllUser = await findAllUser();
+  // const dbAllUser = await findAllUser();
+  const dbAllUser = await userDaoOrm.findAllUser();
   ctx.body = success(dbAllUser);
 });
 

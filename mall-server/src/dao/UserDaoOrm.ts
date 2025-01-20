@@ -1,4 +1,3 @@
-import { Op, Sequelize } from "sequelize";
 import "./BaseDaoOrm";
 import UserinfoModel from "../ormmodel/Userinfo";
 class UserDaoOrm {
