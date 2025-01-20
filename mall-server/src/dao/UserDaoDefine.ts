@@ -69,6 +69,14 @@ class UserDaoDefine {
       },
     });
   }
+  static findUserWithPager(offset: number, pageSize: number) {
+    // 分页查询
+    return model.findAll({
+      raw: true,
+      limit: pageSize,
+      offset,
+    });
+  }
 }
 export const {
   addUser,
@@ -78,6 +86,7 @@ export const {
   findByLike,
   findByUsmAndAddr,
   countUserinfo,
+  findUserWithPager,
 } = UserDaoDefine;
 export type Userinfo = {
   userid: number;

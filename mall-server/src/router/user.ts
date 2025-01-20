@@ -7,6 +7,7 @@ import {
   findByProps,
   findByUsmAndAddr,
   findByUsmAndPsw,
+  findUserWithPager,
   Userinfo,
 } from "../dao/UserDaoDefine";
 import { Context } from "koa";
@@ -61,6 +62,14 @@ router.get("/findByUsmAndAddr/:username/:address", async (ctx: Context) => {
 router.get("/countTotal", async (ctx: Context) => {
   // 聚合查询->count
   const dbAllUser = await countUserinfo();
+  ctx.body = success(dbAllUser);
+});
+
+router.get("/findUserWithPager/:pageNo/:pageSize", async (ctx: Context) => {
+  // 分页查询
+  const { pageNo, pageSize } = ctx.params;
+  const offset = (pageNo - 1) * pageSize;
+  const dbAllUser = await findUserWithPager(offset, parseInt(pageSize));
   ctx.body = success(dbAllUser);
 });
 
