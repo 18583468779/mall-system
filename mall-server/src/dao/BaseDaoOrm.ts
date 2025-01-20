@@ -3,6 +3,7 @@
  */
 import { Dialect } from "sequelize";
 import dbConConf from "../config/dbconfig";
+import path from "path";
 import { Sequelize } from "sequelize-typescript";
 
 class BaseDaoDefine {
@@ -19,6 +20,11 @@ class BaseDaoDefine {
       dialect,
       define: { timestamps: false, freezeTableName: true },
     });
+    this.addModels(); // 加入模型
+  }
+  addModels() {
+    const modelPath = path.join(process.cwd(), "/src/ormmodel");
+    this.sequelize.addModels([modelPath]);
   }
 }
 
