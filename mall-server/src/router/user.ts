@@ -1,4 +1,3 @@
-import userDaoOrm from "../dao/UserDaoOrm";
 import { success } from "../common/ResResult";
 import {
   addUser,
@@ -10,7 +9,7 @@ import {
   findByUsmAndPsw,
   findUserWithPager,
   Userinfo,
-} from "../dao/UserDaoDefine";
+} from "../modules/userinfo/dao/UserDao";
 import { Context } from "koa";
 import Router from "koa-router";
 
@@ -30,8 +29,7 @@ router.post("/addUser", async (ctx: Context) => {
 
 router.get("/findAllUser", async (ctx: Context) => {
   // 查询所有用户
-  // const dbAllUser = await findAllUser();
-  const dbAllUser = await userDaoOrm.findAllUser();
+  const dbAllUser = await findAllUser();
   ctx.body = success(dbAllUser);
 });
 

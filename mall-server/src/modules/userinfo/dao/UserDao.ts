@@ -1,5 +1,5 @@
 import { Op, Sequelize } from "sequelize";
-import { model } from "../model";
+import { model } from "../defmodel";
 class UserDao {
   static addUser(userinfo: Userinfo) {
     return model.create(userinfo); // 新增一个用户
