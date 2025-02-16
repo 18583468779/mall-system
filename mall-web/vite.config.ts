@@ -23,6 +23,9 @@ export default defineConfig((mode: ConfigEnv) => {
       },
     };
   } else if (mode.mode === "production") {
+    server = {
+      port: envMap.VITE_port,
+    };
     console.log("生产环境", curEnvFileName);
   }
   return {

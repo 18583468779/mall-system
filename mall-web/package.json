@@ -4,9 +4,11 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite --open",
-    "build": "vue-tsc -b && vite build",
-    "preview": "vite preview"
+    "dev": "vite --mode development --open",
+    "build": "vite build --mode production",
+    "eslint": "eslint --init",
+    "preview": "vite preview --open --port 8888",
+    "lint": "eslint --ext .ts --ext .vue --ext js src/"
   },
   "dependencies": {
     "dotenv": "^16.4.7",
