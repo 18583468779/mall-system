@@ -1,21 +1,18 @@
-import body from "koa-body";
 import Koa from "koa";
-import json from "koa-json";
-import globalException from "./GlobalExce";
-import Router from "koa-router";
-import path from "path";
 import fs from "fs";
-/**
- *  自动加载控制器类
- */
+import body from "koa-body";
+import json from "koa-json";
+import Router from "koa-router";
+import globalException from "./GlobalExce";
+import path from "path";
+
 class AllCtrlRouterLoader {
   app!: Koa;
-  static allCtrlRouterLoader = new AllCtrlRouterLoader();
+  static allRouterLoader = new AllCtrlRouterLoader();
   init(app: Koa) {
-    // 初始化
     this.app = app;
     this.loadMiddleAware(); // 加载中间件
-    this.storeRootRouterToCtx(); // 保存跟路由
+    this.storeRootRouterToCtx(); // 保存根路由
     this.loadAllCtrlRouterWrapper(); // 加载控制器路由
     this.listen(); // 监听
   }
@@ -25,56 +22,61 @@ class AllCtrlRouterLoader {
     this.app.use(globalException);
   }
   storeRootRouterToCtx() {
-    const routRouter = new Router();
-    this.app.context.routRouter = routRouter;
-    this.app.use(routRouter.routes());
+    /**
+     * 为什么要保存跟路由：
+     *    使用到控制器装饰器的时候，需要拿到全局路由
+     */
+    const rootRouter = new Router();
+    rootRouter.prefix("/dang"); // 为路由添加前缀
+    this.app.context.rootRouter = rootRouter;
+    this.app.use(rootRouter.routes());
   }
   loadAllCtrlRouterWrapper() {
     // 3.1 调用获取绝对路径数组方法
     const allFullFilePaths = this.getAbsoluteFilePaths();
     // 3.2 调用加载所有一级路由到二级路由方法
-    console.log("allFullFilePaths", allFullFilePaths);
     this.loadAllRouter(allFullFilePaths);
   }
-  loadAllRouter(allFullFilePaths: Array<string>) {
+  loadAllRouter(allFullFilePaths: string[]) {
     for (const fullFilePath of allFullFilePaths) {
-      require(fullFilePath); // 获取到控制器
+      // 这里使用了require 所有router模块要使用 CommonJs 规范 才能识别
+      // 当执行require的时候会获取到控制器 就去自动去执行装饰器 把方法装饰器和类装饰器全部执行完成之后 路由和方法就执行捆绑了
+      require(fullFilePath);
     }
   }
-  isCtrlFile(file: string) {
-    const fileName = file.substring(
-      file.lastIndexOf("\\") + 1,
-      file.lastIndexOf(".")
-    );
-    const extensionName: string = file.substring(
-      file.lastIndexOf("."),
-      file.length
-    );
-
-    return fileName.indexOf("Controller") !== -1 && extensionName === ".ts";
-  }
-  // 2.加载所有路由文件绝对路径数组
+  //   2.加载所有路由文件绝对路由数组
   getAbsoluteFilePaths() {
-    const dir = path.join(process.cwd(), "/src/controller"); // 获取到当前目录D:\project_xw\mall-system\mall-server\src\controller
-    const allFiles = this.getFile(dir);
+    const dir = path.join(process.cwd(), "/src/controller");
+    const allFiles = this.getFiles(dir);
     const allFullFilePaths: string[] = [];
-    for (const file of allFiles) {
-      console.log("file", file);
+    for (let file of allFiles) {
       if (this.isCtrlFile(file)) {
-        allFullFilePaths.push(dir + "\\" + file);
+        const fullFilePath = dir + "\\" + file;
+        allFullFilePaths.push(fullFilePath);
       }
     }
     return allFullFilePaths;
   }
-  // 1.加载所有路由文件数组
-  getFile(dir: string) {
-    return fs.readdirSync(dir); // 获取目录下的所有的文件
+
+  // 是不是控制器文件
+  isCtrlFile(file: string) {
+    const fileName: string = file.substring(
+      file.lastIndexOf("\\") + 1,
+      file.lastIndexOf(".")
+    );
+    const extendsionName: string = file.substring(
+      file.lastIndexOf("."),
+      file.length
+    );
+    return fileName.indexOf("Controller") !== -1 && extendsionName === ".ts";
+  }
+  //   1.加载所有路由文件数组
+  getFiles(dir: string) {
+    return fs.readdirSync(dir);
   }
   listen() {
-    this.app.listen(3002, () => {
-      console.log("服务已启动，监听3002端口");
-    });
+    this.app.listen(3002);
+    console.log("listen 3002 server");
   }
 }
-
-export default AllCtrlRouterLoader.allCtrlRouterLoader;
+export default AllCtrlRouterLoader.allRouterLoader;
