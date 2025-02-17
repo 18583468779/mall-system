@@ -12,6 +12,9 @@ class CtgyDao {
     const sql = `select * from secondctgy sc inner join thirdctgy tc on sc.secondctgyid = tc.secctgyid where sc.firstctgyid =${firstctgyid}`;
     return (await sequelize.query(sql))[0];
   }
+  async findFirstCtgys() {
+    return 22222;
+  }
 }
 
 export default CtgyDao.ctgyDao;

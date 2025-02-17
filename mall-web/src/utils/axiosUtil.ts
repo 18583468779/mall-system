@@ -76,7 +76,7 @@ interface AxiosRequestConfig_ extends AxiosRequestConfig {
 type Method = "get" | "post" | "put" | "delete" | "patch";
 
 const methods: Method[] = ["get", "post", "put", "delete", "patch"];
-type ReqFn = (url: string, isMock: boolean, data: any) => AxiosPromise<any>;
+type ReqFn = (url: string, isMock: boolean, data?: any) => AxiosPromise<any>;
 interface ReqExecute {
   get: ReqFn;
   post: ReqFn;

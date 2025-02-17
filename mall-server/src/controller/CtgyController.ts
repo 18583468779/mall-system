@@ -13,4 +13,9 @@ class CtgyController {
     const { firstctgyid } = ctx.params;
     ctx.body = success(await ctgyDao.findSecThrdCtgys(firstctgyid));
   }
+  @get("/findFirstCtgys")
+  async findFirstCtgys(ctx: Context) {
+    const data = success(await ctgyDao.findFirstCtgys());
+    ctx.body = data;
+  }
 }
