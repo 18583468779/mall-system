@@ -1,5 +1,6 @@
 import { sequelize } from "../../../modules/BaseDao";
 import { findSecThrdCtgysByFstCtgyId } from "../../../modules/ctgy/defmodel/OneToMany";
+import FirstCtgy from "../defmodel/FirstCtgy";
 class CtgyDao {
   static ctgyDao: CtgyDao = new CtgyDao();
 
@@ -13,7 +14,9 @@ class CtgyDao {
     return (await sequelize.query(sql))[0];
   }
   async findFirstCtgys() {
-    return 22222;
+    return await FirstCtgy.findAll({
+      raw: true,
+    });
   }
 }
 
