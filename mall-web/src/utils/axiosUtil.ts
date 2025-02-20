@@ -2,6 +2,21 @@ import axios, { AxiosInstance, AxiosPromise, AxiosRequestConfig } from "axios";
 import { ElMessage } from "element-plus";
 import conf from "../config";
 const SERVER_ERR = "请求服务器的网址错误或网络连接失败";
+interface AxiosRequestConfig_ extends AxiosRequestConfig {
+  isMock: boolean;
+}
+
+type Method = "get" | "post" | "put" | "delete" | "patch";
+
+const methods: Method[] = ["get", "post", "put", "delete", "patch"];
+type ReqFn = (url: string, isMock: boolean, data?: any) => AxiosPromise<any>;
+interface ReqExecute {
+  get: ReqFn;
+  post: ReqFn;
+  put: ReqFn;
+  delete: ReqFn;
+  patch: ReqFn;
+}
 class AxiosUtil {
   static axiosUtil: AxiosUtil = new AxiosUtil();
   axiosInstance!: AxiosInstance;
@@ -68,21 +83,6 @@ class AxiosUtil {
       };
     });
   }
-}
-interface AxiosRequestConfig_ extends AxiosRequestConfig {
-  isMock: boolean;
-}
-
-type Method = "get" | "post" | "put" | "delete" | "patch";
-
-const methods: Method[] = ["get", "post", "put", "delete", "patch"];
-type ReqFn = (url: string, isMock: boolean, data?: any) => AxiosPromise<any>;
-interface ReqExecute {
-  get: ReqFn;
-  post: ReqFn;
-  put: ReqFn;
-  delete: ReqFn;
-  patch: ReqFn;
 }
 
 export default AxiosUtil.axiosUtil.request;

@@ -12,7 +12,7 @@ export default defineConfig((mode: ConfigEnv) => {
   const envData = fs.readFileSync(curEnvFileName);
   const envMap: any = dotenv.parse(envData);
   if (mode.mode === envMap.VITE_username) {
-    console.log("开发环境", curEnvFileName);
+    console.log("开发环境", curEnvFileName, envMap.VITE_base_url);
     server = {
       // 配置代理
       port: envMap.VITE_port,

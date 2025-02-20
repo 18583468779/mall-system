@@ -6,15 +6,15 @@ class FirstCtgy {
     const model = sequelize.define(
       "firstctgy",
       {
-        firstCtgyId: {
+        firstctgyId: {
           type: DataTypes.INTEGER,
-          field: "firstCtgyId",
+          field: "firstctgyId",
           primaryKey: true,
           autoIncrement: true,
         },
-        name: {
+        firstctgyname: {
           type: DataTypes.STRING(30),
-          field: "name",
+          field: "firstctgyname",
           allowNull: false,
         },
       },
