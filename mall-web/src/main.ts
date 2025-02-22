@@ -5,7 +5,7 @@ import "element-plus/theme-chalk/index.css";
 import App from "./App.vue";
 import store from "./store/index";
 import router from "./router";
-import "normalize.css";
+import "./reset.css";
 createApp(App)
   .use(ElementPlus, { size: "small" })
   .use(store)
