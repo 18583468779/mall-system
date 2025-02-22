@@ -2,7 +2,7 @@
     <div class="content">
         <ui class="firstctgy">
             <li :class="{ 'firstctgy-item': true, 'firstctgy-item_active': firstCtgyActiveIndex === index }"
-                v-for="(item, index) in firstCtgyList" :key="item.firstctgyId">
+                v-for="(item, index) in firstCtgyList" :key="item.firstctgyId" @click="changeTab(index)">
                 <span class="firstctgyname">{{ item.firstctgyname }}</span>
             </li>
         </ui>
@@ -21,7 +21,9 @@ async function getFirstCtgys() {
     await CtgyActions.findFirstCtgyList();
     firstCtgyList.value = ctgyGettersProxy.getFirstCtgyList
 }
-
+function changeTab(index: number) {
+    firstCtgyActiveIndex.value = index
+}
 getFirstCtgys()
 </script>
 
