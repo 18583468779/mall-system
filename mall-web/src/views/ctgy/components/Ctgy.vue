@@ -11,20 +11,9 @@
 </template>
 
 <script setup lang="ts">
-import { ref, Ref } from 'vue';
-import { FirstCtgy } from '../../../store/state';
-import { CtgyActions } from '../../../store/actions';
-import { ctgyGettersProxy } from '../../../store/getters';
-const firstCtgyActiveIndex: Ref<number> = ref(0)
-const firstCtgyList: Ref<FirstCtgy[]> = ref([]);
-async function getFirstCtgys() {
-    await CtgyActions.findFirstCtgyList();
-    firstCtgyList.value = ctgyGettersProxy.getFirstCtgyList
-}
-function changeTab(index: number) {
-    firstCtgyActiveIndex.value = index
-}
-getFirstCtgys()
+import { FstToThrdCtgy } from '../service/index';
+const { firstCtgyActiveIndex, firstCtgyList, getFirstCtgys, changeTab } = FstToThrdCtgy;
+getFirstCtgys();
 </script>
 
 <style scoped lang="scss">
