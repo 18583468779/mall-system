@@ -6,13 +6,26 @@
                 <span class="firstctgyname">{{ item.firstctgyname }}</span>
             </li>
         </ui>
-        <div class="secondctgy"></div>
+        <div class="secondthrdctgy">
+            <ul>
+                <li class="secondthrdctgy-item" v-for="(item) in secondCtgyList" :key="item.secondctgyid">
+                    <div class="secondctgy-item">
+                        <span class="secctgyname">
+                            {{ item.secctgyname }}
+                        </span>
+                        <span class="secctgynameshop">
+                            {{ item.secctgyname }}馆 >
+                        </span>
+                    </div>
+                </li>
+            </ul>
+        </div>
     </div>
 </template>
 
 <script setup lang="ts">
 import { FstToThrdCtgy } from '../service/index';
-const { firstCtgyActiveIndex, firstCtgyList, getFirstCtgys, getSecondCtgys, changeTab } = FstToThrdCtgy;
+const { firstCtgyActiveIndex, firstCtgyList, secondCtgyList, getFirstCtgys, getSecondCtgys, changeTab } = FstToThrdCtgy;
 getFirstCtgys();
 getSecondCtgys()
 </script>
@@ -55,9 +68,30 @@ getSecondCtgys()
         }
     }
 
-    .secondctgy {
+    .secondthrdctgy {
         flex: 1;
         margin-right: 0.19rem;
+
+        &-item {
+            background: #fff;
+        }
+
+        .secondctgy-item {
+            height: 0.73rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.2rem;
+
+            .secctgyname {
+                color: #0d0d0d;
+                font-weight: 600;
+            }
+
+            .secctgynameshop {
+                color: #535353;
+            }
+        }
     }
 
 }
