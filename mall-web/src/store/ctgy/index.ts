@@ -8,7 +8,7 @@ export const ctgyModule: Module<CtgyState, {}> = {
     getFirstCtgyList(state) {
       return state.firstCtgyList;
     },
-    getSecThrdCtgyList(state) {
+    getSecondCtgyList(state) {
       return state.secondCtgyList;
     },
   },
@@ -27,7 +27,7 @@ export const ctgyModule: Module<CtgyState, {}> = {
     },
     async findSecThrdCtgy({ commit }, firstCtgyId: number) {
       const result = await ctgyApi.getSecThrdCtgyList(firstCtgyId);
-      commit("storeSecondCtgyLst", result.data);
+      commit("storeSecondCtgyList", result.data);
     },
   },
 };

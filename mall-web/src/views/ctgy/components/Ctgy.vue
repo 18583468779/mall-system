@@ -12,8 +12,9 @@
 
 <script setup lang="ts">
 import { FstToThrdCtgy } from '../service/index';
-const { firstCtgyActiveIndex, firstCtgyList, getFirstCtgys, changeTab } = FstToThrdCtgy;
+const { firstCtgyActiveIndex, firstCtgyList, getFirstCtgys, getSecondCtgys, changeTab } = FstToThrdCtgy;
 getFirstCtgys();
+getSecondCtgys()
 </script>
 
 <style scoped lang="scss">
