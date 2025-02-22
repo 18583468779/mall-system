@@ -17,7 +17,8 @@
                             {{ item.secctgyname }}馆 >
                         </span>
                     </div>
-                    <ThrdCtgy :thirdCtgys="item.thirdctgys" />
+                    <ThrdCtgy :thirdCtgys="item.thirdctgys" :isReadOpen="item.isReadyOpen" :secondctgy="item"
+                        :subthirdctgys="item.subThirdctgys" />
                 </li>
             </ul>
         </div>

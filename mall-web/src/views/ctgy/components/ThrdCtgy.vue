@@ -1,16 +1,22 @@
 <template>
     <ul class="thrdctgy">
-        <li class="thrdctgy-item" v-for="(item, index) in thirdCtgys" :key="item.thirdctgyid">
+        <li class="thrdctgy-item" v-for="(item, index) in isReadOpen ? subthirdctgys : thirdCtgys"
+            :key="item.thirdctgyid">
             <span class="thirdctgyname">{{ item.thirdctgyname }}</span>
-            <span v-if="index + 1 !== thirdCtgys.length">|</span>
+            <span v-if="((index + 1) % 3) !== 0">|</span>
         </li>
     </ul>
 </template>
 
 <script setup lang="ts">
-import { ThirdCtgy } from '../../../store/ctgy/state';
+import { SecondCtgy, ThirdCtgy } from '../../../store/ctgy/state';
 
-const { thirdCtgys } = defineProps<{ thirdCtgys: ThirdCtgy[] }>();
+const { thirdCtgys, isReadOpen } = defineProps<{
+    thirdCtgys: ThirdCtgy[],
+    isReadOpen: boolean,
+    secondctgy: SecondCtgy,
+    subthirdctgys: ThirdCtgy[]
+}>();
 console.log('first', thirdCtgys)
 </script>
 

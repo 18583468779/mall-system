@@ -1,6 +1,7 @@
 import { Module } from "vuex";
 import { CtgyState, FirstCtgy, initCtgyState, SecondCtgy } from "./state";
 import ctgyApi from "../../api/CtgyApi";
+import { AxiosResponse } from "axios";
 export const ctgyModule: Module<CtgyState, {}> = {
   namespaced: true,
   state: initCtgyState,
@@ -26,7 +27,13 @@ export const ctgyModule: Module<CtgyState, {}> = {
       commit("storeFirstCtgyList", result.data);
     },
     async findSecThrdCtgy({ commit }, firstCtgyId: number) {
-      const result = await ctgyApi.getSecThrdCtgyList(firstCtgyId);
+      const result: AxiosResponse<SecondCtgy[]> =
+        await ctgyApi.getSecThrdCtgyList(firstCtgyId);
+      result.data = result.data.map((s) => {
+        s.isReadyOpen = true;
+        s.subThirdctgys = s.thirdctgys.slice(0, 5);
+        return s;
+      });
       commit("storeSecondCtgyList", result.data);
     },
   },
