@@ -12,9 +12,9 @@ class ThirdCtgyModel {
           primaryKey: true,
           autoIncrement: true,
         },
-        thirdname: {
+        thirdctgyname: {
           type: DataTypes.STRING(30),
-          field: "thirdname",
+          field: "thirdctgyname",
           allowNull: false,
         },
         secctgyid: {

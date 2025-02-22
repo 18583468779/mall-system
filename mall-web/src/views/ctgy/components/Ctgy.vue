@@ -17,14 +17,17 @@
                             {{ item.secctgyname }}馆 >
                         </span>
                     </div>
+                    <ThrdCtgy :thirdCtgys="item.thirdctgys" />
                 </li>
             </ul>
         </div>
+
     </div>
 </template>
 
 <script setup lang="ts">
 import { FstToThrdCtgy } from '../service/index';
+import ThrdCtgy from './ThrdCtgy.vue'
 const { firstCtgyActiveIndex, firstCtgyList, secondCtgyList, getFirstCtgys, getSecondCtgys, changeTab } = FstToThrdCtgy;
 getFirstCtgys();
 getSecondCtgys()
