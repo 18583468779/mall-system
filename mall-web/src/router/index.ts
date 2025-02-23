@@ -1,6 +1,6 @@
 import { createRouter, createWebHashHistory, RouteRecordRaw } from "vue-router";
 
-const ctgy = () => import("../views/ctgy/index.vue");
+const ctgy = () => import("../piniaViews/ctgy/index.vue");
 
 const routes: RouteRecordRaw[] = [
   {
@@ -9,9 +9,9 @@ const routes: RouteRecordRaw[] = [
     component: ctgy,
   },
   {
-    name: "testpinia",
-    path: "/testpinia",
-    component: () => import("../pinaexam/index.vue"),
+    name: "ctgy",
+    path: "/",
+    component: ctgy,
   },
 ];
 
