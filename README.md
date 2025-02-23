@@ -116,3 +116,22 @@ INSERT INTO dangdang.thirdctgy (thirdname, secctgyId) VALUES
 select * from `dangdang`.`secondctgy` sc inner join thirdctgy tc on sc.secondctgyid=tc.secctgyid;
 
 ```
+
+````
+创建图书表
+CREATE TABLE `dangdang`.`books` (
+    `ISBN` varchar(20) NOT NULL,
+    `BOOKNAME` varchar(50) NULL,
+    `author` varchar(20) NOT NULL,
+    `publishid` int NULL,
+    `publishername` varchar(20) NULL,
+    `monthsalecount` int NULL,
+    `bookpicname` varchar(255) NULL,
+    `secondctgyid` INT NULL,
+    `thirdctgyid` int NULL,
+    `originalprice` double(6,2) NULL,
+    `discount` double(6,2) NULL,
+    PRIMARY KEY (`ISBN`)
+);
+```
+````
