@@ -13,7 +13,7 @@
 </script>
 
 <style scoped lang="scss">
-@import '../../../assets/css/common.scss';
+@use '../../../assets/css/common.scss';
 
 .content {
     @extend .multiplex-content;

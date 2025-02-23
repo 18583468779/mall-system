@@ -11,9 +11,11 @@
     "lint": "eslint --ext .ts --ext .vue --ext js src/"
   },
   "dependencies": {
+    "@types/good-storage": "^1.1.2",
     "axios": "^1.7.9",
     "dotenv": "^16.4.7",
     "element-plus": "^2.9.4",
+    "good-storage": "^1.1.1",
     "normalize.css": "^8.0.1",
     "pinia": "^3.0.1",
     "sass": "^1.85.0",

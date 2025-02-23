@@ -1,6 +1,6 @@
 <template>
     <div class="content">
-        <i>
+        <i @click="back">
             <svg t="1740289994795" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg"
                 p-id="3432" width="32" height="32">
                 <path
@@ -19,7 +19,7 @@
             </i>
             <div class="tosearch-keyword">
                 <input type="text " placeholder="神奇校车" class="tosearch-keyword-input">
-                <span class="keyword">神奇校车</span>
+                <span class="keyword">{{ getThirdCtgy.thirdctgyname }}</span>
                 <i class="icon-close">
                     <svg t="1740291217195" class="icon" viewBox="0 0 1024 1024" version="1.1"
                         xmlns="http://www.w3.org/2000/svg" p-id="6576" width="32" height="32">
@@ -52,11 +52,13 @@
 </template>
 
 <script setup lang="ts">
-
+import { FstToThrdCtgy } from '../../ctgy/service';
+const { storeRefs, back } = FstToThrdCtgy;
+const { getThirdCtgy } = storeRefs
 </script>
 
 <style scoped lang="scss">
-@import '../../../assets/css/common.scss';
+@use '../../../assets/css/common.scss';
 
 
 .content {

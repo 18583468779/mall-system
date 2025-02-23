@@ -376,6 +376,11 @@
   resolved "https://registry.npmmirror.com/@types/estree/-/estree-1.0.6.tgz#628effeeae2064a1b4e79f78e81d87b7e5fc7b50"
   integrity sha512-AYnb1nQyY49te+VRAVgmzfcgjYS91mY5P0TKUDCLEM+gNnA+3T6rWITXRLYCpahpqSQbN5cE+gHpnPyXjHWxcw==
 
+"@types/good-storage@^1.1.2":
+  version "1.1.2"
+  resolved "https://registry.npmmirror.com/@types/good-storage/-/good-storage-1.1.2.tgz#3479e61d251e59650057e01c4599a13301156294"
+  integrity sha512-Lh3xQFPA3GCdICPtwoTur/STzT1zEfg5tKeZOHugnkRtIylcf0eDbPXHEHVOidAuJvUx1daWDm6HykihijSTOg==
+
 "@types/lodash-es@^4.17.6":
   version "4.17.12"
   resolved "https://registry.npmmirror.com/@types/lodash-es/-/lodash-es-4.17.12.tgz#65f6d1e5f80539aa7cfbfc962de5def0cf4f341b"
@@ -855,6 +860,11 @@ get-proto@^1.0.0:
   dependencies:
     dunder-proto "^1.0.1"
     es-object-atoms "^1.0.0"
+
+good-storage@^1.1.1:
+  version "1.1.1"
+  resolved "https://registry.npmmirror.com/good-storage/-/good-storage-1.1.1.tgz#081501c01607d5fee2a214f94e8f5f9cb994789f"
+  integrity sha512-+0UEpRT03fJgEJoeTVVz41ISC5+jaQrDIWatQ4BoDQfOiBBsjNanymi9sAtLFdEAADQN0FYR8mGpeqxSCe8oXQ==
 
 gopd@^1.2.0:
   version "1.2.0"

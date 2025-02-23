@@ -1,7 +1,8 @@
 import { ref, Ref, watchEffect } from "vue";
-import { FirstCtgy, SecondCtgy } from "../../../store/state";
+import { FirstCtgy, SecondCtgy, ThirdCtgy } from "../../../store/state";
 import { ctgyStore } from "../../../piniaStore/ctgy";
 import { storeToRefs } from "pinia";
+import router from "../../../router";
 export class FstToThrdCtgy {
   static store = ctgyStore();
   static storeRefs = storeToRefs(FstToThrdCtgy.store);
@@ -35,5 +36,12 @@ export class FstToThrdCtgy {
   }
   static showColLine(index: number) {
     return (index + 1) % 3 !== 0;
+  }
+  static toBookInfo = (item: ThirdCtgy) => {
+    FstToThrdCtgy.store.storeCtgy(item);
+    router.push({ name: "books" });
+  };
+  static back() {
+    router.back();
   }
 }

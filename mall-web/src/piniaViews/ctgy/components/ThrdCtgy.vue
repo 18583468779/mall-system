@@ -2,7 +2,7 @@
     <ul class="thrdctgy">
         <li class="thrdctgy-item" v-for="(item, index) in isReadOpen ? subthirdctgys : thirdCtgys"
             :key="item.thirdctgyid">
-            <span class="thirdctgyname" @click="toBookInfo()">{{ item.thirdctgyname }}</span>
+            <span class="thirdctgyname" @click="toBookInfo(item)">{{ item.thirdctgyname }}</span>
             <span v-if="showColLine(index)">|</span>
         </li>
         <div @click="openOrCollapse($event, secondctgy)" :class="{ readopen: isReadOpen, readcollapse: !isReadOpen }">
@@ -17,7 +17,6 @@
 </template>
 
 <script setup lang="ts">
-import router from '../../../router';
 import { SecondCtgy, ThirdCtgy } from '../../../store/ctgy/state';
 import { FstToThrdCtgy } from '../service';
 
@@ -28,11 +27,8 @@ const { thirdCtgys, isReadOpen } = defineProps<{
     subthirdctgys: ThirdCtgy[]
 }>();
 
-const { openOrCollapse, showColLine } = FstToThrdCtgy
+const { openOrCollapse, showColLine, toBookInfo } = FstToThrdCtgy
 
-const toBookInfo = () => {
-    router.push({ name: 'books' })
-}
 
 </script>
 
