@@ -8,6 +8,11 @@ const routes: RouteRecordRaw[] = [
     path: "/ctgy",
     component: ctgy,
   },
+  {
+    name: "testpinia",
+    path: "/testpinia",
+    component: () => import("../pinaexam/index.vue"),
+  },
 ];
 
 const router = createRouter({
