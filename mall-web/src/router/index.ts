@@ -1,12 +1,18 @@
 import { createRouter, createWebHashHistory, RouteRecordRaw } from "vue-router";
 
 const ctgy = () => import("../piniaViews/ctgy/index.vue");
+const books = () => import("../piniaViews/books/index.vue");
 
 const routes: RouteRecordRaw[] = [
   {
     name: "ctgy",
     path: "/ctgy",
     component: ctgy,
+  },
+  {
+    name: "books",
+    path: "/books",
+    component: books,
   },
   {
     name: "ctgy",
