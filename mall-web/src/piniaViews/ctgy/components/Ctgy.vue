@@ -29,7 +29,8 @@
 <script setup lang="ts">
 import { FstToThrdCtgy } from '../service/index';
 import ThrdCtgy from './ThrdCtgy.vue'
-const { firstCtgyActiveIndex, firstCtgyList, secondCtgyList, getFirstCtgys, getSecondCtgys, changeTab } = FstToThrdCtgy;
+const { storeRefs, firstCtgyActiveIndex, getFirstCtgys, getSecondCtgys, changeTab } = FstToThrdCtgy;
+const { firstCtgyList, secondCtgyList } = storeRefs
 getFirstCtgys();
 getSecondCtgys()
 </script>
