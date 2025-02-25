@@ -8,7 +8,9 @@ export const ctgyStore = defineStore("ctgyStore", {
     return {
       firstCtgyList: [] as FirstCtgy[],
       secondCtgyList: [] as SecondCtgy[],
-      thirdCtgy: {} as ThirdCtgy,
+      firstCtgy: {} as FirstCtgy, // 存放一级分类
+      secondCtgy: {} as SecondCtgy, // 存在二级分类
+      thirdCtgy: {} as ThirdCtgy, // 存放三级分类
     };
   },
   getters: {
@@ -18,12 +20,32 @@ export const ctgyStore = defineStore("ctgyStore", {
     getSecondCtgyList(state) {
       return state.secondCtgyList;
     },
-    getThirdCtgy(state) {
+    getFirstCtgy(state): FirstCtgy {
+      // 获取一级分类
+      return goodStorage.get("firstCtgy") || state.firstCtgy;
+    },
+    getSecondCtgy(state): SecondCtgy {
+      // 获取二级分类
+      return goodStorage.get("secondCtgy") || state.secondCtgy;
+    },
+    getThirdCtgy(state): ThirdCtgy {
+      // 获取三级分类
       return goodStorage.get("thirdCtgy") || state.thirdCtgy;
     },
   },
   actions: {
-    storeCtgy(thirdCtgy: ThirdCtgy) {
+    storeFirstCtgy(firstCtgy: FirstCtgy) {
+      // 保存一级分类
+      goodStorage.set("firstCtgy", firstCtgy);
+      this.firstCtgy = firstCtgy;
+    },
+    storeSecondCtgy(secondCtgy: SecondCtgy) {
+      // 保存二级分类
+      goodStorage.set("secondCtgy", secondCtgy);
+      this.secondCtgy = secondCtgy;
+    },
+    storeThirdCtgy(thirdCtgy: ThirdCtgy) {
+      // 保存三级分类
       goodStorage.set("thirdCtgy", thirdCtgy);
       this.thirdCtgy = thirdCtgy;
     },

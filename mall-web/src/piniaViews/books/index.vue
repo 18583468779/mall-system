@@ -4,13 +4,16 @@
             <to-search></to-search>
         </div>
         <div class="adv">
-            <img class="adv-img" src="../../assets/img/books/lunbo/1.png" alt="">
+            <img class="adv-img" :src="ImgUtil.getImg('1.png')" alt="">
         </div>
+        <breadcrumbs />
     </div>
 </template>
 
 <script setup lang="ts">
 import toSearch from './components/toSearch.vue';
+import breadcrumbs from './components/breadcrumbs.vue';
+import { ImgUtil } from '../../utils/imgUtil'
 </script>
 
 <style scoped lang="scss">

@@ -12,6 +12,14 @@ export class FstToThrdCtgy {
 
   static async getFirstCtgys() {
     await FstToThrdCtgy.store.findFirstCtgyList();
+    FstToThrdCtgy.storeFirstCtgy(0);
+  }
+  static storeFirstCtgy(index: number) {
+    // 保存一级分类
+    const firstCtgy = FstToThrdCtgy.store.firstCtgyList.find((f) => {
+      return f.firstctgyId === index + 1;
+    })!;
+    FstToThrdCtgy.store.storeFirstCtgy(firstCtgy);
   }
   static getSecondCtgys() {
     watchEffect(async () => {
@@ -22,6 +30,7 @@ export class FstToThrdCtgy {
   }
   static changeTab(index: number) {
     FstToThrdCtgy.firstCtgyActiveIndex.value = index;
+    FstToThrdCtgy.storeFirstCtgy(index);
   }
   static openOrCollapse(event: Event, secondctgy: SecondCtgy) {
     const currentTarget = <HTMLBodyElement>event.currentTarget;
@@ -38,7 +47,7 @@ export class FstToThrdCtgy {
     return (index + 1) % 3 !== 0;
   }
   static toBookInfo = (item: ThirdCtgy) => {
-    FstToThrdCtgy.store.storeCtgy(item);
+    FstToThrdCtgy.store.storeThirdCtgy(item);
     router.push({ name: "books" });
   };
   static back() {
