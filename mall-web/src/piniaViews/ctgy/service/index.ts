@@ -46,8 +46,10 @@ export class FstToThrdCtgy {
   static showColLine(index: number) {
     return (index + 1) % 3 !== 0;
   }
-  static toBookInfo = (item: ThirdCtgy) => {
+  static toBookInfo = (item: ThirdCtgy, secondctgy: SecondCtgy) => {
     FstToThrdCtgy.store.storeThirdCtgy(item);
+    FstToThrdCtgy.store.storeSecondCtgy(secondctgy);
+    console.log("secondctgy", secondctgy);
     router.push({ name: "books" });
   };
   static back() {

@@ -2,7 +2,7 @@
     <ul class="thrdctgy">
         <li class="thrdctgy-item" v-for="(item, index) in isReadOpen ? subthirdctgys : thirdCtgys"
             :key="item.thirdctgyid">
-            <span class="thirdctgyname" @click="toBookInfo(item)">{{ item.thirdctgyname }}</span>
+            <span class="thirdctgyname" @click="toBookInfo(item, secondctgy)">{{ item.thirdctgyname }}</span>
             <span v-if="showColLine(index)">|</span>
         </li>
         <div @click="openOrCollapse($event, secondctgy)" :class="{ readopen: isReadOpen, readcollapse: !isReadOpen }">
