@@ -6,7 +6,9 @@
         <div class="adv">
             <img class="adv-img" :src="ImgUtil.getImg('1.png')" alt="">
         </div>
-        <breadcrumbs />
+        <div class="bookctgys">
+            <breadcrumbs />
+        </div>
     </div>
 </template>
 
@@ -30,5 +32,12 @@ import { ImgUtil } from '../../utils/imgUtil'
         border-radius: 0.1rem;
         object-fit: cover;
     }
+}
+
+.bookctgys {
+    position: absolute;
+    top: 2.7rem;
+    width: 5.04rem;
+    margin: 0.18rem;
 }
 </style>
