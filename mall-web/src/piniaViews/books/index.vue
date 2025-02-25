@@ -8,13 +8,16 @@
         </div>
         <div class="bookctgys">
             <breadcrumbs />
+            <thrdctgys />
         </div>
+        =
     </div>
 </template>
 
 <script setup lang="ts">
 import toSearch from './components/toSearch.vue';
 import breadcrumbs from './components/breadcrumbs.vue';
+import thrdctgys from './components/thrdctgys.vue'
 import { ImgUtil } from '../../utils/imgUtil'
 </script>
 

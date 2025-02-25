@@ -49,8 +49,14 @@ export class FstToThrdCtgy {
   static toBookInfo = (item: ThirdCtgy, secondctgy: SecondCtgy) => {
     FstToThrdCtgy.store.storeThirdCtgy(item);
     FstToThrdCtgy.store.storeSecondCtgy(secondctgy);
-    console.log("secondctgy", secondctgy);
+    FstToThrdCtgy.store.storeThirdCtgyList(secondctgy.thirdctgys);
+    FstToThrdCtgy.store.storeSubThirdCtgyList(secondctgy.subThirdctgys);
+    FstToThrdCtgy.store.storeIsReadyOpen(secondctgy.isReadyOpen);
+
     router.push({ name: "books" });
+  };
+  static opOrCollapseInBook = (isOpen: boolean) => {
+    FstToThrdCtgy.store.storeIsReadyOpen(isOpen);
   };
   static back() {
     router.back();
