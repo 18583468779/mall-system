@@ -41,7 +41,7 @@ import { FstToThrdCtgy } from '../../ctgy/service';
 const { opOrCollapseInBook, handleSelectThird } = FstToThrdCtgy
 const { getSubThirdCtgyList, getThirdCtgyList, isReadyOpen } = FstToThrdCtgy.storeRefs;
 watch(
-    () => [FstToThrdCtgy.store.thirdCtgyList, FstToThrdCtgy.store.subThirdCtgyList],
+    () => [getSubThirdCtgyList, getThirdCtgyList],
     (newVal) => {
         console.log('数据变化:', newVal);
     },

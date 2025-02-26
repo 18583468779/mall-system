@@ -3,6 +3,14 @@ import { FirstCtgy, SecondCtgy, ThirdCtgy } from "./state";
 import ctgyApi from "../../api/CtgyApi";
 import { AxiosResponse } from "axios";
 import goodStorage from "good-storage";
+
+function hasProps(data: any) {
+  if (Array.isArray(data)) {
+    return Boolean(data.length);
+  } else if (data.constructor === Object) {
+    return Boolean(Object.getOwnPropertyNames(data).length);
+  }
+}
 export const ctgyStore = defineStore("ctgyStore", {
   state: () => {
     return {
@@ -23,13 +31,24 @@ export const ctgyStore = defineStore("ctgyStore", {
     getSecondCtgyList(state) {
       return state.secondCtgyList;
     },
+
     getThirdCtgyList(state): ThirdCtgy[] {
-      // 获取三级分类列表
-      return goodStorage.get("thirdCtgyList") || state.thirdCtgyList;
+      // 获取三级分类列表（展开后）
+      if (hasProps(state.thirdCtgyList)) {
+        return state.thirdCtgyList;
+      } else {
+        state.thirdCtgyList = goodStorage.get("thirdCtgyList");
+        return state.thirdCtgyList;
+      }
     },
     getSubThirdCtgyList(state): ThirdCtgy[] {
-      // 获取三级分类列表
-      return goodStorage.get("subThirdCtgyList") || state.subThirdCtgyList;
+      // 获取三级分类列表（收缩）
+      if (hasProps(state.subThirdCtgyList)) {
+        return state.subThirdCtgyList;
+      } else {
+        state.subThirdCtgyList = goodStorage.get("subThirdCtgyList");
+        return state.subThirdCtgyList;
+      }
     },
     getFirstCtgy(state): FirstCtgy {
       // 获取一级分类
@@ -41,7 +60,12 @@ export const ctgyStore = defineStore("ctgyStore", {
     },
     getThirdCtgy(state): ThirdCtgy {
       // 获取三级分类
-      return goodStorage.get("thirdCtgy") || state.thirdCtgy;
+      if (hasProps(state.thirdCtgy)) {
+        return state.thirdCtgy;
+      } else {
+        state.thirdCtgy = goodStorage.get("thirdCtgy");
+        return state.thirdCtgy;
+      }
     },
     getIsReadyOpen(state) {
       return state.isReadyOpen;
