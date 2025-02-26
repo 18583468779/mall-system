@@ -50,31 +50,64 @@ export const ctgyStore = defineStore("ctgyStore", {
   actions: {
     storeFirstCtgy(firstCtgy: FirstCtgy) {
       // 保存选中一级分类
-      goodStorage.set("firstCtgy", firstCtgy);
       this.firstCtgy = firstCtgy;
+      goodStorage.set("firstCtgy", firstCtgy);
     },
     storeSecondCtgy(secondCtgy: SecondCtgy) {
       // 保存选中二级分类
-      goodStorage.set("secondCtgy", secondCtgy);
       this.secondCtgy = secondCtgy;
+      goodStorage.set("secondCtgy", secondCtgy);
     },
     storeThirdCtgy(thirdCtgy: ThirdCtgy) {
       // 保存选中三级分类
-      goodStorage.set("thirdCtgy", thirdCtgy);
       this.thirdCtgy = thirdCtgy;
+      goodStorage.set("thirdCtgy", thirdCtgy);
     },
     storeThirdCtgyList(thirdCtgyList: ThirdCtgy[]) {
       // 保存选中三级分类列表（展开后）
-      goodStorage.set("thirdCtgyList", thirdCtgyList);
-      this.thirdCtgyList = thirdCtgyList;
+      // 设置选中三级分类属性
+      const newList = this.handleThirdCtgyList(thirdCtgyList);
+      this.thirdCtgyList = newList;
+      goodStorage.set("thirdCtgyList", newList);
     },
     storeSubThirdCtgyList(subThirdCtgyList: ThirdCtgy[]) {
       // 保存选中三级分类列表（未展开）
-      goodStorage.set("subThirdCtgyList", subThirdCtgyList);
-      this.subThirdCtgyList = subThirdCtgyList;
+      const newList = this.handleThirdCtgyList(subThirdCtgyList);
+      this.subThirdCtgyList = newList;
+      goodStorage.set("subThirdCtgyList", newList);
     },
     storeIsReadyOpen(isReadyOpen: boolean) {
       this.isReadyOpen = isReadyOpen;
+    },
+    handleThirdCtgyList(thirdCtgyList: ThirdCtgy[]) {
+      //处理三级分类列表是否选中的方法
+      const newList = thirdCtgyList.map((item) => {
+        if (item.thirdctgyid === this.getThirdCtgy.thirdctgyid) {
+          item["isSelected"] = true;
+        } else {
+          item["isSelected"] = false; // 初始未选中
+        }
+        return item;
+      });
+      return newList;
+    },
+    handleThirdCtgyListSelected(thirdCtgy: ThirdCtgy) {
+      // 1.判断三级分类是展开还是收缩状态
+      // if(this.getIsReadyOpen){
+
+      // }
+      const tCtgyList = this.getThirdCtgyList.map((item) => {
+        if (item.thirdctgyid === thirdCtgy.thirdctgyid) {
+          item.isSelected = true;
+        } else {
+          item.isSelected = false;
+        }
+        return item;
+      });
+      this.thirdCtgy = thirdCtgy;
+      this.thirdCtgyList = tCtgyList;
+      goodStorage.set("thirdCtgyList", tCtgyList);
+      goodStorage.set("thirdCtgy", thirdCtgy);
     },
     async findFirstCtgyList() {
       const result = await ctgyApi.getFirstCtgyList();

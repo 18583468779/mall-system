@@ -14,6 +14,7 @@ export interface SecondCtgy {
 export interface ThirdCtgy {
   thirdctgyid: number;
   thirdctgyname: string;
+  isSelected?: boolean;
 }
 
 export interface CtgyState {

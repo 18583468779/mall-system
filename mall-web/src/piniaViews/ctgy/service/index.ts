@@ -58,6 +58,10 @@ export class FstToThrdCtgy {
   static opOrCollapseInBook = (isOpen: boolean) => {
     FstToThrdCtgy.store.storeIsReadyOpen(isOpen);
   };
+  static handleSelectThird = (thirdCtgy: ThirdCtgy) => {
+    // 切换选中三级分类
+    FstToThrdCtgy.store.handleThirdCtgyListSelected(thirdCtgy);
+  };
   static back() {
     router.back();
   }

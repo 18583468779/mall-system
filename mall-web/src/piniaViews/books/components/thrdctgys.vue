@@ -3,9 +3,12 @@
         <div class="thrdctgys">
             <span class="thrdctgys-item">全部</span>
         </div>
-        <div class="thrdctgys" v-for="(item) in isReadyOpen ? getSubThirdCtgyList : getThirdCtgyList"
+        <div class="thrdctgys " v-for="(item) in isReadyOpen ? getSubThirdCtgyList : getThirdCtgyList"
             :key="item.thirdctgyid">
-            <span class="thrdctgys-item">{{ item.thirdctgyname }}</span>
+            <span :class="['thrdctgys-item', item.isSelected && 'thrdctgys-isSelected']"
+                @click="handleSelectThird(item)">{{
+                    item.thirdctgyname
+                }}</span>
         </div>
         <div class="icon">
             <span v-show="isReadyOpen" @click="opOrCollapseInBook(false)">
@@ -33,9 +36,17 @@
 </template>
 
 <script setup lang="ts">
+import { watch } from 'vue';
 import { FstToThrdCtgy } from '../../ctgy/service';
-const { opOrCollapseInBook } = FstToThrdCtgy
+const { opOrCollapseInBook, handleSelectThird } = FstToThrdCtgy
 const { getSubThirdCtgyList, getThirdCtgyList, isReadyOpen } = FstToThrdCtgy.storeRefs;
+watch(
+    () => [FstToThrdCtgy.store.thirdCtgyList, FstToThrdCtgy.store.subThirdCtgyList],
+    (newVal) => {
+        console.log('数据变化:', newVal);
+    },
+    { deep: true } // 深度监听
+);
 </script>
 
 <style scoped lang="scss">
@@ -47,16 +58,24 @@ const { getSubThirdCtgyList, getThirdCtgyList, isReadyOpen } = FstToThrdCtgy.sto
     .thrdctgys {
         float: left;
         font-size: 0.23rem;
-        margin-right: 0.5rem;
+        margin-right: 0.4rem;
         height: 0.48rem;
 
         &-item {
             text-shadow: 0 0 0.01rem grey;
+            padding: 0.04rem 0.2rem;
         }
+    }
+
+    .thrdctgys-isSelected {
+        background: lightcoral;
+        color: white;
+        border-radius: 0.1rem;
     }
 
     .icon {
         position: relative;
+        display: inline;
     }
 }
 </style>
