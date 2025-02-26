@@ -10,7 +10,6 @@
             <breadcrumbs />
             <thrdctgys />
         </div>
-        =
     </div>
 </template>
 

@@ -44,6 +44,7 @@ getSecondCtgys()
     left: 0rem;
     bottom: 0.85rem;
     gap: 0.1rem;
+    font-size: 0.21rem;
 
     .firstctgy {
         flex-basis: 1.3rem;
@@ -76,6 +77,7 @@ getSecondCtgys()
     .secondthrdctgy {
         flex: 1;
         margin-right: 0.19rem;
+        overflow-y: auto;
 
         &-item {
             background: #fff;

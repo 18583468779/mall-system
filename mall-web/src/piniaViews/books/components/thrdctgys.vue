@@ -1,11 +1,11 @@
 <template>
     <div class="content">
-        <div class="allthrdctgys">
-            <span>全部</span>
+        <div class="thrdctgys">
+            <span class="thrdctgys-item">全部</span>
         </div>
         <div class="thrdctgys" v-for="(item) in isReadyOpen ? getSubThirdCtgyList : getThirdCtgyList"
             :key="item.thirdctgyid">
-            {{ item.thirdctgyname }}
+            <span class="thrdctgys-item">{{ item.thirdctgyname }}</span>
         </div>
         <div class="icon">
             <span v-show="isReadyOpen" @click="opOrCollapseInBook(false)">
@@ -43,5 +43,20 @@ const { getSubThirdCtgyList, getThirdCtgyList, isReadyOpen } = FstToThrdCtgy.sto
     margin-top: 0.3rem;
     width: 5.04rem;
     position: relative;
+
+    .thrdctgys {
+        float: left;
+        font-size: 0.23rem;
+        margin-right: 0.5rem;
+        height: 0.48rem;
+
+        &-item {
+            text-shadow: 0 0 0.01rem grey;
+        }
+    }
+
+    .icon {
+        position: relative;
+    }
 }
 </style>
