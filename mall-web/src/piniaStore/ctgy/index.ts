@@ -116,11 +116,15 @@ export const ctgyStore = defineStore("ctgyStore", {
       return newList;
     },
     handleThirdCtgyListSelected(thirdCtgy: ThirdCtgy) {
-      // 1.判断三级分类是展开还是收缩状态
-      // if(this.getIsReadyOpen){
-
-      // }
       const tCtgyList = this.getThirdCtgyList.map((item) => {
+        if (item.thirdctgyid === thirdCtgy.thirdctgyid) {
+          item.isSelected = true;
+        } else {
+          item.isSelected = false;
+        }
+        return item;
+      });
+      const tSubCtgyList = this.getSubThirdCtgyList.map((item) => {
         if (item.thirdctgyid === thirdCtgy.thirdctgyid) {
           item.isSelected = true;
         } else {
@@ -130,7 +134,9 @@ export const ctgyStore = defineStore("ctgyStore", {
       });
       this.thirdCtgy = thirdCtgy;
       this.thirdCtgyList = tCtgyList;
+      this.subThirdCtgyList = tSubCtgyList;
       goodStorage.set("thirdCtgyList", tCtgyList);
+      goodStorage.set("subThirdCtgyList", tSubCtgyList);
       goodStorage.set("thirdCtgy", thirdCtgy);
     },
     async findFirstCtgyList() {
