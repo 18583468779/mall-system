@@ -9,6 +9,7 @@
         <div class="bookctgys">
             <breadcrumbs />
             <thrdctgys />
+            <bookItem />
         </div>
     </div>
 </template>
@@ -17,6 +18,7 @@
 import toSearch from './components/toSearch.vue';
 import breadcrumbs from './components/breadcrumbs.vue';
 import thrdctgys from './components/thrdctgys.vue'
+import bookItem from './components/bookItem.vue';
 import { ImgUtil } from '../../utils/imgUtil'
 </script>
 
