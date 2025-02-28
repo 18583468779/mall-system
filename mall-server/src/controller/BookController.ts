@@ -12,4 +12,12 @@ class BookController {
     const res = await bookDao.findBooksByThirdCtgyId(thirdctgyid);
     ctx.body = success(res);
   }
+  @get("/findBooksAllThirdCtgy/:secondctgyid")
+  async findBooksAllThirdCtgy(ctx: Context) {
+    // 根据二级分类获取全部三级分类
+    const { secondctgyid } = ctx.params;
+
+    const res = await bookDao.findBooksAllThirdCtgy(secondctgyid);
+    ctx.body = success(res);
+  }
 }

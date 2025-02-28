@@ -11,5 +11,17 @@ class BookDao {
       where: { thirdctgyid },
     });
   }
+  /**
+   * a根据二级分类获取全部三级分类
+   *
+   */
+  async findBooksAllThirdCtgy(secondctgyid: number) {
+    return await BooksModel.findAll({
+      raw: true,
+      where: {
+        secondctgyid,
+      },
+    });
+  }
 }
 export default BookDao.bookDao;

@@ -3,6 +3,7 @@ import { FirstCtgy, SecondCtgy, ThirdCtgy } from "./state";
 import ctgyApi from "../../api/CtgyApi";
 import { AxiosResponse } from "axios";
 import goodStorage from "good-storage";
+import Books from "../../piniaViews/books/service";
 
 function hasProps(data: any) {
   if (Array.isArray(data)) {
@@ -116,6 +117,7 @@ export const ctgyStore = defineStore("ctgyStore", {
       return newList;
     },
     handleThirdCtgyListSelected(thirdCtgy: ThirdCtgy) {
+      // 切换选择三级分类
       const tCtgyList = this.getThirdCtgyList.map((item) => {
         if (item.thirdctgyid === thirdCtgy.thirdctgyid) {
           item.isSelected = true;
@@ -138,6 +140,29 @@ export const ctgyStore = defineStore("ctgyStore", {
       goodStorage.set("thirdCtgyList", tCtgyList);
       goodStorage.set("subThirdCtgyList", tSubCtgyList);
       goodStorage.set("thirdCtgy", thirdCtgy);
+    },
+    handleSelectAll() {
+      // 选择全部三级分类
+      const thirdCtgy = [...this.getThirdCtgyList].map((item) => {
+        item["isSelected"] = false;
+        return item;
+      });
+      const subThirdCtgy = [...this.getSubThirdCtgyList].map((item) => {
+        item["isSelected"] = false;
+        return item;
+      });
+      const AllCtgy = {
+        thirdctgyid: 0,
+        thirdctgyname: "全部",
+        isSelected: true,
+      };
+      this.thirdCtgy = AllCtgy;
+      this.thirdCtgyList = thirdCtgy;
+      this.subThirdCtgyList = subThirdCtgy;
+      goodStorage.set("thirdCtgyList", thirdCtgy);
+      goodStorage.set("subThirdCtgyList", subThirdCtgy);
+      goodStorage.set("thirdCtgy", AllCtgy);
+      Books.findBooksBySecondCtgyId();
     },
     async findFirstCtgyList() {
       const result = await ctgyApi.getFirstCtgyList();

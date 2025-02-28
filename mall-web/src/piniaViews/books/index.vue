@@ -9,7 +9,9 @@
         <div class="bookctgys">
             <breadcrumbs />
             <thrdctgys />
-            <bookItem />
+            <div style="margin-top: 1rem;">
+                <bookItem />
+            </div>
         </div>
     </div>
 </template>

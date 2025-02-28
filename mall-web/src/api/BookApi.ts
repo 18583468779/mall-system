@@ -8,6 +8,12 @@ class BookAPI {
       false
     );
   }
+  getAllBookList(secondCtgyId: number) {
+    return request.get(
+      `/booksmodule/findBooksAllThirdCtgy/${secondCtgyId}}`,
+      false
+    );
+  }
 }
 
 export default BookAPI.api;

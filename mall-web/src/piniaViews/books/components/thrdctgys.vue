@@ -1,7 +1,8 @@
 <template>
     <div class="content">
         <div class="thrdctgys">
-            <span class="thrdctgys-item">全部</span>
+            <span :class="['thrdctgys-item', getThirdCtgy.thirdctgyid === 0 && 'thrdctgys-isSelected']"
+                @click="handleSelectAll">全部</span>
         </div>
         <div class="thrdctgys " v-for="(item) in isReadyOpen ? getSubThirdCtgyList : getThirdCtgyList"
             :key="item.thirdctgyid">
@@ -36,17 +37,10 @@
 </template>
 
 <script setup lang="ts">
-import { watch } from 'vue';
 import { FstToThrdCtgy } from '../../ctgy/service';
-const { opOrCollapseInBook, handleSelectThird } = FstToThrdCtgy
-const { getSubThirdCtgyList, getThirdCtgyList, isReadyOpen } = FstToThrdCtgy.storeRefs;
-watch(
-    () => [getSubThirdCtgyList],
-    (newVal) => {
-        console.log('数据变化:', newVal);
-    },
-    { deep: true } // 深度监听
-);
+const { opOrCollapseInBook, handleSelectThird, handleSelectAll } = FstToThrdCtgy
+const { getSubThirdCtgyList, getThirdCtgyList, isReadyOpen, getThirdCtgy } = FstToThrdCtgy.storeRefs;
+
 </script>
 
 <style scoped lang="scss">

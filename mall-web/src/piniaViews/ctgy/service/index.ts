@@ -3,6 +3,7 @@ import { FirstCtgy, SecondCtgy, ThirdCtgy } from "../../../store/state";
 import { ctgyStore } from "../../../piniaStore/ctgy";
 import { storeToRefs } from "pinia";
 import router from "../../../router";
+import Books from "../../books/service";
 export class FstToThrdCtgy {
   static store = ctgyStore();
   static storeRefs = storeToRefs(FstToThrdCtgy.store);
@@ -60,7 +61,12 @@ export class FstToThrdCtgy {
   static handleSelectThird = (thirdCtgy: ThirdCtgy) => {
     // 切换选中三级分类
     FstToThrdCtgy.store.handleThirdCtgyListSelected(thirdCtgy);
+    Books.findBooksByThirdCtgyId();
   };
+  static handleSelectAll() {
+    // 切换选中三级分类（全部）
+    FstToThrdCtgy.store.handleSelectAll();
+  }
   static back() {
     router.back();
   }
