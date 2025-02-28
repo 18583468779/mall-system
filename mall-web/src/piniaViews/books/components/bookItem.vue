@@ -1,20 +1,21 @@
 <template>
-    <div class="bookitem">
-        <img class="book-pic" :src="ImgUtil.getImg('1tongnian.png')" />
+    <div class="bookitem" v-for="item in bookList" :key="item.ISBN">
+
+        <img class="book-pic" :src="ImgUtil.getImg(item.bookpicname)" />
         <div class="bookinfo">
             <div class="bookinfo-brief">
-                <div class="book-name">西游记后转</div>
+                <div class="book-name">{{ item.bookname }}</div>
                 <div class="book-author-publs">
-                    <span class="author spacing">王五</span>
+                    <span class="author spacing">{{ item.author }}</span>
                     <span class="separator spacing">|</span>
-                    <span class:="publs spacing">出版社</span>
+                    <span class:="publs spacing">{{ item.publishername }}</span>
                 </div>
             </div>
 
             <div class="bookinfo-other">
                 <div class="price">
                     <span class="discountprice spacing">
-                        <span class="symbol">¥</span>
+                        <span class="symbol">&yen;</span>
                         89.34
                     </span>
                     <span class="originprice spacing">¥100</span>
@@ -38,7 +39,13 @@
 </template>
 
 <script setup lang="ts">
-import { ImgUtil } from '../../../utils/imgUtil'
+import { ImgUtil } from '../../../utils/imgUtil';
+import Books from '../service';
+
+const { findBooksByThirdCtgyId, storeRefs } = Books;
+findBooksByThirdCtgyId();
+const { bookList } = storeRefs;
+
 </script>
 
 <style scoped lang="scss">
@@ -47,6 +54,7 @@ import { ImgUtil } from '../../../utils/imgUtil'
     display: grid;
     grid-template-columns: 2.34rem 2.7rem;
     justify-items: center;
+    row-gap: 0.1rem;
 
     .book-pic {
         width: 1.8rem;

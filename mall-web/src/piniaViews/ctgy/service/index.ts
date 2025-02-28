@@ -52,7 +52,6 @@ export class FstToThrdCtgy {
     FstToThrdCtgy.store.storeThirdCtgyList(secondctgy.thirdctgys);
     FstToThrdCtgy.store.storeSubThirdCtgyList(secondctgy.subThirdctgys);
     FstToThrdCtgy.store.storeIsReadyOpen(secondctgy.isReadyOpen);
-
     router.push({ name: "books" });
   };
   static opOrCollapseInBook = (isOpen: boolean) => {
