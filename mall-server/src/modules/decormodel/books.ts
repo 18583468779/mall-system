@@ -26,7 +26,7 @@ export default class BooksModel extends Model<BooksModel> {
   @Column
   public thirdctgyid!: number;
   @Column
-  public originalprice!: number;
+  public originalprice!: number; // 排序字段
   @Column
   public discount!: number;
 }
