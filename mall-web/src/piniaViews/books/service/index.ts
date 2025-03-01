@@ -12,7 +12,7 @@ export default class Books {
   }
   static findBooksBySecondCtgyId() {
     // 根据二级分类查找图书
-    const secondctgyid = FstToThrdCtgy.store.secondCtgy.secondctgyid;
+    const secondctgyid = FstToThrdCtgy.store.getSecondCtgy.secondctgyid;
     Books.store.findBooksBySecondCtgyId(secondctgyid);
   }
 }

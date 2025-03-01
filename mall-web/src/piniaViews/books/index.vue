@@ -9,6 +9,7 @@
         <div class="bookctgys">
             <breadcrumbs />
             <thrdctgys />
+            <book-sort />
             <div style="margin-top: 1rem;">
                 <bookItem />
             </div>
@@ -21,6 +22,7 @@ import toSearch from './components/toSearch.vue';
 import breadcrumbs from './components/breadcrumbs.vue';
 import thrdctgys from './components/thrdctgys.vue'
 import bookItem from './components/bookItem.vue';
+import bookSort from './components/bookSort.vue';
 import { ImgUtil } from '../../utils/imgUtil'
 </script>
 
