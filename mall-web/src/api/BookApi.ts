@@ -2,9 +2,9 @@ import request from "../utils/axiosUtil";
 
 class BookAPI {
   static api: BookAPI = new BookAPI();
-  getBookList(thirdCtgyId: number) {
+  getBookList(thirdCtgyId: number, sortField: string, ascOrdesc: string) {
     return request.get(
-      `/booksmodule/findBooksByThirdCtgyId/${thirdCtgyId}}`,
+      `/booksmodule/findBooksByThirdCtgyId/${thirdCtgyId}/${sortField}/${ascOrdesc}`,
       false
     );
   }

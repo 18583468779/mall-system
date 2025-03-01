@@ -16,10 +16,10 @@
                 <div class="price">
                     <span class="discountprice spacing">
                         <span class="symbol">&yen;</span>
-                        89.34
+                        {{ item.discountprice }}
                     </span>
-                    <span class="originprice spacing">¥100</span>
-                    <span class="discount">0.8折</span>
+                    <span class="originprice spacing">{{ item.originalprice }}</span>
+                    <span class="discount">{{ item.discount }}折</span>
                 </div>
                 <div class="give">
                     <span class="self-support">自营</span>
@@ -27,7 +27,7 @@
                     <span class="free-shipping">包邮</span>
                 </div>
                 <div class="monthsalescount">
-                    <span>月售9878</span>
+                    <span>月销量：{{ item.monthsalecount }}</span>
                 </div>
                 <div class="ranklist">
                     <span>图书畅销总排行榜第1名</span>

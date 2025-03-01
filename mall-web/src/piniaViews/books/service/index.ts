@@ -9,10 +9,13 @@ export default class Books {
   static isReadAsc = ref(true); //控制价格升序还是降序图标显示
   static sortField = ref(""); // 排序字段
   static ascOrDesc = ref("desc"); // 降序还是升序排列图书
-  static findBooksByThirdCtgyId() {
+  static findBooksByThirdCtgyId(
+    sortField: string = "originalprice",
+    ascOrdesc: string = "asc"
+  ) {
     // 根据三级分类查找图书
     const thirdCtgyId = FstToThrdCtgy.store.thirdCtgy.thirdctgyid;
-    Books.store.findBooksByThirdCtgyId(thirdCtgyId);
+    Books.store.findBooksByThirdCtgyId(thirdCtgyId, sortField, ascOrdesc);
   }
   static findBooksBySecondCtgyId() {
     // 根据二级分类查找图书
@@ -26,5 +29,6 @@ export default class Books {
     }
     Books.sortField.value = sortField;
     Books.ascOrDesc.value = Books.ascOrDesc.value === "desc" ? "asc" : "desc";
+    Books.findBooksByThirdCtgyId(sortField, Books.ascOrDesc.value);
   }
 }

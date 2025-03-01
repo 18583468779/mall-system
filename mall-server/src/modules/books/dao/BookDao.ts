@@ -13,6 +13,9 @@ class BookDao {
     sortField: string = "originalprice",
     ascOrDesc: string = "asc"
   ) {
+    if (sortField === "price") {
+      sortField = "originalprice";
+    }
     return await BooksModel.findAll({
       order: [[sortField, ascOrDesc]],
       raw: true,
