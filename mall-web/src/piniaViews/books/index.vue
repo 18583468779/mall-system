@@ -9,8 +9,11 @@
         <div class="bookctgys">
             <breadcrumbs />
             <thrdctgys />
-            <book-sort />
-            <div style="margin-top: 1rem;">
+            <div style="margin-top: 0.3rem;">
+                <book-sort />
+            </div>
+
+            <div style="margin-top: 0.5rem;">
                 <bookItem />
             </div>
         </div>

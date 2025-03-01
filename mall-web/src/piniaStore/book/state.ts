@@ -9,7 +9,7 @@ export interface BookInfo {
   author: string;
   publishid: number;
   publishername: string;
-  monthsalecount: number;
+  monthsalecount: number; //月销量
   purcharsenum: number;
   bookpicname: string;
   secondctgyid: number;

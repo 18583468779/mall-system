@@ -1,11 +1,11 @@
 <template>
     <ul class="book-sort">
         <li class="compsive"><span class="inner">综合</span></li>
-        <li>销量</li>
-        <li>
+        <li :class="{ selected: sortField === 'monthsalecount' }" @click="sortBook('monthsalecount')">销量</li>
+        <li :class="{ selected: sortField === 'price' }" @click="sortBook('price')">
             价格
             <span class="ascdesc">
-                <i>
+                <i v-show="!isReadAsc">
                     <svg t="1740490070186" class="icon" viewBox="0 0 1024 1024" version="1.1"
                         xmlns="http://www.w3.org/2000/svg" p-id="2308" width="12" height="12">
                         <path
@@ -13,7 +13,7 @@
                             p-id="2309"></path>
                     </svg>
                 </i>
-                <i>
+                <i v-show="isReadAsc">
                     <svg t="1740490091339" class="icon" viewBox="0 0 1024 1024" version="1.1"
                         xmlns="http://www.w3.org/2000/svg" p-id="3298" width="12" height="12">
                         <path
@@ -28,7 +28,7 @@
             筛选
             <i>
                 <svg t="1740792326722" class="icon" viewBox="0 0 1024 1024" version="1.1"
-                    xmlns="http://www.w3.org/2000/svg" p-id="1474" width="12" height="12">
+                    xmlns="http://www.w3.org/2000/svg" p-id="1474" width="16" height="16">
                     <path
                         d="M148.4 114.2l729.2 0.1-0.1 16.7-265.2 177.2-22.2 14.8v537l50 100.1V349.8l287.1-192 0.8-93.6H98l0.7 93.6 285.3 192v418l50-25V323.2l-22-14.9L148.5 131l-0.1-16.8"
                         fill="#999999" p-id="1475"></path>
@@ -43,20 +43,29 @@
 
 
 <script setup lang="ts">
-
+import Books from '../service';
+const { sortBook, isReadAsc, sortField } = Books
 </script>
 
 <style scoped lang="scss">
 .book-sort {
     display: flex;
-    font-size: 0.2rem;
+    font-size: 0.25rem;
     width: 100%;
     margin-left: 0.05rem;
+
+    .ascdesc {
+        margin-left: 0.05rem;
+    }
 
     >li {
         flex: 1;
         display: flex;
         align-items: center;
+
+        &.selected {
+            color: red;
+        }
     }
 }
 </style>
