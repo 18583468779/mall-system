@@ -5,9 +5,18 @@ import { get, post } from "../decorator/requestmethoddecorator";
 import { Controller } from "../decorator/controllerdecorator";
 import { Context } from "koa";
 import ctgyDao from "../modules/ctgy/dao/CtgyDao";
+import redisConf, { RedisClient } from "../config/RedisConfig";
 
 @Controller("/ctgymodule")
 class CtgyController {
+  @get("/testRedis")
+  async testRedis(ctx: Context) {
+    const redisClient: RedisClient = redisConf.redisServerConf();
+    // 普通字符串存取
+    redisClient.set("food", "caomei");
+    ctx.body = await redisClient.get("food");
+  }
+
   @get("/findSecThrdCtgys/:firstctgyid")
   async findSecThrdCtgys(ctx: Context) {
     const { firstctgyid } = ctx.params;

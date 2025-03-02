@@ -135,3 +135,47 @@ CREATE TABLE `dangdang`.`books` (
 );
 ```
 ````
+
+# redis
+
+# c语言开发的内存上的高速缓存数据库
+
+# redis的优点
+
+1. 读写数据远远高于mysql数据库，高性能的key-value数据库
+2. redis存储数据安全，支持数据灾难恢复。使用RDB，AOF两种持久化防止断点数据丢失。
+   RDB全称：Redis DataBase是redis中默认的持久化方案。当触发持久化条件时，redis默认会生成一个dump.rdb文件，Redis在重启的时候就会通过解析dump.rdb文件进行数据恢复。
+
+   AOF:Append only File采用日志的形式将每个写操作追加到文件中。开启AoF机制后，只要执行更改
+   Redis数据的命令时，命令就会被写入到AoF文件中。
+3. Redis支持集群或分布式+集群架构。
+
+## 哪些数据需要保存到redis?
+
+1. 第一类数据：访问频繁，对性能要求高的，数据量不是很大的数据。
+   比如：保存了用户登录信息【用户名，地址】的sessic。
+2. 第二类数据：不轻易改变并且数据量不是很大的数据。
+   (1)一级图书分类信息。
+   (2)地图的经纬度信息。
+   (3)人口普查统计后的辅助信息。
+   (4)一段时间不变的秒杀的商品信息。
+   (5)QQ共同好友。(6)其他：学生成绩排名，音乐排行榜，月销售量排序，学生编号等。
+
+# redis 数据结构
+
+字符串，hash结构，set结构，zset结构，list结构
+一：基础命令。
+1.keys:查看当前数据库全部键(keys)信息。
+2.set。设置一个key value对数据。如果key已经存在用新值value覆盖原来的值。
+3.get key获取指定的key的value
+4.setnx首先判断key是否存在，如果存在就不覆盖值。
+5.msetnx key1 value1key2 value2.keyn valuen批量创建多个key,多个value。
+6.exists key。是否存在某个key的key-value对数据。
+7.del key。删除某个key的key-value对数据。
+8.save:人工发出的数据库持久化操作。
+
+
+二：存储Hash数据。【Hash结构的数据】
+(1)hset*创建hash结构的对象，但只能保存单个key-value键值对到hash对象中。hset对象名key1 value1
+(2)hmset创建hash结构的对象，并可以保存多个key-value键值对到hash对象中。hmset对象名key1 value1key2 value2..keyn valuen。
+(3)hgetall取出hash对象名的所有key-value数据。hgetall对象名。
