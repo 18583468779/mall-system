@@ -174,8 +174,24 @@ CREATE TABLE `dangdang`.`books` (
 7.del key。删除某个key的key-value对数据。
 8.save:人工发出的数据库持久化操作。
 
-
 二：存储Hash数据。【Hash结构的数据】
 (1)hset*创建hash结构的对象，但只能保存单个key-value键值对到hash对象中。hset对象名key1 value1
 (2)hmset创建hash结构的对象，并可以保存多个key-value键值对到hash对象中。hmset对象名key1 value1key2 value2..keyn valuen。
 (3)hgetall取出hash对象名的所有key-value数据。hgetall对象名。
+
+# redis 源码
+
+# 购物车表
+
+```
+CREATE TABLE `shopcart` (
+  `shopcartid` int NOT NULL AUTO_INCREMENT,
+  `bookisbn` varchar(20) NOT NULL,
+  `bookname` varchar(50) NOT NULL,
+  `bookpicname` varchar(60) NOT NULL,
+  `bookprice` int NOT NULL,
+  `userid` int NOT NULL,
+  `purcharsenum` int NULL DEFAULT 0,
+  PRIMARY KEY (`shopcartid`)
+);
+```
