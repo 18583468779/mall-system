@@ -32,6 +32,9 @@
                 <div class="ranklist">
                     <span>图书畅销总排行榜第1名</span>
                 </div>
+                <div>
+                    <addSubtrsc :book-item="item" />
+                </div>
             </div>
         </div>
         <div class="empty" v-show="false">库存所有书已经售完</div>
@@ -41,7 +44,7 @@
 <script setup lang="ts">
 import { ImgUtil } from '../../../utils/imgUtil';
 import Books from '../service';
-
+import addSubtrsc from './addSubtrsc.vue';
 const { findBooksByThirdCtgyId, storeRefs } = Books;
 findBooksByThirdCtgyId();
 const { bookList } = storeRefs;

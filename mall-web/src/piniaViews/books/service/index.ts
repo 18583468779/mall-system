@@ -3,6 +3,7 @@ import bookStore from "../../../piniaStore/book";
 import { FstToThrdCtgy } from "../../ctgy/service";
 import { ref } from "vue";
 import ShopCart from "./shopCart";
+import { BookInfo } from "../../../piniaStore/book/state";
 
 export default class Books {
   static store = bookStore();
@@ -19,6 +20,14 @@ export default class Books {
     await Books.store.findBooksByThirdCtgyId(thirdCtgyId, sortField, ascOrdesc);
     // 获取购物车信息
     await ShopCart.findCurUseShopCartList();
+    Books.uptBookNumWithSCLstNum();
+  }
+  static uptBookNumWithSCLstNum() {
+    const bookList: BookInfo[] = Books.store.getBookList;
+    bookList.forEach((book) => {
+      book.purcharsenum = 0;
+    });
+    ShopCart.uptBookNumWithSCLstNum(bookList);
   }
   static findBooksBySecondCtgyId() {
     // 根据二级分类查找图书

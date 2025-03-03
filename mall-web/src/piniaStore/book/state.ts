@@ -1,8 +1,3 @@
-interface style {
-  left: number;
-  top: number;
-}
-
 export interface BookInfo {
   ISBN: string;
   bookname: string;

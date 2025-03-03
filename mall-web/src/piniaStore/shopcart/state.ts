@@ -1,4 +1,4 @@
-export type ShopCart = {
+export type ShopCartType = {
   userid: number;
   checked: boolean;
   shopcartid?: number;
@@ -9,4 +9,4 @@ export type ShopCart = {
   purcharsenum: number;
 };
 
-export const initShopcart: ShopCart[] = [];
+export const initShopcart: ShopCartType[] = [];

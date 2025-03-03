@@ -1,7 +1,6 @@
 import goodStorage from "good-storage";
 import { defineStore } from "pinia";
-import { initShopcart, ShopCart } from "./state";
-import request from "../../utils/axiosUtil";
+import { initShopcart, ShopCartType } from "./state";
 import shopCartApi from "../../api/ShopApi";
 import { AxiosResponse } from "axios";
 
@@ -22,9 +21,8 @@ export default defineStore("shopCart", {
   actions: {
     async findCurUseShopCartList(userid: number) {
       // 获取购物车列表
-      const res: AxiosResponse<ShopCart[]> = await shopCartApi.getShopCartList(
-        userid
-      );
+      const res: AxiosResponse<ShopCartType[]> =
+        await shopCartApi.getShopCartList(userid);
       this.shopCartList = res.data;
       goodStorage.set("shopCartList", res.data);
     },
