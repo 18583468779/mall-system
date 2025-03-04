@@ -29,10 +29,11 @@ export default class Books {
     });
     ShopCart.uptBookNumWithSCLstNum(bookList);
   }
-  static findBooksBySecondCtgyId() {
+  static async findBooksBySecondCtgyId() {
     // 根据二级分类查找图书
     const secondctgyid = FstToThrdCtgy.store.getSecondCtgy.secondctgyid;
-    Books.store.findBooksBySecondCtgyId(secondctgyid);
+    await Books.store.findBooksBySecondCtgyId(secondctgyid);
+    Books.uptBookNumWithSCLstNum();
   }
   static sortBook(sortField: string) {
     // 图书排序

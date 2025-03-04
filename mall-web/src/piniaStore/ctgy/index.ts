@@ -141,7 +141,7 @@ export const ctgyStore = defineStore("ctgyStore", {
       goodStorage.set("subThirdCtgyList", tSubCtgyList);
       goodStorage.set("thirdCtgy", thirdCtgy);
     },
-    handleSelectAll() {
+    async handleSelectAll() {
       // 选择全部三级分类
       const thirdCtgy = [...this.getThirdCtgyList].map((item) => {
         item["isSelected"] = false;
@@ -162,7 +162,7 @@ export const ctgyStore = defineStore("ctgyStore", {
       goodStorage.set("thirdCtgyList", thirdCtgy);
       goodStorage.set("subThirdCtgyList", subThirdCtgy);
       goodStorage.set("thirdCtgy", AllCtgy);
-      Books.findBooksBySecondCtgyId();
+      await Books.findBooksBySecondCtgyId();
     },
     async findFirstCtgyList() {
       const result = await ctgyApi.getFirstCtgyList();

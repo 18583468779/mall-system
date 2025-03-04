@@ -39,6 +39,7 @@ type Props = {
     bookItem: BookInfo
 }
 const { bookItem } = defineProps<Props>();
+
 </script>
 
 <style scoped></style>
