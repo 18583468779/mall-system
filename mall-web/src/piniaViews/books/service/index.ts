@@ -31,8 +31,6 @@ export default class Books {
       if (curbookisbn && curbookisbn === book.ISBN) {
         book.purcharsenum = bookNum;
         break;
-      } else {
-        book.purcharsenum = bookNum;
       }
     }
   }
