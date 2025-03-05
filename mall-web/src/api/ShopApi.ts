@@ -1,3 +1,4 @@
+import { ShopCartType } from "../piniaStore/shopcart/state";
 import request from "../utils/axiosUtil";
 
 class ShopCartApi {
@@ -8,6 +9,10 @@ class ShopCartApi {
       `/shopcartmodule/findCurUseShopCartList/${userid}`,
       false
     );
+  }
+  addBookToShopCart(shopCart: ShopCartType) {
+    // 添加图书到购物车
+    return request.post("/shopcartmodule/addBookToShopCart", false, shopCart);
   }
 }
 

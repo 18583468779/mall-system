@@ -22,7 +22,22 @@ export default class Books {
     await ShopCart.findCurUseShopCartList();
     Books.uptBookNumWithSCLstNum();
   }
+  static updateBookNum(bookNum: number, curbookisbn?: string) {
+    // 点击新增更新购物车图书数量
+    const bookList: BookInfo[] = Books.store.getBookList;
+    let book: BookInfo;
+    for (let i = 0; i < bookList.length; i++) {
+      book = bookList[i];
+      if (curbookisbn && curbookisbn === book.ISBN) {
+        book.purcharsenum = bookNum;
+        break;
+      } else {
+        book.purcharsenum = bookNum;
+      }
+    }
+  }
   static uptBookNumWithSCLstNum() {
+    // 首次更新购物车图书数量
     const bookList: BookInfo[] = Books.store.getBookList;
     bookList.forEach((book) => {
       book.purcharsenum = 0;
