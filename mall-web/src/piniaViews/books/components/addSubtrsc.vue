@@ -5,7 +5,8 @@
         </div>
 
         <div class="shopcart-operate" v-else>
-            <span class="shopcart-operate-minus" v-show="bookItem.purcharsenum > 1">
+            <span @click="addOrSubtrBookToShopCart(bookItem, 'sub')" class="shopcart-operate-minus"
+                v-show="bookItem.purcharsenum > 1">
                 <span class="inner">-</span>
             </span>
             <span class="shopcart-operate-del" v-show="bookItem.purcharsenum === 1">
@@ -31,7 +32,7 @@
             </span>
             <span class="purchasenum">{{ bookItem.purcharsenum }}</span>
 
-            <span class="shopcart-operate-add">
+            <span @click="addOrSubtrBookToShopCart(bookItem, 'add')" class="shopcart-operate-add">
                 <span class="inner">+</span>
             </span>
         </div>
@@ -43,7 +44,7 @@
 import { BookInfo } from '../../../piniaStore/book/state';
 import shopCart from '../../books/service/shopCart';
 
-const { addBookToShopCart } = shopCart
+const { addBookToShopCart, addOrSubtrBookToShopCart } = shopCart
 type Props = {
     bookItem: BookInfo
 }

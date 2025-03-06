@@ -36,4 +36,22 @@ export default class ShopCart {
       });
     });
   }
+  static addOrSubtrBookToShopCart(bookitem: BookInfo, type: "add" | "sub") {
+    // 增加或者减少购物车图书数量
+    const shopCartList = ShopCart.store.getShopCartList as ShopCartType[];
+
+    const currentShopCart = shopCartList.filter(
+      (item) => item.bookisbn === bookitem.ISBN
+    )[0];
+    if (type === "add") {
+      currentShopCart.purcharsenum += 1;
+      bookitem.purcharsenum += 1;
+    }
+    if (type === "sub") {
+      currentShopCart.purcharsenum -= 1;
+      bookitem.purcharsenum -= 1;
+    }
+
+    ShopCart.store.addOrSubtrBookToShopCart(currentShopCart);
+  }
 }

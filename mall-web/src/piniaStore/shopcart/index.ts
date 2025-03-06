@@ -28,6 +28,7 @@ export default defineStore("shopCart", {
       storage.set("shopCartList", res.data);
     },
     async addBookToShopCart(shopCart: ShopCartType) {
+      // 新增商品到购物车
       const result: AxiosResponse<ShopCartType> =
         await shopCartApi.addBookToShopCart(shopCart);
       const dbShopCart = result.data;
@@ -39,6 +40,12 @@ export default defineStore("shopCart", {
         dbShopCart.shopcartid
       );
       this.shopCartList = shopCartList;
+    },
+    async addOrSubtrBookToShopCart(shopCart: ShopCartType) {
+      // 增加或者减少购物车图书数量
+      const result = await shopCartApi.addOrSubtrBookToShopCart(shopCart);
+      const dbShopCart = result.data;
+      console.log("dbShopCart", dbShopCart);
     },
   },
 });
