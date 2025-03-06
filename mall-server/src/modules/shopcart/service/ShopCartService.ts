@@ -1,6 +1,6 @@
 import { combine } from "../../../modules/commontypes";
 import shopCartDao from "../dao/ShopCartDao";
-import { ShopCartRaw } from "../row";
+import { ShopCartRaw, ShopCartRaw_ } from "../raw";
 class ShopCartService {
   static shopCartService: ShopCartService = new ShopCartService();
   async findCurUseShopCartList(userid: number) {
@@ -11,6 +11,11 @@ class ShopCartService {
     // 新增购物车
     const result = await shopCartDao.addBookToShopCart(shopCart);
     return combine({ shopcartid: result[0] }, shopCart);
+  }
+  async addOrSubtrBookToShopCart(shopCart: ShopCartRaw_) {
+    // 增加或者减少购物车图书数量
+    await shopCartDao.addOrSubtrBookToShopCart(shopCart);
+    return shopCart;
   }
 }
 

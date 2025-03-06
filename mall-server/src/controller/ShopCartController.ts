@@ -3,7 +3,7 @@ import { get, post } from "../decorator/requestmethoddecorator";
 import { Controller } from "../decorator/controllerdecorator";
 import { Context } from "koa";
 import shopCartService from "../modules/shopcart/service/ShopCartService";
-import { ShopCartRaw } from "../modules/shopcart/row";
+import { ShopCartRaw } from "../modules/shopcart/raw";
 
 @Controller("/shopcartmodule")
 class ShopCartController {
@@ -16,6 +16,14 @@ class ShopCartController {
   async addBookToShopCart(ctx: Context) {
     const shopCartRaw = ctx.request.body;
     const dbshopCart = await shopCartService.addBookToShopCart(shopCartRaw);
+    ctx.body = success(dbshopCart);
+  }
+  @post("/addOrSubtrBookToShopCart")
+  async addOrSubtrBookToShopCart(ctx: Context) {
+    const shopCartRaw = ctx.request.body;
+    const dbshopCart = await shopCartService.addOrSubtrBookToShopCart(
+      shopCartRaw
+    );
     ctx.body = success(dbshopCart);
   }
 }
