@@ -17,6 +17,10 @@ class ShopCartService {
     await shopCartDao.addOrSubtrBookToShopCart(shopCart);
     return shopCart;
   }
+  async deOneBookFrmSc(shopcartid: number) {
+    // 删除一条数据
+    return await shopCartDao.deOneBookFrmSc(shopcartid);
+  }
 }
 
 export default ShopCartService.shopCartService;

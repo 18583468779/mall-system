@@ -26,4 +26,11 @@ class ShopCartController {
     );
     ctx.body = success(dbshopCart);
   }
+  @get("/deOneBookFrmSc/:shopcartid")
+  async deOneBookFrmSc(ctx: Context) {
+    //删除一条数据
+    const { shopcartid } = ctx.params;
+    const delRecNum = await shopCartService.deOneBookFrmSc(shopcartid);
+    ctx.body = success(delRecNum);
+  }
 }

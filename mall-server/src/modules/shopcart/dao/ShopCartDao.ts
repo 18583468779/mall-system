@@ -24,6 +24,14 @@ class ShopCartDao {
     const sql = `update shopcart set purcharsenum=${shopCart.purcharsenum} where shopcartid=${shopCart.shopcartid}`;
     return await sequelize.query(sql);
   }
+  async deOneBookFrmSc(shopcartid: number) {
+    // 删除购物车的一条数据
+    return await ShopcartModel.destroy({
+      where: {
+        shopcartid,
+      },
+    });
+  }
 }
 
 export default ShopCartDao.shopCartDao;
