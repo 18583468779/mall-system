@@ -5,6 +5,7 @@ import { ShopCartType } from "../../../piniaStore/shopcart/state";
 import Books from ".";
 import storage from "../../../utils/goodStorageUtil";
 import { ElMessageBox } from "element-plus";
+import { computed } from "vue";
 export default class ShopCart {
   static store = shopCart();
   static storeRefs = storeToRefs(ShopCart.store);
@@ -88,5 +89,29 @@ export default class ShopCart {
         Books.store.bookList = bookList;
       }
     });
+  }
+  static refreshShopCartList() {
+    // 计算购物车的数量和价格
+    const totalCount = computed(() => {
+      let total = 0; //数量
+      const shopCartList = ShopCart.store.getShopCartList as ShopCartType[];
+      if (shopCartList && shopCartList.length > 0) {
+        shopCartList.forEach((s) => {
+          total += s.purcharsenum;
+        });
+      }
+      return total;
+    });
+    const totalPrice = computed(() => {
+      let totalPrice_ = 0; //数量
+      const shopCartList = ShopCart.store.getShopCartList as ShopCartType[];
+      if (shopCartList && shopCartList.length > 0) {
+        shopCartList.forEach((s) => {
+          totalPrice_ += s.purcharsenum * s.bookprice;
+        });
+      }
+      return totalPrice_;
+    });
+    return { totalCount, totalPrice };
   }
 }
