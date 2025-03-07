@@ -4,7 +4,7 @@ import { BookInfo } from "../../../piniaStore/book/state";
 import { ShopCartType } from "../../../piniaStore/shopcart/state";
 import Books from ".";
 import storage from "../../../utils/goodStorageUtil";
-import { ElMessage, ElMessageBox } from "element-plus";
+import { ElMessageBox } from "element-plus";
 export default class ShopCart {
   static store = shopCart();
   static storeRefs = storeToRefs(ShopCart.store);

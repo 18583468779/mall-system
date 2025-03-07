@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="content">
         <div>
             <to-search></to-search>
         </div>
@@ -17,6 +17,9 @@
                 <bookItem />
             </div>
         </div>
+        <div>
+            <shop-cart />
+        </div>
     </div>
 </template>
 
@@ -26,6 +29,7 @@ import breadcrumbs from './components/breadcrumbs.vue';
 import thrdctgys from './components/thrdctgys.vue'
 import bookItem from './components/bookItem.vue';
 import bookSort from './components/bookSort.vue';
+import shopCart from './components/shopCart.vue';
 import { ImgUtil } from '../../utils/imgUtil'
 </script>
 
@@ -50,5 +54,6 @@ import { ImgUtil } from '../../utils/imgUtil'
     top: 2.7rem;
     width: 5.04rem;
     margin: 0.18rem;
+    padding-bottom: 1rem;
 }
 </style>
