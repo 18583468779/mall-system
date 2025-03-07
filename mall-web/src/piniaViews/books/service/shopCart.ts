@@ -4,7 +4,7 @@ import { BookInfo } from "../../../piniaStore/book/state";
 import { ShopCartType } from "../../../piniaStore/shopcart/state";
 import Books from ".";
 import storage from "../../../utils/goodStorageUtil";
-
+import { ElMessage, ElMessageBox } from "element-plus";
 export default class ShopCart {
   static store = shopCart();
   static storeRefs = storeToRefs(ShopCart.store);
@@ -59,26 +59,34 @@ export default class ShopCart {
     )[0];
     return currentShopCart;
   }
-  static async delBookFrmSc(bookitem: BookInfo) {
+  static delBookFrmSc(bookitem: BookInfo) {
     //删除一条数据
-    const shopCartList = ShopCart.store.getShopCartList as ShopCartType[];
-    const currentShopCart = ShopCart.getCurrentShopCart(bookitem);
-    if (currentShopCart.shopcartid) {
-      const res = await ShopCart.store.delBookFrmSc(currentShopCart.shopcartid);
-      if (res !== 1) return; // 如果成功删除购物车
-      const newList = shopCartList.filter(
-        (item) => item.bookisbn !== bookitem.ISBN
-      );
-      storage.set("shopCartList", newList);
-      ShopCart.store.shopCartList = newList;
-      const bookList = Books.store.getBookList as BookInfo[];
-      bookList.forEach((item) => {
-        if (item.ISBN === bookitem.ISBN) {
-          item.purcharsenum = 0; // 清空图书的数量
-        }
-        return item;
-      });
-      Books.store.bookList = bookList;
-    }
+    ElMessageBox.confirm("确认要删除这个数据吗?", "提示", {
+      confirmButtonText: "确认",
+      cancelButtonText: "取消",
+      type: "warning",
+    }).then(async () => {
+      const shopCartList = ShopCart.store.getShopCartList as ShopCartType[];
+      const currentShopCart = ShopCart.getCurrentShopCart(bookitem);
+      if (currentShopCart.shopcartid) {
+        const res = await ShopCart.store.delBookFrmSc(
+          currentShopCart.shopcartid
+        );
+        if (res !== 1) return; // 如果成功删除购物车
+        const newList = shopCartList.filter(
+          (item) => item.bookisbn !== bookitem.ISBN
+        );
+        storage.set("shopCartList", newList);
+        ShopCart.store.shopCartList = newList;
+        const bookList = Books.store.getBookList as BookInfo[];
+        bookList.forEach((item) => {
+          if (item.ISBN === bookitem.ISBN) {
+            item.purcharsenum = 0; // 清空图书的数量
+          }
+          return item;
+        });
+        Books.store.bookList = bookList;
+      }
+    });
   }
 }
