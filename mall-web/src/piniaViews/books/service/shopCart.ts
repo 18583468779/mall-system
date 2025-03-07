@@ -3,6 +3,7 @@ import shopCart from "../../../piniaStore/shopcart";
 import { BookInfo } from "../../../piniaStore/book/state";
 import { ShopCartType } from "../../../piniaStore/shopcart/state";
 import Books from ".";
+import storage from "../../../utils/goodStorageUtil";
 
 export default class ShopCart {
   static store = shopCart();
@@ -38,11 +39,7 @@ export default class ShopCart {
   }
   static addOrSubtrBookToShopCart(bookitem: BookInfo, type: "add" | "sub") {
     // 增加或者减少购物车图书数量
-    const shopCartList = ShopCart.store.getShopCartList as ShopCartType[];
-
-    const currentShopCart = shopCartList.filter(
-      (item) => item.bookisbn === bookitem.ISBN
-    )[0];
+    const currentShopCart = ShopCart.getCurrentShopCart(bookitem);
     if (type === "add") {
       currentShopCart.purcharsenum += 1;
       bookitem.purcharsenum += 1;
@@ -53,5 +50,35 @@ export default class ShopCart {
     }
 
     ShopCart.store.addOrSubtrBookToShopCart(currentShopCart);
+  }
+  static getCurrentShopCart(bookitem: BookInfo) {
+    //根据图书id获取购物车
+    const shopCartList = ShopCart.store.getShopCartList as ShopCartType[];
+    const currentShopCart = shopCartList.filter(
+      (item) => item.bookisbn === bookitem.ISBN
+    )[0];
+    return currentShopCart;
+  }
+  static async delBookFrmSc(bookitem: BookInfo) {
+    //删除一条数据
+    const shopCartList = ShopCart.store.getShopCartList as ShopCartType[];
+    const currentShopCart = ShopCart.getCurrentShopCart(bookitem);
+    if (currentShopCart.shopcartid) {
+      const res = await ShopCart.store.delBookFrmSc(currentShopCart.shopcartid);
+      if (res !== 1) return; // 如果成功删除购物车
+      const newList = shopCartList.filter(
+        (item) => item.bookisbn !== bookitem.ISBN
+      );
+      storage.set("shopCartList", newList);
+      ShopCart.store.shopCartList = newList;
+      const bookList = Books.store.getBookList as BookInfo[];
+      bookList.forEach((item) => {
+        if (item.ISBN === bookitem.ISBN) {
+          item.purcharsenum = 0; // 清空图书的数量
+        }
+        return item;
+      });
+      Books.store.bookList = bookList;
+    }
   }
 }

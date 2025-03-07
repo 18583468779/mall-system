@@ -9,7 +9,7 @@
                 v-show="bookItem.purcharsenum > 1">
                 <span class="inner">-</span>
             </span>
-            <span class="shopcart-operate-del" v-show="bookItem.purcharsenum === 1">
+            <span @click="delBookFrmSc(bookItem)" class="shopcart-operate-del" v-show="bookItem.purcharsenum === 1">
                 <span class="inner">
                     <i class="shanchu">
                         <svg t="1741008278986" class="icon" viewBox="0 0 1024 1024" version="1.1"
@@ -44,7 +44,7 @@
 import { BookInfo } from '../../../piniaStore/book/state';
 import shopCart from '../../books/service/shopCart';
 
-const { addBookToShopCart, addOrSubtrBookToShopCart } = shopCart
+const { addBookToShopCart, addOrSubtrBookToShopCart, delBookFrmSc } = shopCart
 type Props = {
     bookItem: BookInfo
 }

@@ -22,6 +22,10 @@ class ShopCartApi {
       shopCart
     );
   }
+  delBookFrmSc(shopcartid: number) {
+    // 删除购物车
+    return request.get(`/shopcartmodule/deOneBookFrmSc/${shopcartid}`, false);
+  }
 }
 
 export default ShopCartApi.shopCartApi;

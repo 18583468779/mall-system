@@ -4,6 +4,7 @@ import { initShopcart, ShopCartType } from "./state";
 import shopCartApi from "../../api/ShopApi";
 import { AxiosResponse } from "axios";
 import storage, { OPTION } from "../../utils/goodStorageUtil";
+import Books from "../../piniaViews/books/service";
 
 export default defineStore("shopCart", {
   state: () => {
@@ -46,6 +47,12 @@ export default defineStore("shopCart", {
       const result = await shopCartApi.addOrSubtrBookToShopCart(shopCart);
       const dbShopCart = result.data;
       console.log("dbShopCart", dbShopCart);
+    },
+    async delBookFrmSc(shopcartid: number) {
+      // 删除购物车
+      const result = await shopCartApi.delBookFrmSc(shopcartid);
+      const dbShopCart = result.data;
+      return dbShopCart;
     },
   },
 });
