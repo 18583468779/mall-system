@@ -21,7 +21,7 @@ export default class ShopCart {
       bookisbn: bookitem.ISBN,
       bookname: bookitem.bookname,
       bookpicname: bookitem.bookpicname,
-      bookprice: bookitem.originalprice,
+      bookprice: bookitem.originalprice * bookitem.discount,
       purcharsenum: 1,
     };
     ShopCart.store.addBookToShopCart(shopcart);
@@ -49,7 +49,6 @@ export default class ShopCart {
       currentShopCart.purcharsenum -= 1;
       bookitem.purcharsenum -= 1;
     }
-
     ShopCart.store.addOrSubtrBookToShopCart(currentShopCart);
   }
   static getCurrentShopCart(bookitem: BookInfo) {
@@ -110,8 +109,26 @@ export default class ShopCart {
           totalPrice_ += s.purcharsenum * s.bookprice;
         });
       }
-      return totalPrice_;
+      return procDecimalZero(totalPrice_);
     });
     return { totalCount, totalPrice };
   }
+}
+
+function procDecimalZero(num: number) {
+  let strValue = num.toString();
+  const splitValues = strValue.split(".");
+  if (splitValues.length === 1) {
+    // 整数
+    strValue = strValue + ".00";
+  } else if (splitValues.length > 1) {
+    // 只有一位小数
+    if (splitValues[1].length === 1) {
+      strValue = strValue + "0";
+    } else if (splitValues[1].length > 2) {
+      // 大于两位小数
+      strValue = num.toFixed(2).toString();
+    }
+  }
+  return strValue as any as number;
 }
