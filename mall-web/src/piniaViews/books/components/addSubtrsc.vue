@@ -32,7 +32,7 @@
             </span>
             <span class="purchasenum">{{ bookItem.purcharsenum }}</span>
 
-            <span @click="addOrSubtrBookToShopCart(bookItem, 'add')" class="shopcart-operate-add">
+            <span @click="(e) => addOrSubtrBookToShopCart(bookItem, 'add', e)" class="shopcart-operate-add">
                 <span class="inner">+</span>
             </span>
         </div>

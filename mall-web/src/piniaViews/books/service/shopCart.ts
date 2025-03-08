@@ -5,11 +5,17 @@ import { ShopCartType } from "../../../piniaStore/shopcart/state";
 import Books from ".";
 import storage from "../../../utils/goodStorageUtil";
 import { ElMessageBox } from "element-plus";
-import { computed } from "vue";
+import { computed, nextTick, Ref, ref } from "vue";
+
+type BallType = {
+  showOrHidden: boolean;
+  curTarget?: EventTarget;
+};
+
 export default class ShopCart {
   static store = shopCart();
   static storeRefs = storeToRefs(ShopCart.store);
-
+  static ball: Ref<BallType> = ref({ showOrHidden: false });
   static async findCurUseShopCartList() {
     await ShopCart.store.findCurUseShopCartList(1);
   }
@@ -38,12 +44,18 @@ export default class ShopCart {
       });
     });
   }
-  static addOrSubtrBookToShopCart(bookitem: BookInfo, type: "add" | "sub") {
+  static addOrSubtrBookToShopCart(
+    bookitem: BookInfo,
+    type: "add" | "sub",
+    event?: MouseEvent
+  ) {
     // 增加或者减少购物车图书数量
     const currentShopCart = ShopCart.getCurrentShopCart(bookitem);
     if (type === "add") {
       currentShopCart.purcharsenum += 1;
       bookitem.purcharsenum += 1;
+      // 小球动画
+      ShopCart.drop(event!);
     }
     if (type === "sub") {
       currentShopCart.purcharsenum -= 1;
@@ -112,6 +124,30 @@ export default class ShopCart {
       return procDecimalZero(totalPrice_);
     });
     return { totalCount, totalPrice };
+  }
+  static drop(event: MouseEvent) {
+    ShopCart.ball.value.showOrHidden = true;
+    ShopCart.ball.value.curTarget = event.currentTarget!;
+  }
+  static beforeDrop(ele: Element) {
+    const addBtn = <HTMLBodyElement>ShopCart.ball.value.curTarget;
+    const addRect = addBtn.getBoundingClientRect();
+    const x = addRect.left - 35;
+    const y = -(window.innerHeight - addRect.top - 45);
+    (ele as HTMLBodyElement).style.transform = `translate3d(0,${y}px,0)`;
+    const inner = ele.querySelector(".inner") as HTMLBodyElement;
+    inner.style.transform = `translate3d(${x}px,0,0)`;
+  }
+  static dropping(ele: Element, done: (...args: any) => any) {
+    document.body.scrollHeight;
+    (ele as HTMLBodyElement).style.transform = `translate3d(0,0,0)`;
+    const inner = ele.querySelector(".inner") as HTMLBodyElement;
+    inner.style.transform = `translate3d(0,0,0)`;
+    done();
+  }
+  static afterDrop(ele: Element) {
+    ShopCart.ball.value.showOrHidden = false;
+    ShopCart.ball.value.curTarget = undefined;
   }
 }
 

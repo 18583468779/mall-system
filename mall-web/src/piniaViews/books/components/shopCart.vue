@@ -61,6 +61,13 @@
                     </i>
                 </div>
             </div>
+            <div class="ball-container">
+                <transition @before-enter="beforeDrop" @enter="dropping" @after-enter="afterDrop">
+                    <div class="ball" v-show="ball.showOrHidden">
+                        <div class="inner"></div>
+                    </div>
+                </transition>
+            </div>
         </div>
     </div>
 
@@ -69,6 +76,7 @@
 <script setup lang="ts">
 import ShopCart from '../service/shopCart';
 const { totalCount, totalPrice } = ShopCart.refreshShopCartList()
+const { beforeDrop, afterDrop, dropping, ball } = ShopCart
 </script>
 
 <style scoped lang="scss">
@@ -111,6 +119,28 @@ const { totalCount, totalPrice } = ShopCart.refreshShopCartList()
                     font-size: 0.21rem;
                 }
             }
+        }
+    }
+}
+
+.ball-container {
+    .ball {
+        width: 0.16rem;
+        height: 0.16rem;
+        position: fixed;
+        left: 0.45rem;
+        bottom: 0.2rem;
+        // border-radius: 50%;
+        // background: #1985f1;
+        transition: transform 0.4s cubic-bezier(0.46, -0.35, 0.78, 0.45); // 添加过渡
+
+        .inner {
+            width: 0.16rem;
+            height: 0.16rem;
+            border-radius: 50%;
+            background: #1985f1;
+            transition: transform 0.4s linear; // 添加过渡
+
         }
     }
 }
