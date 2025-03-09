@@ -15,7 +15,7 @@
         <div class="items">
             <div class="item" v-for="(item) in getShopCartList" :key="item.shopcartid">
                 <div class="content">
-                    <input type="checkbox" class="check" v-model="item.checked" />
+                    <input type="checkbox" class="check" v-model="item.checked" @change="checkEveryCheckBox" />
                     <div class="pic">
                         <img :src="getImg(item.bookpicname)" class="bookimg" />
                     </div>
@@ -52,7 +52,7 @@ import addSubtrsc from '../books/components/addSubtrsc.vue';
 import Books from '../books/service';
 import router from '../../router';
 const { getImg } = ImgUtil;
-const { isSelectAll, selectAll } = ShopCart
+const { isSelectAll, selectAll, checkEveryCheckBox } = ShopCart
 const { getShopCartList } = ShopCart.storeRefs;
 const { getCurrentBookItem } = Books;
 const { totalCount, totalPrice } = ShopCart.refreshShopCartList()
