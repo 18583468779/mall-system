@@ -4,7 +4,6 @@ import { initShopcart, ShopCartType } from "./state";
 import shopCartApi from "../../api/ShopApi";
 import { AxiosResponse } from "axios";
 import storage, { OPTION } from "../../utils/goodStorageUtil";
-import Books from "../../piniaViews/books/service";
 
 export default defineStore("shopCart", {
   state: () => {
@@ -13,7 +12,7 @@ export default defineStore("shopCart", {
     };
   },
   getters: {
-    getShopCartList(state) {
+    getShopCartList(state): ShopCartType[] {
       // 获取购物车列表
       return state.shopCartList.length > 0
         ? state.shopCartList
@@ -33,20 +32,24 @@ export default defineStore("shopCart", {
       const result: AxiosResponse<ShopCartType> =
         await shopCartApi.addBookToShopCart(shopCart);
       const dbShopCart = result.data;
-      const shopCartList = storage.set(
+      this.setShopCart(dbShopCart);
+    },
+    async addOrSubtrBookToShopCart(shopCart: ShopCartType) {
+      // 增加或者减少购物车图书数量
+      const result = await shopCartApi.addOrSubtrBookToShopCart(shopCart);
+      const dbShopCart = result.data;
+      this.setShopCart(dbShopCart);
+    },
+    async setShopCart(dbShopCart: ShopCartType) {
+      // 设置购物车列表
+      storage.set(
         "shopCartList",
         dbShopCart,
         OPTION.ADDAPPENDOBJTOARR,
         "shopcartid",
         dbShopCart.shopcartid
       );
-      this.shopCartList = shopCartList;
-    },
-    async addOrSubtrBookToShopCart(shopCart: ShopCartType) {
-      // 增加或者减少购物车图书数量
-      const result = await shopCartApi.addOrSubtrBookToShopCart(shopCart);
-      const dbShopCart = result.data;
-      console.log("dbShopCart", dbShopCart);
+      this.shopCartList = storage.get("shopCartList", OPTION.ADDAPPENDOBJTOARR);
     },
     async delBookFrmSc(shopcartid: number) {
       // 删除购物车

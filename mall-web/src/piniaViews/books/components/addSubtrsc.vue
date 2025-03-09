@@ -50,6 +50,7 @@ type Props = {
 }
 const { bookItem } = defineProps<Props>();
 
+
 </script>
 
 <style scoped lang="scss">

@@ -33,6 +33,7 @@ export default class Books {
         break;
       }
     }
+    Books.store.bookList = bookList; //设置图书的数量，渲染页面
   }
   static uptBookNumWithSCLstNum() {
     // 首次更新购物车图书数量
@@ -56,5 +57,12 @@ export default class Books {
     Books.sortField.value = sortField;
     Books.ascOrDesc.value = Books.ascOrDesc.value === "desc" ? "asc" : "desc";
     Books.findBooksByThirdCtgyId(sortField, Books.ascOrDesc.value);
+  }
+  static getCurrentBookItem(bookisbn: string, purcharsenum: number) {
+    // 根据图书id获取图书
+    const bookInfo = Books.store.getBookList as BookInfo[];
+    const bookItem = bookInfo.filter((item) => item.ISBN === bookisbn)[0];
+    bookItem["purcharsenum"] = purcharsenum;
+    return bookItem;
   }
 }

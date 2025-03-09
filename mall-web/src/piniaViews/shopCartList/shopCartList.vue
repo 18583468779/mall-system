@@ -1,7 +1,7 @@
 <template>
     <div class="shopcartlist">
         <div class="header">
-            <i class="back">
+            <i class="back" @click="handleToPage">
                 <svg t="1741411026216" class="icon" viewBox="0 0 1024 1024" version="1.1"
                     xmlns="http://www.w3.org/2000/svg" p-id="3273" width="32" height="32">
                     <path
@@ -13,62 +13,20 @@
             <span class="label">当当网</span>
         </div>
         <div class="items">
-            <div class="item">
+            <div class="item" v-for="(item) in getShopCartList" :key="item.shopcartid">
                 <div class="content">
                     <input type="checkbox" class="check" />
                     <div class="pic">
-                        <img :src="getImg('book1.png')" class="bookimg" />
+                        <img :src="getImg(item.bookpicname)" class="bookimg" />
                     </div>
                     <div class=" descri">
-                        <div class="book-title">童年</div>
+                        <div class="book-title">{{ item.bookname }}</div>
                         <div class="price">
-                            <span class="curprice">¥89.33</span>
-                            <span class="addsubtrcbktosc">添加删除购物车组件</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="item">
-                <div class="content">
-                    <input type="checkbox" class="check" />
-                    <div class="pic">
-                        <img :src="getImg('book1.png')" class="bookimg" />
-                    </div>
-                    <div class=" descri">
-                        <div class="book-title">童年</div>
-                        <div class="price">
-                            <span class="curprice">¥89.33</span>
-                            <span class="addsubtrcbktosc">添加删除购物车组件</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="item">
-                <div class="content">
-                    <input type="checkbox" class="check" />
-                    <div class="pic">
-                        <img :src="getImg('book1.png')" class="bookimg" />
-                    </div>
-                    <div class=" descri">
-                        <div class="book-title">童年</div>
-                        <div class="price">
-                            <span class="curprice">¥89.33</span>
-                            <span class="addsubtrcbktosc">添加删除购物车组件</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="item">
-                <div class="content">
-                    <input type="checkbox" class="check" />
-                    <div class="pic">
-                        <img :src="getImg('book1.png')" class="bookimg" />
-                    </div>
-                    <div class="descri">
-                        <div class="book-title">童年</div>
-                        <div class="price">
-                            <span class="curprice">¥89.33</span>
-                            <span class="addsubtrcbktosc">添加删除购物车组件</span>
+                            <span class="curprice">¥{{ item.bookprice }}</span>
+                            <span class="addsubtrcbktosc">
+                                <addSubtrsc :book-item="getCurrentBookItem(item.bookisbn, item.purcharsenum)" />
+
+                            </span>
                         </div>
                     </div>
                 </div>
@@ -89,7 +47,16 @@
 
 <script setup lang="ts">
 import { ImgUtil } from '../../utils/imgUtil';
-const { getImg } = ImgUtil
+import ShopCart from '../books/service/shopCart';
+import addSubtrsc from '../books/components/addSubtrsc.vue';
+import Books from '../books/service';
+import router from '../../router';
+const { getImg } = ImgUtil;
+const { getShopCartList } = ShopCart.storeRefs;
+const { getCurrentBookItem } = Books;
+const handleToPage = () => {
+    router.back()
+}
 </script>
 
 <style scoped lang="scss">

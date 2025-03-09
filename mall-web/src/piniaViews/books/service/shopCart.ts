@@ -62,6 +62,7 @@ export default class ShopCart {
       bookitem.purcharsenum -= 1;
     }
     ShopCart.store.addOrSubtrBookToShopCart(currentShopCart);
+    Books.updateBookNum(1, bookitem.ISBN);
   }
   static getCurrentShopCart(bookitem: BookInfo) {
     //根据图书id获取购物车
@@ -71,6 +72,7 @@ export default class ShopCart {
     )[0];
     return currentShopCart;
   }
+
   static delBookFrmSc(bookitem: BookInfo) {
     //删除一条数据
     ElMessageBox.confirm("确认要删除这个数据吗?", "提示", {
