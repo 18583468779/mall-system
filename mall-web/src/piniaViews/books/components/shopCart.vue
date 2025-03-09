@@ -1,7 +1,7 @@
 <template>
     <div class="shopcart">
         <div class="content">
-            <div class="content-left">
+            <div class="content-left" @click="handleToPage('shopCartList')">
                 <div class="num">
                     <i v-if="totalCount === 0">
                         <svg t="1741352013792" class="icon" viewBox="0 0 1024 1024" version="1.1"
@@ -74,9 +74,13 @@
 </template>
 
 <script setup lang="ts">
+import router from '../../../router';
 import ShopCart from '../service/shopCart';
 const { totalCount, totalPrice } = ShopCart.refreshShopCartList()
-const { beforeDrop, afterDrop, dropping, ball } = ShopCart
+const { beforeDrop, afterDrop, dropping, ball } = ShopCart;
+const handleToPage = (name: string) => {
+    router.push({ name })
+}
 </script>
 
 <style scoped lang="scss">

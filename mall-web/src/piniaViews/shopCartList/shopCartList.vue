@@ -1,0 +1,237 @@
+<template>
+    <div class="shopcartlist">
+        <div class="header">
+            <i class="back">
+                <svg t="1741411026216" class="icon" viewBox="0 0 1024 1024" version="1.1"
+                    xmlns="http://www.w3.org/2000/svg" p-id="3273" width="32" height="32">
+                    <path
+                        d="M401.066667 512l302.933333 302.933333-59.733333 59.733334L341.333333 571.733333 281.6 512 341.333333 452.266667l302.933334-302.933334 59.733333 59.733334L401.066667 512z"
+                        fill="#444444" p-id="3274"></path>
+                </svg>
+            </i>
+            <input class="check" type="checkbox" />
+            <span class="label">当当网</span>
+        </div>
+        <div class="items">
+            <div class="item">
+                <div class="content">
+                    <input type="checkbox" class="check" />
+                    <div class="pic">
+                        <img :src="getImg('book1.png')" class="bookimg" />
+                    </div>
+                    <div class=" descri">
+                        <div class="book-title">童年</div>
+                        <div class="price">
+                            <span class="curprice">¥89.33</span>
+                            <span class="addsubtrcbktosc">添加删除购物车组件</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="item">
+                <div class="content">
+                    <input type="checkbox" class="check" />
+                    <div class="pic">
+                        <img :src="getImg('book1.png')" class="bookimg" />
+                    </div>
+                    <div class=" descri">
+                        <div class="book-title">童年</div>
+                        <div class="price">
+                            <span class="curprice">¥89.33</span>
+                            <span class="addsubtrcbktosc">添加删除购物车组件</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="item">
+                <div class="content">
+                    <input type="checkbox" class="check" />
+                    <div class="pic">
+                        <img :src="getImg('book1.png')" class="bookimg" />
+                    </div>
+                    <div class=" descri">
+                        <div class="book-title">童年</div>
+                        <div class="price">
+                            <span class="curprice">¥89.33</span>
+                            <span class="addsubtrcbktosc">添加删除购物车组件</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="item">
+                <div class="content">
+                    <input type="checkbox" class="check" />
+                    <div class="pic">
+                        <img :src="getImg('book1.png')" class="bookimg" />
+                    </div>
+                    <div class="descri">
+                        <div class="book-title">童年</div>
+                        <div class="price">
+                            <span class="curprice">¥89.33</span>
+                            <span class="addsubtrcbktosc">添加删除购物车组件</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="cal">
+            <span class="checkall">
+                <input type="checkbox" class="check" />
+                <span class="label">全选</span>
+                <span class="total">合计：
+                    <span class="money">¥987.33</span>
+                </span>
+            </span>
+            <span class="pay">去结算3433.33</span>
+        </div>
+    </div>
+</template>
+
+<script setup lang="ts">
+import { ImgUtil } from '../../utils/imgUtil';
+const { getImg } = ImgUtil
+</script>
+
+<style scoped lang="scss">
+.shopcartlist {
+    padding: 0.13rem;
+
+    .header {
+        position: fixed;
+        width: 5.14rem;
+        height: 0.85rem;
+        display: flex;
+        align-items: center;
+        gap: 0.25rem;
+        z-index: 10;
+
+        .back {
+            font-size: 0.25rem;
+        }
+
+        .label {
+            font-size: 0.25rem;
+        }
+
+        .check {
+            width: 0.33rem;
+            height: 0.22rem;
+            cursor: pointer;
+        }
+    }
+
+    .items {
+        position: absolute;
+        top: 0.86rem;
+        bottom: 0.865rem;
+        display: grid;
+        grid-template-columns: 5.14rem;
+        grid-template-rows: 2.89rem;
+        overflow-y: scroll;
+
+        .item {
+            .content {
+                display: flex;
+                align-items: center;
+
+                .check {
+                    width: 0.33rem;
+                    height: 0.22rem;
+                    cursor: pointer;
+
+                }
+
+                .pic {
+                    width: 1.539rem;
+                    height: 2.16rem;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+
+                    .bookimg {
+                        width: 80%;
+                        height: 70%;
+                    }
+                }
+
+                .descri {
+                    width: 3.21rem;
+                    font-size: 0.23rem;
+
+                    .book-title {
+                        height: 0.8rem;
+                        color: #272727;
+                    }
+
+                    .price {
+
+                        height: 1rem;
+                        color: #ea5340;
+                        display: flex;
+                        align-items: center;
+                        width: 100%;
+                        font-size: 0.2rem;
+
+                        .curprice {
+                            flex: 1
+                        }
+
+                        .addsubtrcbktosc {
+                            flex: 2
+                        }
+
+
+                    }
+                }
+            }
+        }
+    }
+
+    .cal {
+        position: fixed;
+        width: 5.14rem;
+        margin: 0rem 0.13rem;
+        bottom: 0rem;
+        left: 0rem;
+        height: 0.86rem;
+        z-index: 10;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        background-color: #fff;
+        font-size: 0.22rem;
+
+        .checkall {
+            display: flex;
+            align-items: center;
+            gap: 0.1rem;
+
+            .check {
+                width: 0.33rem;
+                height: 0.22rem;
+                cursor: pointer;
+
+            }
+
+            .total {
+                font-weight: 600;
+            }
+        }
+
+        .pay {
+            width: 1.8rem;
+            height: 0.6rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-weight: bolder;
+            border-radius: 0.288rem;
+            margin-right: 0.03rem;
+            background: #ed1611;
+
+        }
+    }
+
+}
+</style>
