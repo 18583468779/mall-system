@@ -102,9 +102,8 @@ const handleToPage = () => {
                 display: flex;
                 align-items: center;
                 background-color: #fff;
-                border: 1px solid #dddddd2a;
                 box-shadow: 0 2px 2px rgba(0, 0, 0, 0.1), 0 2px 2px rgba(0, 0, 0, 0.1);
-                border-radius: 10px;
+                border-radius: 0.1rem;
                 /* 可选：圆角边框 */
                 padding: 0.2rem;
 
