@@ -37,10 +37,10 @@
                 <input type="checkbox" class="check" />
                 <span class="label">全选</span>
                 <span class="total">合计：
-                    <span class="money">¥987.33</span>
+                    <span class="money">¥{{ totalPrice }}</span>
                 </span>
             </span>
-            <span class="pay">去结算3433.33</span>
+            <span class="pay">去结算({{ totalCount }})</span>
         </div>
     </div>
 </template>
@@ -54,6 +54,7 @@ import router from '../../router';
 const { getImg } = ImgUtil;
 const { getShopCartList } = ShopCart.storeRefs;
 const { getCurrentBookItem } = Books;
+const { totalCount, totalPrice } = ShopCart.refreshShopCartList()
 const handleToPage = () => {
     router.back()
 }
@@ -100,6 +101,12 @@ const handleToPage = () => {
             .content {
                 display: flex;
                 align-items: center;
+                background-color: #fff;
+                border: 1px solid #dddddd2a;
+                box-shadow: 0 2px 2px rgba(0, 0, 0, 0.1), 0 2px 2px rgba(0, 0, 0, 0.1);
+                border-radius: 10px;
+                /* 可选：圆角边框 */
+                padding: 0.2rem;
 
                 .check {
                     width: 0.33rem;
