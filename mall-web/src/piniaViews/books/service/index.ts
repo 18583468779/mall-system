@@ -19,7 +19,11 @@ export default class Books {
     const thirdCtgyId = FstToThrdCtgy.store.thirdCtgy.thirdctgyid;
     await Books.store.findBooksByThirdCtgyId(thirdCtgyId, sortField, ascOrdesc);
     // 获取购物车信息
-    await ShopCart.findCurUseShopCartList();
+    const shopCartList = ShopCart.store.getShopCartList;
+    if (!shopCartList || shopCartList.length === 0) {
+      // 第一次进入图书页面，判断购物车列表是否存在（缓存）。存在就不再重新请求
+      await ShopCart.findCurUseShopCartList();
+    }
     Books.uptBookNumWithSCLstNum();
   }
   static updateBookNum(bookNum: number, curbookisbn?: string) {

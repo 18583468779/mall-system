@@ -15,7 +15,16 @@ type BallType = {
 export default class ShopCart {
   static store = shopCart();
   static storeRefs = storeToRefs(ShopCart.store);
+  static isSelectAll = ref(false); // 是否全选购物车
   static ball: Ref<BallType> = ref({ showOrHidden: false });
+  static selectAll() {
+    //选择全部购物车列表
+    const shopList = ShopCart.store.getShopCartList.map((shopCart) => {
+      shopCart.checked = ShopCart.isSelectAll.value;
+      return shopCart;
+    });
+    ShopCart.store.shopCartList = shopList;
+  }
   static async findCurUseShopCartList() {
     await ShopCart.store.findCurUseShopCartList(1);
   }

@@ -9,13 +9,13 @@
                         fill="#444444" p-id="3274"></path>
                 </svg>
             </i>
-            <input class="check" type="checkbox" />
+            <input class="check" type="checkbox" v-model="isSelectAll" @change="selectAll" />
             <span class="label">当当网</span>
         </div>
         <div class="items">
             <div class="item" v-for="(item) in getShopCartList" :key="item.shopcartid">
                 <div class="content">
-                    <input type="checkbox" class="check" />
+                    <input type="checkbox" class="check" v-model="item.checked" />
                     <div class="pic">
                         <img :src="getImg(item.bookpicname)" class="bookimg" />
                     </div>
@@ -52,6 +52,7 @@ import addSubtrsc from '../books/components/addSubtrsc.vue';
 import Books from '../books/service';
 import router from '../../router';
 const { getImg } = ImgUtil;
+const { isSelectAll, selectAll } = ShopCart
 const { getShopCartList } = ShopCart.storeRefs;
 const { getCurrentBookItem } = Books;
 const { totalCount, totalPrice } = ShopCart.refreshShopCartList()
