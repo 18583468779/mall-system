@@ -128,6 +128,7 @@ export default class ShopCart {
       const shopCartList = ShopCart.store.getShopCartList as ShopCartType[];
       if (shopCartList && shopCartList.length > 0) {
         shopCartList.forEach((s) => {
+          if (!s.checked) return;
           total += s.purcharsenum;
         });
       }
@@ -138,6 +139,7 @@ export default class ShopCart {
       const shopCartList = ShopCart.store.getShopCartList as ShopCartType[];
       if (shopCartList && shopCartList.length > 0) {
         shopCartList.forEach((s) => {
+          if (!s.checked) return;
           totalPrice_ += s.purcharsenum * s.bookprice;
         });
       }

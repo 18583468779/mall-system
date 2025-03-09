@@ -12,7 +12,8 @@
             <input class="check" type="checkbox" v-model="isSelectAll" @change="selectAll" />
             <span class="label">当当网</span>
         </div>
-        <div class="items">
+        <div v-if="getShopCartList.length === 0"> 没有商品</div>
+        <div v-else class="items">
             <div class="item" v-for="(item) in getShopCartList" :key="item.shopcartid">
                 <div class="content">
                     <input type="checkbox" class="check" v-model="item.checked" @change="checkEveryCheckBox" />
