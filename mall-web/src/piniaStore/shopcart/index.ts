@@ -20,6 +20,11 @@ export default defineStore("shopCart", {
     },
   },
   actions: {
+    storeShopCartList(shopCartList: ShopCartType[]) {
+      this.shopCartList = shopCartList;
+      storage.set("shopCartList", shopCartList);
+    },
+
     async findCurUseShopCartList(userid: number) {
       // 获取购物车列表
       const res: AxiosResponse<ShopCartType[]> =
@@ -42,6 +47,7 @@ export default defineStore("shopCart", {
     },
     async setShopCart(dbShopCart: ShopCartType) {
       // 设置购物车列表
+      dbShopCart.checked = true; // 默认为选中
       storage.set(
         "shopCartList",
         dbShopCart,
