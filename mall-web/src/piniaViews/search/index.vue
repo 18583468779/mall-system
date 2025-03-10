@@ -21,11 +21,12 @@
                             p-id="5586"></path>
                     </svg>
                 </i>
-                <input type="text" class="search-keyword-input" placeholder="神奇校车" />
+                <input type="text" class="search-keyword-input" placeholder="请输入" @keyup="searchKeywords"
+                    @blur="closeKeywords" />
             </div>
             <span class="searchbtn">搜索</span>
         </div>
-        <div class="autocomplete">
+        <div class="autocomplete" v-show="isOpenAutoComplete">
             <div class="autocomplete-item" v-for="(keyword, index) in keywords" :key="index">
                 <span class="keyword">{{ keyword }}</span>
             </div>
@@ -57,6 +58,8 @@
 
 
 <script setup lang="ts">
+import SearchClass from './service';
+const { isOpenAutoComplete, searchKeywords, closeKeywords } = SearchClass
 const items = ['六年级作业', '大学作业', '小学语文', '六年级作业', '大学作业', '小学语文', '六', '大学作业', '小学语文', '六年级作业', '大学作业', '小学语文', '六', '大学作业', '小学语文', '六年级作业', '大学作业', '小学语文', '六']
 const keywords = ['六年级上册', '六年级同步作业', '六年级+七年级作业', '六年级中册', '六年级下册']
 
