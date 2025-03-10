@@ -25,6 +25,12 @@
             </div>
             <span class="searchbtn">搜索</span>
         </div>
+        <div class="autocomplete">
+            <div class="autocomplete-item" v-for="(keyword, index) in keywords" :key="index">
+                <span class="keyword">{{ keyword }}</span>
+            </div>
+        </div>
+
         <div class="search-history">
             <div class="search-history-header">
                 <span class="historytext">搜索历史</span>
@@ -52,6 +58,7 @@
 
 <script setup lang="ts">
 const items = ['六年级作业', '大学作业', '小学语文', '六年级作业', '大学作业', '小学语文', '六', '大学作业', '小学语文', '六年级作业', '大学作业', '小学语文', '六', '大学作业', '小学语文', '六年级作业', '大学作业', '小学语文', '六']
+const keywords = ['六年级上册', '六年级同步作业', '六年级+七年级作业', '六年级中册', '六年级下册']
 
 </script>
 
@@ -117,6 +124,21 @@ const items = ['六年级作业', '大学作业', '小学语文', '六年级作�
             width: 0.5rem;
             font-weight: bold;
             font-size: 0.25rem;
+        }
+    }
+
+    .autocomplete {
+        position: fixed;
+        width: 5.4rem;
+        height: calc(100% - 0.85rem);
+        background-color: #fff;
+
+        &-item {
+            display: flex;
+            align-items: center;
+            height: 0.5rem;
+            border-bottom: 1px solid #f4f4f4;
+            padding: 0rem 0.15rem;
         }
     }
 
