@@ -27,8 +27,8 @@
             <span class="searchbtn">搜索</span>
         </div>
         <div class="autocomplete" v-show="isOpenAutoComplete">
-            <div class="autocomplete-item" v-for="(keyword, index) in keywords" :key="index">
-                <span class="keyword">{{ keyword }}</span>
+            <div class="autocomplete-item" v-for="(keyword) in keywordList" :key="keyword.id">
+                <span class="keyword">{{ keyword.keyword }}</span>
             </div>
         </div>
 
@@ -60,9 +60,8 @@
 <script setup lang="ts">
 import SearchClass from './service';
 const { isOpenAutoComplete, searchKeywords, closeKeywords, resetKeyword } = SearchClass
-const { keyword } = SearchClass.storeRefs
+const { keyword, keywordList } = SearchClass.storeRefs
 const items = ['六年级作业', '大学作业', '小学语文', '六年级作业', '大学作业', '小学语文', '六', '大学作业', '小学语文', '六年级作业', '大学作业', '小学语文', '六', '大学作业', '小学语文', '六年级作业', '大学作业', '小学语文', '六']
-const keywords = ['六年级上册', '六年级同步作业', '六年级+七年级作业', '六年级中册', '六年级下册']
 
 </script>
 

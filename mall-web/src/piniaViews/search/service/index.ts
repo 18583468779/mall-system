@@ -5,14 +5,15 @@ export default class SearchClass {
   static isOpenAutoComplete = ref(false); // 是否自动补全搜索框
   static store = searchStore();
   static storeRefs = storeToRefs(SearchClass.store);
-  static searchKeywords() {
+  static searchKeywords = debounce(async () => {
     const keyword = SearchClass.getKeywordFrmStore();
     if (!keyword) {
       SearchClass.showOrCloseAutoComplete(false);
     } else {
+      await SearchClass.store.searchKeywords(keyword);
       SearchClass.showOrCloseAutoComplete(true);
     }
-  }
+  }, 400);
   static getKeywordFrmStore() {
     return SearchClass.store.keyword;
   }
@@ -37,4 +38,19 @@ export default class SearchClass {
     }
     SearchClass.showOrCloseAutoComplete(false);
   }
+}
+/**
+ * 防抖
+ *
+ */
+type CommonFunType = (...args: any) => any;
+function debounce<T extends CommonFunType>(fn: T, wait: number = 200): any {
+  let timer: any = 0;
+  return function () {
+    if (timer) window.clearTimeout(timer);
+    timer = window.setTimeout(() => {
+      fn();
+      timer = 0;
+    }, wait);
+  };
 }
