@@ -2,6 +2,7 @@ import { sequelize } from "../../../modules/BaseDao";
 import KeywordModel from "../../../modules/decormodel/keyword";
 import HistoryKeywordModel from "../../../modules/decormodel/historykeyword";
 import { Op } from "sequelize";
+import historyKeywordModel from "../../../modules/decormodel/historykeyword";
 
 class SearchDao {
   static searchDao: SearchDao = new SearchDao();
@@ -23,6 +24,12 @@ class SearchDao {
           [Op.like]: `%${keyword}%`,
         },
       },
+    });
+  }
+  // 获取历史关键字列表
+  getSearchHistoryKeywords() {
+    return historyKeywordModel.findAll({
+      raw: true,
     });
   }
   // 保存历史关键字

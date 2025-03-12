@@ -22,6 +22,10 @@ class SearchService {
   async SearchKeywords(key: string) {
     return await searchDao.searchKeywords(key);
   }
+  // 搜索历史关键字列表
+  async getSearchHistoryKeywords() {
+    return await searchDao.getSearchHistoryKeywords();
+  }
 }
 
 export default SearchService.searchService;

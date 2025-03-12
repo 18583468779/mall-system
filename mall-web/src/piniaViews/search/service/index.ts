@@ -5,6 +5,15 @@ export default class SearchClass {
   static isOpenAutoComplete = ref(false); // 是否自动补全搜索框
   static store = searchStore();
   static storeRefs = storeToRefs(SearchClass.store);
+  static init() {
+    console.log(
+      "this.getHistoryKeywordList",
+      SearchClass.store.getHistoryKeywordList
+    );
+    if (!SearchClass.store.getHistoryKeywordList) {
+      SearchClass.store.getSearchHistoryKeywords();
+    }
+  }
   static searchKeywords = debounce(async () => {
     const keyword = SearchClass.getKeywordFrmStore();
     if (!keyword) {

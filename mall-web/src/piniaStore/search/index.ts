@@ -10,7 +10,7 @@ export default defineStore("searchStore", {
     return {
       keyword: initKeywordVal, // 当前关键字
       keywordList: [] as KeywordType[], // 关键字列表
-      historyKeywordList: [], // 历史关键字列表
+      historyKeywordList: [] as string[], // 历史关键字列表
     };
   },
   getters: {
@@ -45,10 +45,23 @@ export default defineStore("searchStore", {
         this.historyKeywordList = histotyList;
       }
     },
+    // 获取历史关键字列表
+    async getSearchHistoryKeywords() {
+      const result: AxiosResponse<HistoryKeywordType[]> =
+        await SearchApi.getSearchHistoryKeywords();
+      this.historyKeywordList = result.data.map((item) => item.historykeyword);
+      storage.set("historyKeyword", this.historyKeywordList, OPTION.NONE);
+    },
   },
 });
 
 export interface KeywordType {
   id: number;
   keyword: string;
+}
+
+export interface HistoryKeywordType {
+  id: number;
+  historykeyword: string;
+  clickcount: number;
 }

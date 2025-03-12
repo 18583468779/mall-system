@@ -18,4 +18,8 @@ class SearchController {
     const { key } = ctx.params;
     ctx.body = success(await searchService.SearchKeywords(key));
   }
+  @get("/getSearchHistoryKeywords") // 搜索历史关键字列表
+  async getSearchHistoryKeywords(ctx: Context) {
+    ctx.body = success(await searchService.getSearchHistoryKeywords());
+  }
 }

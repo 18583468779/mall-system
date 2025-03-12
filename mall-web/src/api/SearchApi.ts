@@ -11,6 +11,10 @@ class SearchAPI {
       historykeyword,
     });
   }
+  // 获取历史关键字列表
+  getSearchHistoryKeywords() {
+    return request.get(`/searchmodule/getSearchHistoryKeywords`, false);
+  }
 }
 
 export default SearchAPI.api;

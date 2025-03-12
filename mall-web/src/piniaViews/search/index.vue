@@ -77,10 +77,14 @@
 
 
 <script setup lang="ts">
+import { onMounted } from 'vue';
 import SearchClass from './service';
-const { isOpenAutoComplete, searchKeywords, closeKeywords, resetKeyword, searchBookByKey } = SearchClass
+const { isOpenAutoComplete, searchKeywords, closeKeywords, resetKeyword, searchBookByKey, init } = SearchClass
 const { keyword, keywordList, getHistoryKeywordList } = SearchClass.storeRefs
 
+onMounted(() => {
+    init()
+})
 </script>
 
 <style scoped lang="scss">
