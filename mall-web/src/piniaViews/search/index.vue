@@ -64,7 +64,7 @@
                 </i>
             </div>
             <div class="search-discovery-items">
-                <div class="item" v-for="(item, index) in getHistoryKeywordList" :key="index">
+                <div class="item" v-for="(item, index) in geHistoryKeywordObjList" :key="index">
                     <span>{{ item }}</span>
                 </div>
             </div>
@@ -80,7 +80,7 @@
 import { onMounted } from 'vue';
 import SearchClass from './service';
 const { isOpenAutoComplete, searchKeywords, closeKeywords, resetKeyword, searchBookByKey, init } = SearchClass
-const { keyword, keywordList, getHistoryKeywordList } = SearchClass.storeRefs
+const { keyword, keywordList, getHistoryKeywordList, geHistoryKeywordObjList } = SearchClass.storeRefs
 
 onMounted(() => {
     init()

@@ -6,12 +6,11 @@ export default class SearchClass {
   static store = searchStore();
   static storeRefs = storeToRefs(SearchClass.store);
   static init() {
-    console.log(
-      "this.getHistoryKeywordList",
-      SearchClass.store.getHistoryKeywordList
-    );
     if (!SearchClass.store.getHistoryKeywordList) {
       SearchClass.store.getSearchHistoryKeywords();
+    }
+    if (!SearchClass.store.geHistoryKeywordObjList) {
+      SearchClass.store.searchDiscovery();
     }
   }
   static searchKeywords = debounce(async () => {

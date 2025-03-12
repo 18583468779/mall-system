@@ -22,4 +22,8 @@ class SearchController {
   async getSearchHistoryKeywords(ctx: Context) {
     ctx.body = success(await searchService.getSearchHistoryKeywords());
   }
+  @get("/searchDiscovery") // 搜索发现关键字列表
+  async searchDiscovery(ctx: Context) {
+    ctx.body = success(await searchService.searchDiscovery());
+  }
 }

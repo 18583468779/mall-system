@@ -11,6 +11,7 @@ export default defineStore("searchStore", {
       keyword: initKeywordVal, // 当前关键字
       keywordList: [] as KeywordType[], // 关键字列表
       historyKeywordList: [] as string[], // 历史关键字列表
+      historyKeywordObjList: [] as string[], // 搜索发现关键字列表
     };
   },
   getters: {
@@ -21,6 +22,11 @@ export default defineStore("searchStore", {
       return state.historyKeywordList.length > 0
         ? state.historyKeywordList
         : storage.get("historyKeyword");
+    },
+    geHistoryKeywordObjList(state) {
+      return state.historyKeywordObjList.length > 0
+        ? state.historyKeywordObjList
+        : storage.get("historyKeywordObjList");
     },
   },
   actions: {
@@ -51,6 +57,15 @@ export default defineStore("searchStore", {
         await SearchApi.getSearchHistoryKeywords();
       this.historyKeywordList = result.data.map((item) => item.historykeyword);
       storage.set("historyKeyword", this.historyKeywordList, OPTION.NONE);
+    },
+    // 获取搜索关键字列表
+    async searchDiscovery() {
+      const result: AxiosResponse<HistoryKeywordType[]> =
+        await SearchApi.searchDiscovery();
+      this.historyKeywordObjList = result.data.map(
+        (item) => item.historykeyword
+      );
+      storage.set("historyKeywordObjList", this.historyKeywordObjList);
     },
   },
 });

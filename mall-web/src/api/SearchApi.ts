@@ -15,6 +15,10 @@ class SearchAPI {
   getSearchHistoryKeywords() {
     return request.get(`/searchmodule/getSearchHistoryKeywords`, false);
   }
+  // 获取搜索发现列表
+  searchDiscovery() {
+    return request.get(`/searchmodule/searchDiscovery`, false);
+  }
 }
 
 export default SearchAPI.api;

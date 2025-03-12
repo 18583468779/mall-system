@@ -43,6 +43,15 @@ class SearchDao {
     const sql = `update historykeyword set  clickcount = clickcount+1 where historykeyword='${historykeyword}'`;
     return sequelize.query(sql);
   }
+  // 搜索发现降序查询
+  searchDiscovery() {
+    return HistoryKeywordModel.findAll({
+      order: [["clickcount", "desc"]],
+      raw: true,
+      offset: 0,
+      limit: 6,
+    });
+  }
 }
 
 export default SearchDao.searchDao;
