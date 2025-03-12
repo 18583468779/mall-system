@@ -21,7 +21,7 @@ class SearchDao {
       raw: true,
       where: {
         historykeyword: {
-          [Op.like]: `%${keyword}%`,
+          [Op.like]: `${keyword}`,
         },
       },
     });
