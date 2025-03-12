@@ -38,6 +38,11 @@ export default class SearchClass {
     }
     SearchClass.showOrCloseAutoComplete(false);
   }
+  static async searchBookByKey(key: string) {
+    // 根据关键字搜索图书
+    await SearchClass.store.addOrUpdateHistoryKeyword(key);
+    SearchClass.showOrCloseAutoComplete(false);
+  }
 }
 /**
  * 防抖

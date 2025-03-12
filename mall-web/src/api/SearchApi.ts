@@ -6,8 +6,10 @@ class SearchAPI {
   SearchKeywords(key: string) {
     return request.get(`/searchmodule/SearchKeywords/${key}`, false);
   }
-  addOrUpdateHistoryKeyword(key: string) {
-    return request.post(`/searchmodule/addOrUpdateHistoryKeyword}`, false, key);
+  addOrUpdateHistoryKeyword(historykeyword: string) {
+    return request.post(`/searchmodule/addOrUpdateHistoryKeyword`, false, {
+      historykeyword,
+    });
   }
 }
 

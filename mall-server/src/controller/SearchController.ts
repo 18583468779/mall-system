@@ -8,9 +8,9 @@ import searchService from "../modules/search/service/SearchService";
 class SearchController {
   @post("/addOrUpdateHistoryKeyword") // 新增或更新历史关键字
   async addOrUpdateHistoryKeyword(ctx: Context) {
-    const { historyKeyword } = ctx.request.body;
+    const { historykeyword } = ctx.request.body;
     ctx.body = success(
-      await searchService.addOrUpdateHistoryKeyword(historyKeyword)
+      await searchService.addOrUpdateHistoryKeyword(historykeyword)
     );
   }
   @get("/SearchKeywords/:key") // 搜索关键字列表

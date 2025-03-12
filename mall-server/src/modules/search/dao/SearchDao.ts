@@ -19,13 +19,16 @@ class SearchDao {
     return HistoryKeywordModel.findOne({
       raw: true,
       where: {
-        historykeyword: { [Op.like]: `%${keyword}%` },
+        historykeyword: {
+          [Op.like]: `%${keyword}%`,
+        },
       },
     });
   }
   // 保存历史关键字
   saveHistoryKeywords(keyword: string): Promise<[any, any]> {
-    const sql = `insert into historykeyword  (historykeyword,clickcount) values(${keyword},1)`;
+    console.log("keyword", keyword);
+    const sql = `insert into historykeyword  (historykeyword,clickcount) values('${keyword}',1)`;
     return sequelize.query(sql);
   }
   //更新历史关键字点击次数【每次增加1】
