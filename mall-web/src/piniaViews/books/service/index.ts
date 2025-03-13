@@ -1,5 +1,5 @@
 import { storeToRefs } from "pinia";
-import bookStore from "../../../piniaStore/book";
+import bookStore, { Operate } from "../../../piniaStore/book";
 import { FstToThrdCtgy } from "../../ctgy/service";
 import { ref } from "vue";
 import ShopCart from "./shopCart";
@@ -11,6 +11,19 @@ export default class Books {
   static isReadAsc = ref(true); //控制价格升序还是降序图标显示
   static sortField = ref(""); // 排序字段
   static ascOrDesc = ref("desc"); // 降序还是升序排列图书
+
+  static searchBooks() {
+    // 搜索图书
+    const operate = Books.store.getOperate;
+    if (operate === Operate.THRDCTGYID) Books.findBooksByThirdCtgyId();
+    else if (operate === Operate.AUTOCOMPKEYWORD)
+      Books.findBksByAutoCompKeyword();
+  }
+  static findBksByAutoCompKeyword() {
+    // 根据自动补全去搜索图书
+    const autoComKeyword = Books.store.getAutoCompKeyword;
+    console.log("autoComKeyword", autoComKeyword);
+  }
   static async findBooksByThirdCtgyId(
     sortField: string = "originalprice",
     ascOrdesc: string = "asc"

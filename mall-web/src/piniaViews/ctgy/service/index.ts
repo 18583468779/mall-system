@@ -4,9 +4,11 @@ import { ctgyStore } from "../../../piniaStore/ctgy";
 import { storeToRefs } from "pinia";
 import router from "../../../router";
 import Books from "../../books/service";
+import bookStore, { Operate } from "../../../piniaStore/book";
 export class FstToThrdCtgy {
   static store = ctgyStore();
   static storeRefs = storeToRefs(FstToThrdCtgy.store);
+  static bkStore = bookStore();
   static firstCtgyActiveIndex: Ref<number> = ref(0);
   static firstCtgyList: Ref<FirstCtgy[]> = ref([]);
   static secondCtgyList: Ref<SecondCtgy[]> = ref([]);
@@ -53,6 +55,7 @@ export class FstToThrdCtgy {
     FstToThrdCtgy.store.storeThirdCtgyList(secondctgy.thirdctgys);
     FstToThrdCtgy.store.storeSubThirdCtgyList(secondctgy.subThirdctgys);
     FstToThrdCtgy.store.storeIsReadyOpen(secondctgy.isReadyOpen);
+    FstToThrdCtgy.bkStore.storeOperate(Operate.THRDCTGYID);
     router.push({ name: "books" });
   };
   static opOrCollapseInBook = (isOpen: boolean) => {

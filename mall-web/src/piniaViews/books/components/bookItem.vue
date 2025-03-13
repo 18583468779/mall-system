@@ -45,8 +45,8 @@
 import { ImgUtil } from '../../../utils/imgUtil';
 import Books from '../service';
 import addSubtrsc from './addSubtrsc.vue';
-const { findBooksByThirdCtgyId, storeRefs } = Books;
-findBooksByThirdCtgyId();
+const { searchBooks, storeRefs } = Books;
+searchBooks();
 const { bookList } = storeRefs;
 
 </script>
