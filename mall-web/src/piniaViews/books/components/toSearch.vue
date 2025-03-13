@@ -8,7 +8,7 @@
                     fill="#797979" p-id="3433"></path>
             </svg>
         </i>
-        <div class="tosearch">
+        <div class="tosearch" @click="handleToPage">
             <i class="fangfajing">
                 <svg t="1740290903726" class="icon" viewBox="0 0 1024 1024" version="1.1"
                     xmlns="http://www.w3.org/2000/svg" p-id="5585" width="32" height="32">
@@ -52,9 +52,13 @@
 </template>
 
 <script setup lang="ts">
+import router from '../../../router';
 import { FstToThrdCtgy } from '../../ctgy/service';
 const { storeRefs, back } = FstToThrdCtgy;
-const { getThirdCtgy } = storeRefs
+const { getThirdCtgy } = storeRefs;
+const handleToPage = () => {
+    router.push({ name: 'search' })
+} 
 </script>
 
 <style scoped lang="scss">

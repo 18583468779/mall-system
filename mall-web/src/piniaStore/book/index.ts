@@ -3,20 +3,44 @@ import { defineStore } from "pinia";
 import { BookInfo } from "./state";
 import bookApi from "../../api/BookApi";
 import { AxiosResponse } from "axios";
+import storage from "../../utils/goodStorageUtil";
+import searchStore from "../search";
+export enum Operate {
+  INIT = 0,
+  THRDCTGYID = 1,
+  AUTOCOMPKEYWORD = 2,
+}
+type InitStateType = {
+  bookList: BookInfo[];
+  operate: Operate;
+};
+const initState: InitStateType = {
+  bookList: [],
+  operate: Operate.INIT,
+};
+
 export default defineStore("bookstore", {
-  state: () => {
-    return {
-      bookList: [] as BookInfo[],
-    };
-  },
+  state: () => initState,
   getters: {
     getBookList(state) {
       return state.bookList.length > 0
         ? state.bookList
         : goodStorage.get("bookList");
     },
+    getOperate(state) {
+      return state.operate || storage.get("operate");
+    },
+    //add:bookstore访问searchstore
+    getAutoCompKeyword() {
+      return searchStore().getStoreAutoCompKeyword;
+    },
   },
   actions: {
+    storeOperate(operate: Operate) {
+      this.operate = operate;
+      storage.set("operate", this.operate);
+    },
+
     async findBooksByThirdCtgyId(
       thirdCtgyId: number,
       sortField: string,

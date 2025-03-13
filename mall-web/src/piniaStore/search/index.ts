@@ -12,6 +12,7 @@ export default defineStore("searchStore", {
       keywordList: [] as KeywordType[], // 关键字列表
       historyKeywordList: [] as string[], // 历史关键字列表
       historyKeywordObjList: [] as string[], // 搜索发现关键字列表
+      autoCompKeyword: "", // 选中的项
     };
   },
   getters: {
@@ -28,8 +29,18 @@ export default defineStore("searchStore", {
         ? state.historyKeywordObjList
         : storage.get("historyKeywordObjList");
     },
+    getStoreAutoCompKeyword(state) {
+      return state.autoCompKeyword.length > 0
+        ? state.autoCompKeyword
+        : storage.get("autoCompKeyword");
+    },
   },
   actions: {
+    storeAutoCompKeyword(autoCompKeyword: string) {
+      this.autoCompKeyword = autoCompKeyword;
+      storage.set("autoCompKeyword", autoCompKeyword);
+    },
+
     storeKeyword(keyword: string = "") {
       this.keyword = keyword;
     },

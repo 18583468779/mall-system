@@ -1,4 +1,5 @@
 import goodStorage from "good-storage";
+import { Operate } from "../piniaStore/book";
 
 type EleOfArr<T> = T extends Array<infer E> ? E : never;
 const isPlainObject = (val: unknown): val is object =>
@@ -26,6 +27,7 @@ class Storage {
   set(key: string, value: string): any;
   set(key: string, value: object): any;
   set(key: string, value: any): any;
+  set(key: string, value: Operate): any;
   set(key: string, value: any[]): any;
   set(key: string, value: any[], options: OPTION): any;
   set(key: string, value: string, options: OPTION): any;

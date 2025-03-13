@@ -2,9 +2,12 @@ import { ref } from "vue";
 import searchStore, { initKeywordVal } from "../../../piniaStore/search";
 import { storeToRefs } from "pinia";
 import { ElMessage, ElMessageBox } from "element-plus";
+import bookStore, { Operate } from "../../../piniaStore/book";
+import router from "../../../router";
 export default class SearchClass {
   static isOpenAutoComplete = ref(false); // 是否自动补全搜索框
   static store = searchStore();
+  static bkStore = bookStore();
   static storeRefs = storeToRefs(SearchClass.store);
   static init() {
     if (!SearchClass.store.getHistoryKeywordList) {
@@ -51,6 +54,9 @@ export default class SearchClass {
     // 根据关键字搜索图书
     await SearchClass.store.addOrUpdateHistoryKeyword(key);
     SearchClass.showOrCloseAutoComplete(false);
+    SearchClass.bkStore.storeOperate(Operate.AUTOCOMPKEYWORD);
+    SearchClass.store.storeAutoCompKeyword(key);
+    router.push({ name: "books" });
   }
   static deleteHistoryKeywords() {
     ElMessageBox.confirm("确认要删除搜索历史吗?", "Warning", {
