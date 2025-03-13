@@ -1,6 +1,7 @@
 import { ref } from "vue";
 import searchStore, { initKeywordVal } from "../../../piniaStore/search";
 import { storeToRefs } from "pinia";
+import { ElMessage, ElMessageBox } from "element-plus";
 export default class SearchClass {
   static isOpenAutoComplete = ref(false); // 是否自动补全搜索框
   static store = searchStore();
@@ -50,6 +51,21 @@ export default class SearchClass {
     // 根据关键字搜索图书
     await SearchClass.store.addOrUpdateHistoryKeyword(key);
     SearchClass.showOrCloseAutoComplete(false);
+  }
+  static deleteHistoryKeywords() {
+    ElMessageBox.confirm("确认要删除搜索历史吗?", "Warning", {
+      confirmButtonText: "确认",
+      cancelButtonText: "取消",
+      type: "warning",
+    })
+      .then(async () => {
+        await SearchClass.store.deleteHistoryKeywords();
+        ElMessage({
+          type: "success",
+          message: "删除成功",
+        });
+      })
+      .catch(() => {});
   }
 }
 /**

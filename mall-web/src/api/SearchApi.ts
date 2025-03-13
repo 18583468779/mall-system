@@ -19,6 +19,10 @@ class SearchAPI {
   searchDiscovery() {
     return request.get(`/searchmodule/searchDiscovery`, false);
   }
+  // 删除历史数据
+  deleteHistoryKeywords() {
+    return request.post(`/searchmodule/deleteHistoryKeywords`, false);
+  }
 }
 
 export default SearchAPI.api;

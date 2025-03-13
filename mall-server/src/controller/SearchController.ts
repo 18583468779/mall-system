@@ -26,4 +26,8 @@ class SearchController {
   async searchDiscovery(ctx: Context) {
     ctx.body = success(await searchService.searchDiscovery());
   }
+  @post("/deleteHistoryKeywords") // 删除历史关键字列表
+  async deleteHistoryKeywords(ctx: Context) {
+    ctx.body = success(await searchService.deleteHistoryKeywords());
+  }
 }

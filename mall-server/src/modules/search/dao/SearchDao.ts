@@ -34,7 +34,6 @@ class SearchDao {
   }
   // 保存历史关键字
   saveHistoryKeywords(keyword: string): Promise<[any, any]> {
-    console.log("keyword", keyword);
     const sql = `insert into historykeyword  (historykeyword,clickcount) values('${keyword}',1)`;
     return sequelize.query(sql);
   }
@@ -51,6 +50,11 @@ class SearchDao {
       offset: 0,
       limit: 6,
     });
+  }
+  // 删除历史关键字列表
+  deleteHistoryKeywords(): Promise<[any, any]> {
+    const sql = `delete from historykeyword`;
+    return sequelize.query(sql);
   }
 }
 

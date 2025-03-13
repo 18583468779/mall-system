@@ -30,6 +30,10 @@ class SearchService {
   async searchDiscovery() {
     return await searchDao.searchDiscovery();
   }
+  // 删除历史搜索数据表
+  async deleteHistoryKeywords() {
+    return await searchDao.deleteHistoryKeywords();
+  }
 }
 
 export default SearchService.searchService;

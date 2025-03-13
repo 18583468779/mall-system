@@ -67,6 +67,14 @@ export default defineStore("searchStore", {
       );
       storage.set("historyKeywordObjList", this.historyKeywordObjList);
     },
+    // 删除搜索历史
+    async deleteHistoryKeywords() {
+      const result: AxiosResponse<any> =
+        await SearchApi.deleteHistoryKeywords();
+      console.log(111, result);
+      this.historyKeywordList = [];
+      storage.set("historyKeyword", []);
+    },
   },
 });
 
