@@ -17,13 +17,16 @@ export default class Books {
     const operate = Books.store.getOperate;
     if (operate === Operate.THRDCTGYID) Books.findBooksByThirdCtgyId();
     else if (operate === Operate.AUTOCOMPKEYWORD)
-      Books.findBksByAutoCompKeyword();
+      Books.findBooksByAutoCompKeyword();
   }
-  static findBksByAutoCompKeyword() {
-    // 根据自动补全去搜索图书
-    const autoComKeyword = Books.store.getAutoCompKeyword;
-    console.log("autoComKeyword", autoComKeyword);
+
+  static async findBooksByAutoCompKeyword() {
+    const autoCompKeyword = Books.store.getAutoCompKeyword;
+    console.log("autoCompKeyword:", autoCompKeyword);
+    await Books.store.findBooksByAutocompKeyword(autoCompKeyword);
+    Books.shopCartAndUptBkNum();
   }
+
   static async findBooksByThirdCtgyId(
     sortField: string = "originalprice",
     ascOrdesc: string = "asc"
@@ -31,6 +34,9 @@ export default class Books {
     // 根据三级分类查找图书
     const thirdCtgyId = FstToThrdCtgy.store.thirdCtgy.thirdctgyid;
     await Books.store.findBooksByThirdCtgyId(thirdCtgyId, sortField, ascOrdesc);
+    Books.shopCartAndUptBkNum();
+  }
+  static async shopCartAndUptBkNum() {
     // 获取购物车信息
     const shopCartList = ShopCart.store.getShopCartList;
     if (!shopCartList || shopCartList.length === 0) {
@@ -39,6 +45,7 @@ export default class Books {
     }
     Books.uptBookNumWithSCLstNum();
   }
+
   static updateBookNum(bookNum: number, curbookisbn?: string) {
     // 点击新增更新购物车图书数量
     const bookList: BookInfo[] = Books.store.getBookList;

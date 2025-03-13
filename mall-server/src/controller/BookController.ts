@@ -24,4 +24,12 @@ class BookController {
     const res = await bookDao.findBooksAllThirdCtgy(secondctgyid);
     ctx.body = success(res);
   }
+
+  @get("/findBooksByAutoCompKeyword/:autocompkeyword")
+  async findBooksByAutoCompKeyword(ctx: Context) {
+    // 根据二级分类获取全部三级分类
+    const { autocompkeyword } = ctx.params;
+    const res = await bookDao.findBooksByAutoCompKeyword(autocompkeyword);
+    ctx.body = success(res);
+  }
 }

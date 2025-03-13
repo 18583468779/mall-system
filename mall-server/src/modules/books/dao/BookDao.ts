@@ -1,3 +1,4 @@
+import { Op } from "sequelize";
 import BooksModel from "../../../modules/decormodel/books";
 
 class BookDao {
@@ -31,6 +32,20 @@ class BookDao {
       raw: true,
       where: {
         secondctgyid,
+      },
+    });
+  }
+  /**
+   * 根据关键字查找图书
+   *
+   */
+  async findBooksByAutoCompKeyword(autocompkeyword: string) {
+    return await BooksModel.findAll({
+      raw: true,
+      where: {
+        bookname: {
+          [Op.like]: `%${autocompkeyword}%`,
+        },
       },
     });
   }

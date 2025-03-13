@@ -71,6 +71,13 @@ export default defineStore("bookstore", {
       this.bookList = bookList.data;
       goodStorage.set("bookList", this.bookList);
     },
+
+    async findBooksByAutocompKeyword(autoCompKeyword: string) {
+      const bookList: AxiosResponse<BookInfo[]> =
+        await bookApi.findBooksByAutoCompKeyword(autoCompKeyword);
+      this.bookList = bookList.data;
+      storage.set("bookList", bookList.data);
+    },
   },
 });
 

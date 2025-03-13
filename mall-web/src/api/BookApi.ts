@@ -14,6 +14,13 @@ class BookAPI {
       false
     );
   }
+  // 根据关键字模糊查询图书列表
+  findBooksByAutoCompKeyword(autoCompKeyword: string) {
+    return request.get(
+      `/booksmodule/findBooksByAutocompKeyword/${autoCompKeyword}`,
+      false
+    );
+  }
 }
 
 export default BookAPI.api;
