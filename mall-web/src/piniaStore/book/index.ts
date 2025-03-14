@@ -62,10 +62,7 @@ export default defineStore("bookstore", {
         sortField,
         ascOrdesc
       );
-      bookList.data = bookList.data.map((book) => {
-        book.discountprice = toFixed_(book.originalprice * book.discount); //计算折扣价格
-        return book;
-      });
+      calDisCount(bookList.data);
       this.bookList = bookList.data;
       goodStorage.set("bookList", this.bookList);
     },
@@ -74,10 +71,7 @@ export default defineStore("bookstore", {
       const bookList: AxiosResponse<BookInfo[]> = await bookApi.getAllBookList(
         secondCtgyId
       );
-      bookList.data = bookList.data.map((book) => {
-        book.discountprice = toFixed_(book.originalprice * book.discount); //计算折扣价格
-        return book;
-      });
+      calDisCount(bookList.data);
       this.bookList = bookList.data;
       goodStorage.set("bookList", this.bookList);
     },
@@ -85,11 +79,19 @@ export default defineStore("bookstore", {
     async findBooksByAutocompKeyword(autoCompKeyword: string) {
       const bookList: AxiosResponse<BookInfo[]> =
         await bookApi.findBooksByAutoCompKeyword(autoCompKeyword);
+      calDisCount(bookList.data);
       this.bookList = bookList.data;
       storage.set("bookList", bookList.data);
     },
   },
 });
+
+function calDisCount(bookList: BookInfo[]) {
+  bookList = bookList.map((book) => {
+    book.discountprice = toFixed_(book.originalprice * book.discount); //计算折扣价格
+    return book;
+  });
+}
 
 const toFixed_ = (num: number): number => {
   if (num.toString().indexOf(".") !== -1) {

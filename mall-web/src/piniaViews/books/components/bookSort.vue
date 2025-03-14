@@ -43,15 +43,33 @@
     <ul class="autocompsearch_incr" v-show="isAutoComSearch">
         <li>当当发货</li>
         <li>促销</li>
-        <li class="publisher" ref="pblsTabEle">
+        <li class="publisher" ref="pblsTabEle" @click.self="controlPanel()">
             出版社
             <span class="down-or-up-arrow">
                 <i class="iconfont icon-zuoce-xiangshangxiaojiantou"></i>
                 <i class="iconfont icon-zuoce-xiangxiaxiaojiantousvg"></i>
             </span>
-            <div>
-                {{ publisherList }}
+            <div class="publisher-panel" ref="publisherPanelRef">
+                <div class="publisher-panel-items">
+                    <div class="publisher-panel-item" v-for="item in publisherList" :key="item.publishid">
+                        <span>{{ item.publishername }}</span>
+                        <span><i class="iconfont icon-duigou2">
+                                <svg t="1741957758448" class="icon" viewBox="0 0 1024 1024" version="1.1"
+                                    xmlns="http://www.w3.org/2000/svg" p-id="2395" width="16" height="16">
+                                    <path
+                                        d="M939.36 218.912a32 32 0 0 1 45.856 44.672l-538.016 552a32 32 0 0 1-43.776 1.92L63.872 526.048a32 32 0 1 1 41.696-48.544l316.768 271.936L939.36 218.88z"
+                                        fill="#000000" p-id="2396"></path>
+                                </svg>
+                            </i></span>
+                    </div>
+                </div>
+                <div class="confirmOrReset">
+                    <span class="reset">重置</span>
+                    <span class="confirm">搜索</span>
+                </div>
+                <div class="overlay"></div>
             </div>
+
         </li>
         <li>
             作者
@@ -67,10 +85,17 @@
 
 
 <script setup lang="ts">
+import { Ref, ref } from 'vue';
 import Books from '../service';
 const { sortBook, isReadAsc, sortField, isAutoComSearch, init } = Books;
 init();
-const { publisherList } = Books.storeRefs
+const { publisherList } = Books.storeRefs;
+
+const publisherPanelRef: Ref<HTMLBodyElement | undefined> = ref();
+const controlPanel = () => {
+    const publisherPanel = publisherPanelRef.value;
+    publisherPanel!.className = publisherPanel?.className === 'publisher-panel' ? 'publisher-panel-show' : 'publisher-panel'
+}
 </script>
 
 <style scoped lang="scss">
@@ -94,6 +119,64 @@ const { publisherList } = Books.storeRefs
         &.selected {
             color: red;
         }
+    }
+}
+
+.publisher {
+    position: relative;
+
+    .publisher-panel {
+        display: none;
+
+    }
+
+    .publisher-panel-show {
+        top: 0.5rem;
+        position: absolute;
+        width: 5.4rem;
+        left: -2.75rem;
+        background-color: #fff;
+        box-shadow: 1rem 1rem 1rem #ccc;
+        border-top: 1px solid #cccccc63;
+
+        .publisher-panel-items {
+            display: grid;
+            grid-template-columns: 2.6rem 2.2rem;
+        }
+
+        .publisher-panel-item {
+            height: 0.82rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+    }
+
+    .confirmOrReset {
+        border-top: 0.02rem solid #f6f6f6;
+        display: flex;
+        align-items: center;
+        height: 0.8rem;
+        justify-content: space-around;
+
+        .reset,
+        .confirm {
+            text-shadow: 0rem 0rem 0.1rem #777;
+            background-color: #f94836;
+            color: white;
+            padding: 0.03rem 0.12rem;
+        }
+    }
+
+    .overlay {
+        position: absolute;
+        width: 5.4rem;
+        background-color: #777;
+        height: 100vh;
+        opacity: 0.4;
+        z-index: 9999999;
+
     }
 }
 </style>
