@@ -49,6 +49,9 @@
                 <i class="iconfont icon-zuoce-xiangshangxiaojiantou"></i>
                 <i class="iconfont icon-zuoce-xiangxiaxiaojiantousvg"></i>
             </span>
+            <div>
+                {{ publisherList }}
+            </div>
         </li>
         <li>
             作者
@@ -65,8 +68,9 @@
 
 <script setup lang="ts">
 import Books from '../service';
-const { sortBook, isReadAsc, sortField, isAutoComSearch, getOperate } = Books;
-getOperate()
+const { sortBook, isReadAsc, sortField, isAutoComSearch, init } = Books;
+init();
+const { publisherList } = Books.storeRefs
 </script>
 
 <style scoped lang="scss">

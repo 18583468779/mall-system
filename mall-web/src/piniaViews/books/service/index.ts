@@ -13,6 +13,11 @@ export default class Books {
   static sortField = ref(""); // 排序字段
   static ascOrDesc = ref("desc"); // 降序还是升序排列图书
 
+  static init() {
+    Books.getOperate();
+    Books.findPublisersByAutoCompKey();
+  }
+
   static getOperate() {
     Books.isAutoComSearch.value =
       Books.store.getOperate === Operate.AUTOCOMPKEYWORD ? true : false;
@@ -25,7 +30,10 @@ export default class Books {
     else if (operate === Operate.AUTOCOMPKEYWORD)
       Books.findBooksByAutoCompKeyword();
   }
-
+  static async findPublisersByAutoCompKey() {
+    if (Books.store.getOperate === Operate.AUTOCOMPKEYWORD)
+      await Books.store.findPublisersByAutoCompKey();
+  }
   static async findBooksByAutoCompKeyword() {
     const autoCompKeyword = Books.store.getAutoCompKeyword;
     console.log("autoCompKeyword:", autoCompKeyword);

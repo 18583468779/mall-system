@@ -10,12 +10,18 @@ export enum Operate {
   THRDCTGYID = 1,
   AUTOCOMPKEYWORD = 2,
 }
+export interface Publisher {
+  publishid: number;
+  publishername: string;
+}
 type InitStateType = {
   bookList: BookInfo[];
+  publisherList: Publisher[];
   operate: Operate;
 };
 const initState: InitStateType = {
   bookList: [],
+  publisherList: [],
   operate: Operate.INIT,
 };
 
@@ -40,7 +46,11 @@ export default defineStore("bookstore", {
       this.operate = operate;
       storage.set("operate", this.operate);
     },
-
+    async findPublisersByAutoCompKey() {
+      const res: AxiosResponse<Publisher[]> =
+        await bookApi.findPublisersByAutoCompKey(this.getAutoCompKeyword);
+      this.publisherList = res.data;
+    },
     async findBooksByThirdCtgyId(
       thirdCtgyId: number,
       sortField: string,

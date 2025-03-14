@@ -21,6 +21,14 @@ class BookAPI {
       false
     );
   }
+  // 获取图书的出版社信息
+
+  findPublisersByAutoCompKey(autoCompKeyword: string) {
+    return request.get(
+      `/booksmodule/findPublisersByAutoCompKey/${autoCompKeyword}`,
+      false
+    );
+  }
 }
 
 export default BookAPI.api;

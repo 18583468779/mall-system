@@ -32,4 +32,10 @@ class BookController {
     const res = await bookDao.findBooksByAutoCompKeyword(autocompkeyword);
     ctx.body = success(res);
   }
+  @get("/findPublisersByAutoCompKey/:autocompkeyword")
+  async findPublisersByAutoCompKey(ctx: Context) {
+    const { autocompkeyword } = ctx.params;
+    const res = await bookDao.findPublisersByAutoCompKey(autocompkeyword);
+    ctx.body = success(res);
+  }
 }

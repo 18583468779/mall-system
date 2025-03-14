@@ -1,5 +1,6 @@
 import { Op } from "sequelize";
 import BooksModel from "../../../modules/decormodel/books";
+import { getNoReptItem } from "../../../modules/commontypes";
 
 class BookDao {
   static bookDao: BookDao = new BookDao();
@@ -48,6 +49,22 @@ class BookDao {
         },
       },
     });
+  }
+  /**
+   * 根据出版社查找图书
+   *
+   */
+  async findPublisersByAutoCompKey(autocompKeyword: string) {
+    const books = await BooksModel.findAll({
+      raw: true,
+      attributes: ["publishid", "publishername"],
+      where: {
+        bookname: {
+          [Op.like]: `%${autocompKeyword}%`,
+        },
+      },
+    });
+    return getNoReptItem(books, "publishid");
   }
 }
 export default BookDao.bookDao;
