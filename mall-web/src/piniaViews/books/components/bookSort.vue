@@ -39,20 +39,44 @@
             </i>
         </li>
     </ul>
+
+    <ul class="autocompsearch_incr" v-show="isAutoComSearch">
+        <li>当当发货</li>
+        <li>促销</li>
+        <li class="publisher" ref="pblsTabEle">
+            出版社
+            <span class="down-or-up-arrow">
+                <i class="iconfont icon-zuoce-xiangshangxiaojiantou"></i>
+                <i class="iconfont icon-zuoce-xiangxiaxiaojiantousvg"></i>
+            </span>
+        </li>
+        <li>
+            作者
+            <span class="down-or-up-arrow">
+                <i class="iconfont asc icon-zuoce-xiangshangxiaojiantou"></i>
+                <i class="iconfont desc icon-zuoce-xiangxiaxiaojiantousvg"></i>
+                <i class="iconfont desc icon-zuoce-xiangxiaxiaojiantousvg"></i>
+            </span>
+        </li>
+    </ul>
+
 </template>
 
 
 <script setup lang="ts">
 import Books from '../service';
-const { sortBook, isReadAsc, sortField } = Books
+const { sortBook, isReadAsc, sortField, isAutoComSearch, getOperate } = Books;
+getOperate()
 </script>
 
 <style scoped lang="scss">
-.book-sort {
+.book-sort,
+.autocompsearch_incr {
     display: flex;
-    font-size: 0.25rem;
+    font-size: 0.2rem;
     width: 100%;
     margin-left: 0.05rem;
+    margin-top: 0.2rem;
 
     .ascdesc {
         margin-left: 0.05rem;

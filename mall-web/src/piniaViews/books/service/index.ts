@@ -8,9 +8,15 @@ import { BookInfo } from "../../../piniaStore/book/state";
 export default class Books {
   static store = bookStore();
   static storeRefs = storeToRefs(Books.store);
+  static isAutoComSearch = ref(false); // 是否展示二级筛选
   static isReadAsc = ref(true); //控制价格升序还是降序图标显示
   static sortField = ref(""); // 排序字段
   static ascOrDesc = ref("desc"); // 降序还是升序排列图书
+
+  static getOperate() {
+    Books.isAutoComSearch.value =
+      Books.store.getOperate === Operate.AUTOCOMPKEYWORD ? true : false;
+  }
 
   static searchBooks() {
     // 搜索图书
