@@ -1,6 +1,12 @@
-import axios, { AxiosInstance, AxiosPromise, AxiosRequestConfig } from "axios";
+import axios, {
+  AxiosInstance,
+  AxiosPromise,
+  AxiosRequestConfig,
+  InternalAxiosRequestConfig,
+} from "axios";
 import { ElMessage } from "element-plus";
 import conf from "../config";
+import storage from "./goodStorageUtil";
 const SERVER_ERR = "请求服务器的网址错误或网络连接失败";
 interface AxiosRequestConfig_ extends AxiosRequestConfig {
   isMock: boolean;
@@ -39,9 +45,15 @@ class AxiosUtil {
   }
   // 1.请求开始之前的请求拦截器
   beforeReqIntercpt() {
-    this.axiosInstance.interceptors.request.use((request) => {
-      return request;
-    });
+    this.axiosInstance.interceptors.request.use(
+      (request: InternalAxiosRequestConfig<any>) => {
+        const token = storage.get("token");
+        const headers = request.headers;
+        if (!headers.authorization && token)
+          headers.authorization = `Bearer ${token}`;
+        return request;
+      }
+    );
   }
   // 2.数据响应之后的响应拦截器
   beforeResponseIntercpt() {
