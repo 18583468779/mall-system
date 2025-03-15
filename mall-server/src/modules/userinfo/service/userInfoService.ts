@@ -8,7 +8,7 @@ class UserService {
     return userInfo;
   }
   createJWTToken(userInfo: Userinfo) {
-    const token = jwt.sign({ userInfo }, "aiaiai123456X", {
+    const token = jwt.sign({ data: userInfo }, "aiaiai123456X", {
       expiresIn: "30h",
       header: { alg: "HS256", typ: "JWT" },
     });

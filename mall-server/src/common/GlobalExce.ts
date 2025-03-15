@@ -9,7 +9,16 @@ const globalException = async (ctx: Context, next: Koa.Next) => {
     await next();
   } catch (err: any) {
     const errrslt = err as { message: string };
-    ctx.body = fail(`服务器错误：${errrslt.message}`);
+    switch (err.name) {
+      case "JsonWebTokenError":
+        ctx.body = fail("这是个非法的token");
+        break;
+      case "TokenExpiredError":
+        ctx.body = fail("已经过期的token");
+        break;
+      default:
+        ctx.body = fail(`服务器错误：${errrslt.message}`);
+    }
   }
 };
 export default globalException;
