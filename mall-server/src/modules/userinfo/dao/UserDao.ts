@@ -1,6 +1,15 @@
 import { Op, Sequelize } from "sequelize";
 import { model } from "../defmodel";
 class UserDao {
+  static findOneUser(username: string, password: string) {
+    return model.findOne({
+      raw: true,
+      where: {
+        username,
+        password,
+      },
+    });
+  }
   static addUser(userinfo: Userinfo) {
     return model.create(userinfo); // 新增一个用户
   }
@@ -78,6 +87,7 @@ class UserDao {
   }
 }
 export const {
+  findOneUser,
   addUser,
   findAllUser,
   findByProps,
@@ -93,4 +103,5 @@ export type Userinfo = {
   psw: string;
   address: string;
   valid: number;
+  token?: string;
 };
