@@ -5,6 +5,7 @@
 enum Code {
   SUCCESS = 200,
   ERROR = 500,
+  TOKENERROR = 401,
 }
 
 class ResResult {
@@ -12,8 +13,8 @@ class ResResult {
     const code: Code = Code.SUCCESS;
     return { data, msg, code };
   }
-  static fail(msg: any = "") {
-    const code: Code = Code.ERROR;
+  static fail(msg: any = "", isAuth = false) {
+    const code: Code = isAuth ? Code.TOKENERROR : Code.ERROR;
     return { undefined, msg, code };
   }
 }

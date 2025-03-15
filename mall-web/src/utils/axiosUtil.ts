@@ -7,6 +7,7 @@ import axios, {
 import { ElMessage } from "element-plus";
 import conf from "../config";
 import storage from "./goodStorageUtil";
+import router from "../router";
 const SERVER_ERR = "请求服务器的网址错误或网络连接失败";
 interface AxiosRequestConfig_ extends AxiosRequestConfig {
   isMock: boolean;
@@ -64,6 +65,9 @@ class AxiosUtil {
         else if (code === 500) {
           ElMessage.error(`发生了错误${msg}`);
           return;
+        } else if (code === 401) {
+          ElMessage.error(`请登录！${msg}`);
+          return router.push({ name: "login" });
         } else {
           ElMessage.error(`发生了未知错误`);
           return;
