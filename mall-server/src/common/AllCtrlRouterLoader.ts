@@ -5,6 +5,7 @@ import json from "koa-json";
 import Router from "koa-router";
 import globalException from "./GlobalExce";
 import path from "path";
+import koajwt from "koa-jwt";
 
 class AllCtrlRouterLoader {
   app!: Koa;
@@ -20,6 +21,11 @@ class AllCtrlRouterLoader {
     this.app.use(json());
     this.app.use(body());
     this.app.use(globalException);
+    this.app.use(
+      koajwt({ secret: "aiaiai123456X" }).unless({
+        path: [/^\/dang\/userinfomodule\/login/, /^\/dang\/ctgymodule/],
+      })
+    );
   }
   storeRootRouterToCtx() {
     /**
