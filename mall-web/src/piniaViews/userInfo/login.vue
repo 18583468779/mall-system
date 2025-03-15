@@ -2,17 +2,33 @@
     <div class="login">
         <img class="pic" :src="ImgUtil.getImg('userinfo.png')" />
         <div class="username">
-            <input type="text" class="username-input" name="username" placeholder="昵称、手机号、邮箱" />
+            <input type="text" v-model="username" class="username-input" name="username" placeholder="昵称、手机号、邮箱" />
         </div>
         <div class="psw">
-            <input type="text" name="psw" class="psw-input" placeholder="密码" />
+            <input type="password" v-model="password" name="password" class="psw-input" placeholder="密码" />
         </div>
-        <div class="loginbtn">登录</div>
+        <div class="loginbtn" @click="login">登录</div>
     </div>
 </template>
 
 <script setup lang="ts">
-import { ImgUtil } from '../../utils/imgUtil'
+import { reactive, toRefs } from 'vue';
+import { ImgUtil } from '../../utils/imgUtil';
+import userStore from '../../piniaStore/userInfo/index'
+import storage from '../../utils/goodStorageUtil';
+import { useRouter } from 'vue-router';
+const router = useRouter()
+const { username, password } = toRefs(reactive({
+    username: '',
+    password: ''
+}));
+
+const login = async () => {
+    await userStore().login(username.value, password.value);
+    if (storage.get('token')) {
+        router.push({ name: 'ctgy' })
+    }
+}
 </script>
 
 <style scoped lang="scss">
