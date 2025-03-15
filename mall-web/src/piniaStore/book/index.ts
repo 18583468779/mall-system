@@ -46,6 +46,13 @@ export default defineStore("bookstore", {
       this.operate = operate;
       storage.set("operate", this.operate);
     },
+    async findBksByPublishIds(publishids: number[]) {
+      const bookList: AxiosResponse<BookInfo[]> =
+        await bookApi.findBksByPublishIds(publishids);
+      calDisCount(bookList.data);
+      this.bookList = bookList.data;
+      goodStorage.set("bookList", this.bookList);
+    },
     async findPublisersByAutoCompKey() {
       const res: AxiosResponse<Publisher[]> =
         await bookApi.findPublisersByAutoCompKey(this.getAutoCompKeyword);

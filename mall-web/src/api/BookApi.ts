@@ -29,6 +29,10 @@ class BookAPI {
       false
     );
   }
+
+  findBksByPublishIds(publishids: number[]) {
+    return request.post(`/booksmodule/findBksByPublishIds`, false, publishids);
+  }
 }
 
 export default BookAPI.api;

@@ -38,4 +38,10 @@ class BookController {
     const res = await bookDao.findPublisersByAutoCompKey(autocompkeyword);
     ctx.body = success(res);
   }
+  @post("/findBksByPublishIds")
+  async findBksByPublishIds(ctx: Context) {
+    const publishids: number[] = ctx.request.body;
+    const res = await bookDao.findBksByPublishIds(publishids);
+    ctx.body = success(res);
+  }
 }

@@ -65,7 +65,7 @@
                 </div>
                 <div class="confirmOrReset">
                     <span class="reset">重置</span>
-                    <span class="confirm">搜索</span>
+                    <span class="confirm" @click="findBksByPublishIds">搜索</span>
                 </div>
                 <div class="overlay"></div>
             </div>
@@ -85,13 +85,11 @@
 
 
 <script setup lang="ts">
-import { Ref, ref } from 'vue';
 import Books from '../service';
-const { sortBook, isReadAsc, sortField, isAutoComSearch, init } = Books;
+const { sortBook, isReadAsc, sortField, isAutoComSearch, init, findBksByPublishIds, publisherPanelRef } = Books;
 init();
 const { publisherList } = Books.storeRefs;
 
-const publisherPanelRef: Ref<HTMLBodyElement | undefined> = ref();
 const controlPanel = () => {
     const publisherPanel = publisherPanelRef.value;
     publisherPanel!.className = publisherPanel?.className === 'publisher-panel' ? 'publisher-panel-show' : 'publisher-panel'

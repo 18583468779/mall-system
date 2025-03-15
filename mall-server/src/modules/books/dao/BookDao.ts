@@ -51,7 +51,7 @@ class BookDao {
     });
   }
   /**
-   * 根据出版社查找图书
+   * 根据图书名查找图书出版社
    *
    */
   async findPublisersByAutoCompKey(autocompKeyword: string) {
@@ -65,6 +65,20 @@ class BookDao {
       },
     });
     return getNoReptItem(books, "publishid");
+  }
+  /**
+   * 根据出版社id查图书
+   *
+   */
+  async findBksByPublishIds(publishids: number[]) {
+    return await BooksModel.findAll({
+      raw: true,
+      where: {
+        publishid: {
+          [Op.in]: publishids,
+        },
+      },
+    });
   }
 }
 export default BookDao.bookDao;
