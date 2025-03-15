@@ -4,7 +4,7 @@ class UserService {
   static userService: UserService = new UserService();
   async login(username: string, password: string) {
     const userInfo: any = await findOneUser(username, password);
-    this.createJWTToken(userInfo);
+    if (userInfo) this.createJWTToken(userInfo);
     return userInfo;
   }
   createJWTToken(userInfo: Userinfo) {
