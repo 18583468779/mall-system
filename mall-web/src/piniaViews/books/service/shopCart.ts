@@ -6,6 +6,7 @@ import Books from ".";
 import storage from "../../../utils/goodStorageUtil";
 import { ElMessageBox } from "element-plus";
 import { computed, nextTick, Ref, ref } from "vue";
+import router from "../../../router";
 
 type BallType = {
   showOrHidden: boolean;
@@ -36,6 +37,12 @@ export default class ShopCart {
   }
   static async findCurUseShopCartList() {
     await ShopCart.store.findCurUseShopCartList(1);
+  }
+  static addBkToShopCartWrapper(bookitem: BookInfo) {
+    if (storage.get("token")) {
+      //已经登录
+      ShopCart.addBookToShopCart(bookitem);
+    } else router.push("/login");
   }
   static async addBookToShopCart(bookitem: BookInfo) {
     // 添加图书到购物车

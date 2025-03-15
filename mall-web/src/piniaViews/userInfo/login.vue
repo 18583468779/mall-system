@@ -1,6 +1,6 @@
 <template>
     <div class="login">
-        <img class="pic" :src="ImgUtil.getImg('login.png')" />
+        <img class="pic" :src="ImgUtil.getImg('userinfo.png')" />
         <div class="username">
             <input type="text" class="username-input" name="username" placeholder="昵称、手机号、邮箱" />
         </div>
@@ -24,10 +24,6 @@ import { ImgUtil } from '../../utils/imgUtil'
     justify-content: center;
     gap: 0.15rem;
 
-    .pic {
-        width: 1.22rem;
-        height: 1.4rem;
-    }
 
     .username,
     .psw {

@@ -1,7 +1,7 @@
 <template>
     <div class="shopcart">
         <div class="addBtn" v-if="bookItem && bookItem.purcharsenum === 0">
-            <div class="addBtn-inner" @click="addBookToShopCart(bookItem)">添加购物车</div>
+            <div class="addBtn-inner" @click="addBkToShopCartWrapper(bookItem)">添加购物车</div>
         </div>
 
         <div class="shopcart-operate" v-else>
@@ -44,7 +44,7 @@
 import { BookInfo } from '../../../piniaStore/book/state';
 import shopCart from '../../books/service/shopCart';
 
-const { addBookToShopCart, addOrSubtrBookToShopCart, delBookFrmSc } = shopCart
+const { addBkToShopCartWrapper, addOrSubtrBookToShopCart, delBookFrmSc } = shopCart
 type Props = {
     bookItem: BookInfo
 }

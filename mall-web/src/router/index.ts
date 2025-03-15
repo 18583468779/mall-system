@@ -5,6 +5,7 @@ const books = () => import("../piniaViews/books/index.vue");
 const shopCartList = () =>
   import("../piniaViews/shopCartList/shopCartList.vue");
 const search = () => import("../piniaViews/search/index.vue");
+const login = () => import("../piniaViews/userInfo/login.vue");
 
 const routes: RouteRecordRaw[] = [
   {
@@ -26,6 +27,11 @@ const routes: RouteRecordRaw[] = [
     name: "search",
     path: "/search",
     component: search,
+  },
+  {
+    name: "login",
+    path: "/login",
+    component: login,
   },
   {
     name: "ctgy",
