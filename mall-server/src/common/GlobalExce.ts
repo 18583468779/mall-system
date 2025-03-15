@@ -3,9 +3,12 @@
  */
 import Koa, { Context } from "koa";
 import { fail } from "./ResResult";
+import { verifyToken } from "../controller/BaseController";
 const globalException = async (ctx: Context, next: Koa.Next) => {
   console.log("进入到通用异常");
   try {
+    console.log("ctx.url", ctx.url);
+    if (ctx.url.indexOf("login") === -1) verifyToken();
     await next();
   } catch (err: any) {
     const errrslt = err as { message: string };
