@@ -66,7 +66,7 @@ class AxiosUtil {
           ElMessage.error(`发生了错误${msg}`);
           return;
         } else if (code === 401) {
-          ElMessage.error(`请登录！${msg}`);
+          ElMessage.error(`请重新登录！${msg}`);
           return router.push({ name: "login" });
         } else {
           ElMessage.error(`发生了未知错误`);
