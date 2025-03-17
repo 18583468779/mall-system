@@ -23,7 +23,7 @@ export default class Books {
   static handleToPage = (item: BookInfo) => {
     Books.store.storeBookDetailISBN(item.ISBN);
     router.push({
-      path: `/bookdetail`,
+      name: `goods`,
     });
   };
   static getOperate() {

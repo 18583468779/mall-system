@@ -56,17 +56,20 @@ const routes: RouteRecordRaw[] = [
   {
     name: "bookdetail",
     path: "/bookdetail",
-    redirect: "/goods",
     component: BookDetail,
     children: [
+      // {
+      //   path: "", // 默认子路由
+      //   redirect: "goods",
+      // },
       {
         name: "goods",
-        path: "/goods",
+        path: "goods",
         component: Goods,
       },
       {
         name: "evaluate",
-        path: "/evaluate",
+        path: "evaluate",
         component: Evaluate,
       },
     ],

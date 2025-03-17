@@ -11,9 +11,9 @@
         <div class="header-wrapper">
             <span :class="{ 'item-active': index === activeIndex }" @click="switchTab(index)"
                 v-for="(list, index) in navList" :key="list.name">
-                <router-link replace :to="list.path"> {{
-                    list.name
-                }}</router-link>
+                <router-link replace :to="`/bookdetail${list.path}`">
+                    {{ list.name }}
+                </router-link>
             </span>
 
         </div>
