@@ -55,10 +55,10 @@ export default defineStore("bookstore", {
     },
     getBookDetail(state) {
       if (hasProps(state.bookDetail)) {
-        return state.bookDetail;
+        return state.bookDetail as BookInfo;
       } else {
         state.bookDetail = goodStorage.get("bookDetail");
-        return state.bookDetail;
+        return state.bookDetail as BookInfo;
       }
     },
     getISBN(state) {
@@ -80,6 +80,7 @@ export default defineStore("bookstore", {
         this.getISBN
       );
       this.bookDetail = bookDetail.data;
+      calDisCount([this.bookDetail] as BookInfo[]);
       storage.set("bookDetail", bookDetail.data);
     },
     async findBksByPublishIds(publishids: number[]) {
