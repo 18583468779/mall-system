@@ -1,5 +1,5 @@
 <template>
-    <div class="bookitem" v-for="item in bookList" :key="item.ISBN">
+    <div class="bookitem" v-for="item in bookList" :key="item.ISBN" @click="handleToPage(item)">
 
         <img class="book-pic" :src="ImgUtil.getImg(item.bookpicname)" />
         <div class="bookinfo">
@@ -45,7 +45,7 @@
 import { ImgUtil } from '../../../utils/imgUtil';
 import Books from '../service';
 import addSubtrsc from './addSubtrsc.vue';
-const { searchBooks, storeRefs } = Books;
+const { searchBooks, storeRefs, handleToPage } = Books;
 searchBooks();
 const { bookList } = storeRefs;
 

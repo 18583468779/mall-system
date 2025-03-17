@@ -5,6 +5,15 @@ import bookApi from "../../api/BookApi";
 import { AxiosResponse } from "axios";
 import storage from "../../utils/goodStorageUtil";
 import searchStore from "../search";
+
+function hasProps(data: any) {
+  if (Array.isArray(data)) {
+    return Boolean(data.length);
+  } else if (data.constructor === Object) {
+    return Boolean(Object.getOwnPropertyNames(data).length);
+  }
+}
+
 export enum Operate {
   INIT = 0,
   THRDCTGYID = 1,
@@ -17,12 +26,16 @@ export interface Publisher {
 type InitStateType = {
   bookList: BookInfo[];
   publisherList: Publisher[];
+  bookDetail: BookInfo | {};
   operate: Operate;
+  isbn: string;
 };
 const initState: InitStateType = {
   bookList: [],
   publisherList: [],
+  bookDetail: {},
   operate: Operate.INIT,
+  isbn: "",
 };
 
 export default defineStore("bookstore", {
@@ -40,11 +53,34 @@ export default defineStore("bookstore", {
     getAutoCompKeyword() {
       return searchStore().getStoreAutoCompKeyword;
     },
+    getBookDetail(state) {
+      if (hasProps(state.bookDetail)) {
+        return state.bookDetail;
+      } else {
+        state.bookDetail = goodStorage.get("bookDetail");
+        return state.bookDetail;
+      }
+    },
+    getISBN(state) {
+      return state.isbn.length > 0 ? state.isbn : storage.get("isbn");
+    },
   },
   actions: {
     storeOperate(operate: Operate) {
       this.operate = operate;
       storage.set("operate", this.operate);
+    },
+    // 储存图书详情跳转isbn
+    storeBookDetailISBN(isbn: string) {
+      this.isbn = isbn;
+      storage.set("isbn", this.isbn);
+    },
+    async findBooksByISBN() {
+      const bookDetail: AxiosResponse<BookInfo> = await bookApi.findBooksByISBN(
+        this.getISBN
+      );
+      this.bookDetail = bookDetail.data;
+      storage.set("bookDetail", bookDetail.data);
     },
     async findBksByPublishIds(publishids: number[]) {
       const bookList: AxiosResponse<BookInfo[]> =

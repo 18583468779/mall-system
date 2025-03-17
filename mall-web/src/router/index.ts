@@ -8,6 +8,11 @@ const shopCartList = () =>
 const search = () => import("../piniaViews/search/index.vue");
 const login = () => import("../piniaViews/userInfo/login.vue");
 
+const BookDetail = () => import("../piniaViews/bookDetail/index.vue");
+const Goods = () => import("../piniaViews/bookDetail/component/goods.vue");
+const Evaluate = () =>
+  import("../piniaViews/bookDetail/component/evaluate/index.vue");
+
 const routes: RouteRecordRaw[] = [
   {
     name: "ctgy",
@@ -47,8 +52,26 @@ const routes: RouteRecordRaw[] = [
     path: "/",
     component: ctgy,
   },
-];
 
+  {
+    name: "bookdetail",
+    path: "/bookdetail",
+    redirect: "/goods",
+    component: BookDetail,
+    children: [
+      {
+        name: "goods",
+        path: "/goods",
+        component: Goods,
+      },
+      {
+        name: "evaluate",
+        path: "/evaluate",
+        component: Evaluate,
+      },
+    ],
+  },
+];
 const router = createRouter({
   history: createWebHashHistory(import.meta.env.BASE_URL),
   routes,

@@ -5,6 +5,7 @@ import { Ref, ref } from "vue";
 import ShopCart from "./shopCart";
 import { BookInfo } from "../../../piniaStore/book/state";
 import { getValArrOfObj } from "../../../utils/goodStorageUtil";
+import router from "../../../router";
 
 export default class Books {
   static store = bookStore();
@@ -19,7 +20,12 @@ export default class Books {
     Books.getOperate();
     Books.findPublisersByAutoCompKey();
   }
-
+  static handleToPage = (item: BookInfo) => {
+    Books.store.storeBookDetailISBN(item.ISBN);
+    router.push({
+      path: `/bookdetail`,
+    });
+  };
   static getOperate() {
     Books.isAutoComSearch.value =
       Books.store.getOperate === Operate.AUTOCOMPKEYWORD ? true : false;

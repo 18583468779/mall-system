@@ -44,4 +44,11 @@ class BookController {
     const res = await bookDao.findBksByPublishIds(publishids);
     ctx.body = success(res);
   }
+
+  @get("/findBooksByISBN/:ISBN")
+  async findBooksByISBN(ctx: Context) {
+    const { ISBN } = ctx.params;
+    const res = await bookDao.findBooksByISBN(ISBN);
+    ctx.body = success(res);
+  }
 }
