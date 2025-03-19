@@ -1,6 +1,6 @@
 import { storeToRefs } from "pinia";
 import bookStore from "../../../piniaStore/book";
-import { onMounted, onUnmounted, ref } from "vue";
+import { onMounted, onUnmounted, ref, watch } from "vue";
 export default class BookDetailsService {
   static store = bookStore();
   static headerOpacity = ref({ opacity: 0 }); // 头部透明度
@@ -8,7 +8,7 @@ export default class BookDetailsService {
   static storeRefs = storeToRefs(BookDetailsService.store);
   static init() {
     BookDetailsService.initScrollTop();
-    BookDetailsService.findBooksByISBN();
+
     onMounted(() => {
       window.addEventListener("scroll", BookDetailsService.bookScroll);
     });
@@ -16,6 +16,8 @@ export default class BookDetailsService {
     onUnmounted(() => {
       window.removeEventListener("scroll", BookDetailsService.bookScroll);
     });
+
+    BookDetailsService.findBooksByISBN();
   }
 
   static initScrollTop() {

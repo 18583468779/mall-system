@@ -11,8 +11,8 @@
         <div class="header-wrapper">
             <span :class="{ 'item-active': index === activeIndex }" @click="switchTab(index)"
                 v-for="(list, index) in navList" :key="list.name">
-                <router-link replace :to="`/bookdetail${list.path}`">
-                    {{ list.name }}
+                <router-link replace :to="{ name: list.name, params: { from: list.from } }">
+                    {{ list.title }}
                 </router-link>
             </span>
 
@@ -29,19 +29,27 @@ import BooksDetail from '../service/index';
 const { headerOpacity } = BooksDetail;
 const navList = [
     {
-        name: '商品',
+        title: '商品',
+        name: 'goods',
+        from: 'evaluate',
         path: '/goods'
     },
     {
-        name: '详情',
+        title: '详情',
+        name: 'goods',
+        from: 'evaluate',
         path: '/goods'
     },
     {
-        name: '评论',
+        title: '评论',
+        name: 'evaluate',
+        from: 'goods',
         path: '/evaluate'
     },
     {
-        name: '相关',
+        title: '相关',
+        from: 'goods',
+        name: 'evaluate',
         path: '/evaluate'
     }
 ];
