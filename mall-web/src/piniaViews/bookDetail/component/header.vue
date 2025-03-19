@@ -1,5 +1,5 @@
 <template>
-    <div class="header">
+    <div class="header" :style="headerOpacity">
         <span class="left-arrow"><i class="iconfont icon-zuojiantoul" @click="handleBack">
                 <svg t="1742173035753" class="icon" viewBox="0 0 1024 1024" version="1.1"
                     xmlns="http://www.w3.org/2000/svg" p-id="3597" width="16" height="16">
@@ -24,7 +24,9 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import router from '../../../router';
+import BooksDetail from '../service/index';
 
+const { headerOpacity } = BooksDetail;
 const navList = [
     {
         name: '商品',
@@ -59,6 +61,8 @@ const handleBack = () => {
     left: 0rem;
     top: 0rem;
     height: 0.5rem;
+    z-index: 999;
+    background: white;
 
     .left-arrow {
         position: absolute;

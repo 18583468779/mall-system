@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div style="height: 1000px;overflow:scroll">
         <Header />
         <router-view></router-view>
     </div>

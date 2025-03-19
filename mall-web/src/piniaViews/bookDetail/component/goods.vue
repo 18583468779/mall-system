@@ -8,7 +8,7 @@
                     fill="#000000" p-id="3856"></path>
             </svg>
         </i>
-        <div class="pic">
+        <div class="pic" ref="picRef">
             <img class="img" :src="ImgUtil.getImg(getBookDetail.bookpicname)" />
         </div>
         <div class="goods-detail">
@@ -85,9 +85,10 @@
 <script setup lang="ts">
 import BookDetailsService from '../service';
 import { ImgUtil } from '../../../utils/imgUtil';
-const { storeRefs, findBooksByISBN } = BookDetailsService;
+const { storeRefs, init, picRef } = BookDetailsService;
 const { getBookDetail } = storeRefs
-findBooksByISBN()
+init();
+
 </script>
 
 <style scoped lang="scss">
