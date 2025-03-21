@@ -195,3 +195,58 @@ CREATE TABLE `shopcart` (
   PRIMARY KEY (`shopcartid`)
 );
 ```
+
+# 评论表
+
+```
+DROP TABLE IF EXISTS `dangdang`.`evaluate`;
+
+CREATE TABLE `dangdang`.`evaluate` (
+  `evaluateid` INT NOT NULL,
+  `content` VARCHAR(200) NOT NULL,
+  `evaluator` VARCHAR(20) NOT NULL COMMENT '评价人',
+  `isbn` VARCHAR(20) NOT NULL,
+  `headportrait` VARCHAR(30) NOT NULL COMMENT '头像',
+  `givealikenum` INT NOT NULL COMMENT '点赞数',
+  `evaluatedegree` TINYINT(1) NOT NULL COMMENT '好评，差评，中评',
+  `pubdate` DATETIME(6) NULL COMMENT '发表日期',
+  `isanonymous` BOOLEAN NOT NULL COMMENT '是否为匿名用户',
+  PRIMARY KEY (`evaluateid`) USING BTREE,
+  INDEX `fk_evalid` (`evaluateid`) USING BTREE,
+  CONSTRAINT `fk_isbn` FOREIGN KEY (`isbn`) REFERENCES `dangdang`.`books` (`ISBN`) ON DELETE CASCADE
+) COMMENT='评价表';
+
+```
+
+![1742392768139](images/README/1742392768139.png)
+
+# 评论表
+
+```
+CREATE TABLE `dangdang`.`reply` (
+  `replyid` INT NOT NULL AUTO_INCREMENT,
+  `replycontent` VARCHAR(255) NULL,
+  `replydate` DATE NOT NULL,
+  `evalid` INT NOT NULL,
+  `replyor` VARCHAR(20) NOT NULL,
+  PRIMARY KEY (`replyid`) USING BTREE,
+  INDEX `fk_evalid` (`evalid`) USING BTREE,
+  CONSTRAINT `fk_evalid` FOREIGN KEY (`evalid`) REFERENCES `dangdang`.`evaluate` (`evaluateid`) ON DELETE CASCADE
+) COMMENT='回复表';
+```
+
+![1742393147010](images/README/1742393147010.png)
+
+## 使用内连接查询有回复的评论表
+
+
+
+```select
+select * from evaluate e left outer join dangdang.reply r on e.evaluateid=r.evalid where e.isbn='3122312312311';
+```
+
+## 使用左外链接查询有且没有回复的评论表
+
+```
+select * from evaluate e left outer join dangdang.reply r on e.evaluateid=r.evalid where e.isbn='3122312312311';
+```
