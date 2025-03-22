@@ -1,7 +1,7 @@
 <template>
     <div>
         <div class="evaluate-list" ref="evalLstRef">
-            <div class="evaluate-item" v-for="(item, index) in getEvalRplLst" :key="item.evaluteid">
+            <div class="evaluate-item" v-for="(item) in getEvalRplLst" :key="item.evaluteid">
                 <div class="evaluate-item-user">
                     <span class="img-wrapper">
                         <img :src="ImgUtil.getImg(`${item.headportrait}`)" alt="">
@@ -31,9 +31,8 @@
                 </div>
             </div>
         </div>
-        <div class="evaluate-list">
-            <div class="noevaluate">暂无评价
-            </div>
+        <div class="evaluate-list" v-show="getEvalRplLst.length === 0">
+            <div class="noevaluate">暂无评价</div>
         </div>
     </div>
 
@@ -42,7 +41,7 @@
 
 <script setup lang="ts">
 import dayjs from 'dayjs';
-import BookDetailsService, { EvaluateClass } from '../../../service';
+import { EvaluateClass } from '../../../service';
 import { ImgUtil } from '../../../../../utils/imgUtil';
 const { searchEvalRplLst } = EvaluateClass
 const { getEvalRplLst } = EvaluateClass.storeRef;
@@ -56,6 +55,7 @@ searchEvalRplLst();
     width: 4.6rem;
     display: grid;
     gap: 0.5rem;
+    padding-bottom: 1rem;
 
     .evaluate-item {
         display: grid;

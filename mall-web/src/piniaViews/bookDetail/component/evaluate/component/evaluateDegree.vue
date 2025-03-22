@@ -9,9 +9,9 @@
                     <span class="figure-video evaluate">图/视频</span>
                 </div>
                 <div class="ratings">
-                    <span class="goodEvals evaluate">好评<strong>l0</strong></span>
-                    <span class="mediumEvals evaluate">中评<strong>5</strong></span>
-                    <span class="negativeEvals evaluate">差评<strong>0</strong></span>
+                    <span class="goodEvals evaluate">好评<strong>({{ goodEvalNum }})</strong></span>
+                    <span class="mediumEvals evaluate">中评<strong>({{ mediumEvalNum }})</strong></span>
+                    <span class="negativeEvals evaluate">差评<strong>({{ negativeEvalNum }})</strong></span>
                 </div>
             </div>
         </div>
@@ -21,7 +21,8 @@
 </template>
 
 <script setup lang="ts">
-import BookDetailsService from '../../../service';
+import BookDetailsService, { EvaluateClass } from '../../../service';
+const { goodEvalNum, mediumEvalNum, negativeEvalNum } = EvaluateClass
 const { setHeaderOpacity } = BookDetailsService;
 setHeaderOpacity(1);
 

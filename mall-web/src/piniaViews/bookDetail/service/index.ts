@@ -63,19 +63,33 @@ export class EvaluateClass {
     EvaluateClass.negativeEvalNum.value = 0;
   }
   static calEvalDegrees() {
-    // EvaluateClass.restoreEvalNum();
-    // const evalDegrees = getOneItemValuesFrmArr(
-    //   EvaluateClass.store.evalRplLst,
-    //   "evaluatedegree"
-    // );
-    // evalDegrees.forEach((e) => {
-    //   if (e === 1) {
-    //     EvaluateClass.goodEvalNum.value++;
-    //   } else if (e === 2) {
-    //     EvaluateClass.mediumEvalNum.value++;
-    //   } else if (e === 3) {
-    //     EvaluateClass.negativeEvalNum.value++;
-    //   }
-    // });
+    EvaluateClass.restoreEvalNum();
+    const evalDegrees = getOneItemValuesFrmArr(
+      EvaluateClass.store.evalRplLst,
+      "evaluatedegree"
+    );
+    evalDegrees.forEach((e) => {
+      if (e === 1) {
+        EvaluateClass.goodEvalNum.value++;
+      } else if (e === 2) {
+        EvaluateClass.mediumEvalNum.value++;
+      } else if (e === 3) {
+        EvaluateClass.negativeEvalNum.value++;
+      }
+    });
   }
+}
+export type EleOfArr<T> = T extends Array<infer E> ? E : never;
+
+export type ItemType<T extends object[]> = {
+  [K in keyof EleOfArr<T>]: EleOfArr<T>[K];
+};
+export function getOneItemValuesFrmArr<
+  T extends ItemType<T>[],
+  K extends keyof EleOfArr<T>,
+  E = EleOfArr<T>
+>(arr: T, k: K) {
+  return arr.map(({ [k]: v }: E) => {
+    return v;
+  });
 }
