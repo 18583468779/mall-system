@@ -16,7 +16,5 @@ import evaluateDegree from './component/evaluateDegree.vue';
     top: 0.6rem;
     left: 0.4rem;
     width: 4.6rem;
-    display: flex;
-    justify-content: center;
 }
 </style>
