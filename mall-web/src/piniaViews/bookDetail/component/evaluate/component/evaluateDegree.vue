@@ -4,14 +4,17 @@
 
             <div class="evaldegree-wrapper">
                 <div class="more">
-                    <span class="a11 evaluate">全部</span>
+                    <span class="a11 evaluate" @click="showAllEvalRplLst">全部</span>
                     <span class="newest evaluate">最新</span>
                     <span class="figure-video evaluate">图/视频</span>
                 </div>
                 <div class="ratings">
-                    <span class="goodEvals evaluate">好评<strong>({{ goodEvalNum }})</strong></span>
-                    <span class="mediumEvals evaluate">中评<strong>({{ mediumEvalNum }})</strong></span>
-                    <span class="negativeEvals evaluate">差评<strong>({{ negativeEvalNum }})</strong></span>
+                    <span class="goodEvals evaluate" @click="showGoodEvalRplLst">好评<strong>({{ goodEvalNum
+                            }})</strong></span>
+                    <span class="mediumEvals evaluate" @click="showMedEvalRplLst">中评<strong>({{ mediumEvalNum
+                            }})</strong></span>
+                    <span class="negativeEvals evaluate" @click="showNagEvalRplLst">差评<strong>({{ negativeEvalNum
+                            }})</strong></span>
                 </div>
             </div>
         </div>
@@ -22,7 +25,7 @@
 
 <script setup lang="ts">
 import BookDetailsService, { EvaluateClass } from '../../../service';
-const { goodEvalNum, mediumEvalNum, negativeEvalNum } = EvaluateClass
+const { goodEvalNum, mediumEvalNum, negativeEvalNum, showGoodEvalRplLst, showMedEvalRplLst, showNagEvalRplLst, showAllEvalRplLst } = EvaluateClass
 const { setHeaderOpacity } = BookDetailsService;
 setHeaderOpacity(1);
 

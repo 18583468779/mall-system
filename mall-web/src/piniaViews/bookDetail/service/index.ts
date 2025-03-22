@@ -1,7 +1,7 @@
 import { storeToRefs } from "pinia";
 import bookStore from "../../../piniaStore/book";
-import evaluateStore from "../../../piniaStore/evaluate";
-import { onMounted, onUnmounted, ref, watch } from "vue";
+import evaluateStore, { EvalRplLst } from "../../../piniaStore/evaluate";
+import { onMounted, onUnmounted, Ref, ref, watch } from "vue";
 export default class BookDetailsService {
   static store = bookStore();
   static headerOpacity = ref({ opacity: 0 }); // 头部透明度
@@ -53,8 +53,10 @@ export class EvaluateClass {
   static goodEvalNum = ref(0);
   static mediumEvalNum = ref(0);
   static negativeEvalNum = ref(0);
+  static evalRplLst: Ref<EvalRplLst[]> = ref([]); // 保存好中差评列表
   static async searchEvalRplLst() {
     await EvaluateClass.store.findEvalRplLst();
+    EvaluateClass.evalRplLst.value = EvaluateClass.store.evalRplLst;
     EvaluateClass.calEvalDegrees();
   }
   static restoreEvalNum() {
@@ -62,6 +64,30 @@ export class EvaluateClass {
     EvaluateClass.mediumEvalNum.value = 0;
     EvaluateClass.negativeEvalNum.value = 0;
   }
+
+  static getEvalRplLst(evalDegree: number) {
+    const evalRpLst = EvaluateClass.store.evalRplLst;
+    if (evalDegree !== 0) {
+      EvaluateClass.evalRplLst.value = evalRpLst.filter((e) => {
+        return e.evaluatedegree === evalDegree;
+      });
+    } else if (evalDegree === 0) {
+      EvaluateClass.evalRplLst.value = evalRpLst;
+    }
+  }
+  static showAllEvalRplLst() {
+    EvaluateClass.getEvalRplLst(0);
+  }
+  static showGoodEvalRplLst() {
+    EvaluateClass.getEvalRplLst(1);
+  }
+  static showMedEvalRplLst() {
+    EvaluateClass.getEvalRplLst(2);
+  }
+  static showNagEvalRplLst() {
+    EvaluateClass.getEvalRplLst(3);
+  }
+
   static calEvalDegrees() {
     EvaluateClass.restoreEvalNum();
     const evalDegrees = getOneItemValuesFrmArr(

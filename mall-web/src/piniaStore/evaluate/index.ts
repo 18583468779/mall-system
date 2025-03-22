@@ -25,7 +25,7 @@ export default defineStore("evaluateStore", {
   },
 });
 
-type EvalRplLst = {
+export type EvalRplLst = {
   content: string;
   evaluator: string;
   isbn: any;

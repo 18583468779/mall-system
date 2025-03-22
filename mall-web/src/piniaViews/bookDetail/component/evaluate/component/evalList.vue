@@ -1,7 +1,7 @@
 <template>
     <div>
         <div class="evaluate-list" ref="evalLstRef">
-            <div class="evaluate-item" v-for="(item) in getEvalRplLst" :key="item.evaluteid">
+            <div class="evaluate-item" v-for="(item) in evalRplLst" :key="item.evaluteid">
                 <div class="evaluate-item-user">
                     <span class="img-wrapper">
                         <img :src="ImgUtil.getImg(`${item.headportrait}`)" alt="">
@@ -31,7 +31,7 @@
                 </div>
             </div>
         </div>
-        <div class="evaluate-list" v-show="getEvalRplLst.length === 0">
+        <div class="evaluate-list" v-show="evalRplLst.length === 0">
             <div class="noevaluate">暂无评价</div>
         </div>
     </div>
@@ -43,8 +43,7 @@
 import dayjs from 'dayjs';
 import { EvaluateClass } from '../../../service';
 import { ImgUtil } from '../../../../../utils/imgUtil';
-const { searchEvalRplLst } = EvaluateClass
-const { getEvalRplLst } = EvaluateClass.storeRef;
+const { searchEvalRplLst, evalRplLst } = EvaluateClass
 
 searchEvalRplLst();
 
