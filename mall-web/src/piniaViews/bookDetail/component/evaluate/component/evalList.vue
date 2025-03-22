@@ -21,7 +21,7 @@
                     {{ item.content }}
                     <!--和数据表互动回复-->
                     <div class="reply-action">
-                        <span class="date">{{ item.pubdate }}</span>
+                        <span class="date">{{ dayjs(item.pubdate).format('YYYY-MM-DD HH:ss:mm') }}</span>
                         <span class="reply-to-evaluate">
                             <span class="replyinfo">
                                 <span c1ass="reply">回复</span>
@@ -41,6 +41,7 @@
 </template>
 
 <script setup lang="ts">
+import dayjs from 'dayjs';
 import BookDetailsService, { EvaluateClass } from '../../../service';
 import { ImgUtil } from '../../../../../utils/imgUtil';
 const { searchEvalRplLst } = EvaluateClass
@@ -117,6 +118,8 @@ searchEvalRplLst();
             .reply-action {
                 display: flex;
                 align-items: center;
+                margin-top: 0.15rem;
+                color: gray;
 
                 .reply-to-evaluate {
                     flex: 1;
