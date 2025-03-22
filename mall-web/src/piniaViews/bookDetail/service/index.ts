@@ -20,6 +20,9 @@ export default class BookDetailsService {
     BookDetailsService.findBooksByISBN();
   }
 
+  static setHeaderOpacity(opacity: number) {
+    BookDetailsService.headerOpacity.value.opacity = opacity;
+  }
   static initScrollTop() {
     window.pageYOffset = 0;
     document.body.scrollTop = 0;
