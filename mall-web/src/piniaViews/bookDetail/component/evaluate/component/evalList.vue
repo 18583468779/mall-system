@@ -58,6 +58,30 @@
                             </div>
                         </span>
                     </div>
+
+                    <div class="replylst">
+                        <div class="reply" v-for="(rep, index) in showReplylst(item.replies, endRplLstIdx)">
+                            <span class="replyor'">{{ rep.replyor }}：</span>
+                            <span class="reply-content">{{ rep.replycontent }}</span>
+                        </div>
+                        <div class="allreply">
+                            <span v-if="isEmpty(item.replies)">暂无回复</span>
+                            <span v-show="isReadyOpen(item.replies)" @click="foldRplLst(item.replies)">展开</span>
+                        </div>
+
+
+                        <div class="reply" v-show="isReadyCollapse(item.replies)" @click="unfoldRplLst()">
+                            收起
+                            <i>
+                                <svg t="1742711763639" class="icon" viewBox="0 0 1024 1024" version="1.1"
+                                    xmlns="http://www.w3.org/2000/svg" p-id="3660" width="16" height="16">
+                                    <path
+                                        d="M373.412318 205.422751 334.856478 242.886344l277.618102 269.744922L334.856478 782.385917l38.55584 37.458727 316.165428-307.213379L373.412318 205.422751 373.412318 205.422751zM373.412318 205.422751"
+                                        fill="#272636" p-id="3661"></path>
+                                </svg>
+                            </i>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -72,9 +96,10 @@
 <script setup lang="ts">
 import dayjs from 'dayjs';
 import { EvaluateClass } from '../../../service';
+import ReplyClass from '../../../service/reply';
 import { ImgUtil } from '../../../../../utils/imgUtil';
 const { searchEvalRplLst, evalRplLst, cancelReply, reply, cancelRpShowIndx } = EvaluateClass
-
+const { endRplLstIdx, showReplylst, foldRplLst, unfoldRplLst, isReadyCollapse, isEmpty, isReadyOpen } = ReplyClass
 searchEvalRplLst();
 
 </script>
@@ -218,6 +243,30 @@ searchEvalRplLst();
                     }
                 }
             }
+
+
+            .replylst {
+                font-size: 0.2rem;
+                margin-top: 0.2rem;
+                line-height: 0.5rem;
+                width: 4.6rem;
+                background-color: #f6f6ff;
+
+                .reply {
+                    margin-bottom: 0.1rem;
+
+                    .replyor {
+                        color: #526198;
+                    }
+
+                    &-content {
+                        font-family: '楷体';
+                    }
+                }
+
+
+            }
+
         }
     }
 

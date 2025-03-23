@@ -35,6 +35,7 @@ export type EvalRplLst = {
   pubdate: any;
   isanonymous: any;
   evaluateid: any;
+  replies: Array<any>;
 };
 
 type initStateType = {
