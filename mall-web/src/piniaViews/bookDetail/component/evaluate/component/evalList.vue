@@ -51,8 +51,9 @@
                             <div class="reply-panel">
                                 <div class="overlay-before" ref="overlayEle"></div>
                                 <div class="publish_area">
-                                    <textarea class="reply-content" :placeholder="'回复：' + item.evaluator"></textarea>
-                                    <span class="pub1ish">发表</span>
+                                    <textarea class="reply-content" v-model="replycontent"
+                                        :placeholder="'回复：' + item.evaluator"></textarea>
+                                    <span class="publish" @click="addReply($event, item)">发表</span>
                                 </div>
                                 <div class="overlay"></div>
                             </div>
@@ -60,7 +61,7 @@
                     </div>
 
                     <div class="replylst">
-                        <div class="reply" v-for="(rep, index) in showReplylst(item.replies, endRplLstIdx)">
+                        <div class="reply" v-for="(rep) in showReplylst(item.replies, endRplLstIdx)">
                             <span class="replyor'">{{ rep.replyor }}:</span>
                             <span class="reply-content">{{ rep.replycontent }}</span>
                         </div>
@@ -99,7 +100,7 @@ import { EvaluateClass } from '../../../service';
 import ReplyClass from '../../../service/reply';
 import { ImgUtil } from '../../../../../utils/imgUtil';
 const { searchEvalRplLst, evalRplLst, cancelReply, reply, cancelRpShowIndx } = EvaluateClass
-const { endRplLstIdx, showReplylst, foldRplLst, unfoldRplLst, isReadyCollapse, isEmpty, isReadyOpen } = ReplyClass
+const { endRplLstIdx, showReplylst, foldRplLst, unfoldRplLst, isReadyCollapse, isEmpty, isReadyOpen, addReply, replycontent } = ReplyClass
 searchEvalRplLst();
 
 </script>

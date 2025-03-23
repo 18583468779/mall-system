@@ -1,7 +1,32 @@
 import { ref } from "vue";
-
+import evaluateStore from "../../../piniaStore/evaluate";
+import userInfo from "../../../piniaStore/userInfo";
+import { ElMessage } from "element-plus";
 class ReplyClass {
   static endRplLstIdx = ref(2);
+  static store = evaluateStore();
+  static userStore = userInfo();
+  static replycontent = ref(""); //回复的内容
+  static addReply(replyEle: Event, reply: any) {
+    if (ReplyClass.replycontent.value === "") {
+      ElMessage({
+        message: "回复内容不能为空",
+        type: "warning",
+      });
+      return;
+    }
+    const rpl = {
+      replycontent: ReplyClass.replycontent.value,
+      evalid: reply.evaluateid,
+      replyor: ReplyClass.userStore.storeLoginUser.username,
+      strReplyDate: new Date().toLocaleDateString(),
+    };
+    ReplyClass.store.addReply(rpl);
+    const replyPanelEle = replyEle.currentTarget!.parentElement!
+      .parentElement! as HTMLBodyElement;
+    replyPanelEle.className = "reply-panel";
+  }
+
   static showReplylst(rplLst: any[], index: number) {
     return rplLst.slice(0, index);
   }
