@@ -61,7 +61,7 @@
 
                     <div class="replylst">
                         <div class="reply" v-for="(rep, index) in showReplylst(item.replies, endRplLstIdx)">
-                            <span class="replyor'">{{ rep.replyor }}：</span>
+                            <span class="replyor'">{{ rep.replyor }}:</span>
                             <span class="reply-content">{{ rep.replycontent }}</span>
                         </div>
                         <div class="allreply">
