@@ -34,12 +34,14 @@ export type EvalRplLst = {
   evaluatedegree: any;
   pubdate: any;
   isanonymous: any;
-  evaluteid: any;
+  evaluateid: any;
 };
 
 type initStateType = {
   evalRplLst: EvalRplLst[];
+  headAndDegree: boolean;
 };
 const initState: initStateType = {
   evalRplLst: [],
+  headAndDegree: true,
 };

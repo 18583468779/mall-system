@@ -1,5 +1,5 @@
 <template>
-    <div class="evaldegree">
+    <div class="evaldegree" v-show="headAndDegree">
         <div class="evaldegree-wrapper">
 
             <div class="evaldegree-wrapper">
@@ -10,11 +10,11 @@
                 </div>
                 <div class="ratings">
                     <span class="goodEvals evaluate" @click="showGoodEvalRplLst">好评<strong>({{ goodEvalNum
-                            }})</strong></span>
+                    }})</strong></span>
                     <span class="mediumEvals evaluate" @click="showMedEvalRplLst">中评<strong>({{ mediumEvalNum
-                            }})</strong></span>
+                    }})</strong></span>
                     <span class="negativeEvals evaluate" @click="showNagEvalRplLst">差评<strong>({{ negativeEvalNum
-                            }})</strong></span>
+                    }})</strong></span>
                 </div>
             </div>
         </div>
@@ -27,6 +27,7 @@
 import BookDetailsService, { EvaluateClass } from '../../../service';
 const { goodEvalNum, mediumEvalNum, negativeEvalNum, showGoodEvalRplLst, showMedEvalRplLst, showNagEvalRplLst, showAllEvalRplLst } = EvaluateClass
 const { setHeaderOpacity } = BookDetailsService;
+const { headAndDegree } = EvaluateClass.storeRef
 setHeaderOpacity(1);
 
 </script>

@@ -54,10 +54,42 @@ export class EvaluateClass {
   static mediumEvalNum = ref(0);
   static negativeEvalNum = ref(0);
   static evalRplLst: Ref<EvalRplLst[]> = ref([]); // 保存好中差评列表
+  static cancelRpShowIndx = ref(-1); // -1 回复 | 其他 取消回复
   static async searchEvalRplLst() {
     await EvaluateClass.store.findEvalRplLst();
     EvaluateClass.evalRplLst.value = EvaluateClass.store.evalRplLst;
     EvaluateClass.calEvalDegrees();
+  }
+
+  static controllerScroll(scrollMode: string) {
+    // 控制滚动条
+    document.documentElement.style.overflowY = scrollMode;
+    document.body.style.overflowY = scrollMode;
+  }
+
+  static ctrlHeadAndDegree(isShow: boolean) {
+    EvaluateClass.store.headAndDegree = isShow;
+  }
+  // 回复
+  static reply($event: Event, index: number) {
+    EvaluateClass.cancelRpShowIndx.value = index;
+    EvaluateClass.changeClassName($event, "reply-panel-show");
+    EvaluateClass.controllerScroll("hidden");
+    EvaluateClass.ctrlHeadAndDegree(false);
+  }
+
+  // 取消回复
+  static cancelReply($event: Event) {
+    EvaluateClass.cancelRpShowIndx.value = -1;
+    EvaluateClass.changeClassName($event, "reply-panel");
+    EvaluateClass.controllerScroll("scroll");
+    EvaluateClass.ctrlHeadAndDegree(true);
+  }
+
+  static changeClassName($event: Event, className: string) {
+    const rplEle = $event.currentTarget as HTMLBodyElement;
+    const rplPanel = rplEle.parentElement!.nextElementSibling!;
+    rplPanel.className = className;
   }
   static restoreEvalNum() {
     EvaluateClass.goodEvalNum.value = 0;
