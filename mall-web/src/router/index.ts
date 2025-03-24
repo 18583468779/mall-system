@@ -1,6 +1,6 @@
 import { createRouter, createWebHashHistory, RouteRecordRaw } from "vue-router";
 import storage from "../utils/goodStorageUtil";
-
+const home = () => import("../piniaViews/home/index.vue");
 const ctgy = () => import("../piniaViews/ctgy/index.vue");
 const books = () => import("../piniaViews/books/index.vue");
 const shopCartList = () =>
@@ -14,6 +14,15 @@ const Evaluate = () =>
   import("../piniaViews/bookDetail/component/evaluate/index.vue");
 
 const routes: RouteRecordRaw[] = [
+  {
+    path: "/",
+    redirect: "/home",
+  },
+  {
+    name: "home",
+    path: "/home",
+    component: home,
+  },
   {
     name: "ctgy",
     path: "/ctgy",
@@ -46,11 +55,6 @@ const routes: RouteRecordRaw[] = [
         next();
       }
     },
-  },
-  {
-    name: "ctgy",
-    path: "/",
-    component: ctgy,
   },
 
   {
