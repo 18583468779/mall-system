@@ -1,9 +1,42 @@
 import { Op } from "sequelize";
 import BooksModel from "../../../modules/decormodel/books";
 import { getNoReptItem } from "../../../modules/commontypes";
+import PaginationService from "../../../common/PagerService";
 
 class BookDao {
   static bookDao: BookDao = new BookDao();
+
+  /**
+   * 分页查询图书列表
+   * @param page 当前页码
+   * @param pageSize 每页大小
+   * @param sortField 排序字段
+   * @param ascOrDesc 排序方式
+   * @param keyword 关键字筛选
+   */
+  async findBooksByPage(
+    page: number = 1,
+    pageSize: number = 4,
+    sortField: string = "originalprice",
+    ascOrDesc: "asc" | "desc" = "asc",
+    keyword: string = ""
+  ) {
+    const whereCondition: any = {};
+    if (keyword) {
+      whereCondition.bookname = {
+        [Op.like]: `%${keyword}%`,
+      };
+    }
+
+    return PaginationService.paginate({
+      page,
+      pageSize,
+      sortField,
+      ascOrDesc,
+      where: whereCondition,
+      model: BooksModel,
+    });
+  }
   /**
    * @description 根据三级分类id查询图书
    * @param thirdctgyid 三级分类id
