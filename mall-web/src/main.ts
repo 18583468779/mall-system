@@ -7,7 +7,7 @@ import store from "./store/index";
 import router from "./router";
 import "./reset.css";
 import { ImgUtil } from "./utils/imgUtil";
-
+import "../assets/iconfont.css";
 import { createPinia } from "pinia";
 ImgUtil.storageImaList();
 createApp(App)
