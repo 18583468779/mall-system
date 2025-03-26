@@ -87,7 +87,7 @@ export default class ShopCart {
       bookitem.purcharsenum -= 1;
     }
     ShopCart.store.addOrSubtrBookToShopCart(currentShopCart);
-    Books.updateBookNum(1, bookitem.ISBN);
+    Books.updateBookNum(currentShopCart.purcharsenum, bookitem.ISBN); // ✅ 正确参数
   }
   static getCurrentShopCart(bookitem: BookInfo) {
     //根据图书id获取购物车

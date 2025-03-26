@@ -71,6 +71,7 @@
       <h2 class="text-[0.3rem] font-bold mb-[0.2rem]">热销推荐</h2>
       <div class="grid grid-cols-2 gap-[0.15rem]">
         <div
+          @click="handleToPage(product)"
           v-for="product in getAllBookList"
           :key="product.id"
           class="bg-white rounded-[0.1rem] shadow-sm overflow-hidden transition-transform hover:scale-[1.02]"
@@ -90,7 +91,7 @@
             </div>
           </div>
           <div class="p-[0.1rem]">
-            <h3 class="text-[0.24rem] font-medium line-clamp-2 mb-[0.05rem]">
+            <h3 class="text-[0.24rem] font-medium truncate my-[0.15rem]">
               {{ product.BOOKNAME }}
             </h3>
             <div class="flex items-center justify-between">
@@ -103,7 +104,7 @@
                   >¥{{ product.originalprice }}</span
                 >
               </div>
-              <i class="iconfont icon-cart text-red-500 text-[0.3rem]"></i>
+              <span class="text-red-500 text-[0.2rem]">详情</span>
             </div>
           </div>
         </div>
@@ -135,8 +136,10 @@ import footerNav from "../../components/footer.vue";
 import { onMounted, onUnmounted, ref } from "vue";
 import HomeClass from "./service";
 import { ImgUtil } from "../../utils/imgUtil";
+import Books from "../books/service";
 
 const { getBookListByPage, storeRef } = HomeClass;
+const { handleToPage } = Books;
 const { currentPage, getAllBookList, isLoading, hasMore } = storeRef;
 
 const debounce = (fn: Function, delay: number) => {
