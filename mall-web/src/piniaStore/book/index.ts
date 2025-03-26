@@ -34,6 +34,7 @@ type InitStateType = {
   currentPage: number;
   totalPages: number;
   isLoading: boolean;
+  hasMore: boolean;
 };
 const initState: InitStateType = {
   bookList: [],
@@ -45,6 +46,7 @@ const initState: InitStateType = {
   currentPage: 1,
   totalPages: 1,
   isLoading: false,
+  hasMore: true,
 };
 
 export default defineStore("bookstore", {
@@ -81,8 +83,28 @@ export default defineStore("bookstore", {
   },
   actions: {
     async getBookListByPage(page = 1, pageSize = 4) {
-      const allBookList = await bookApi.getBookListByPage(page, pageSize);
-      storage.set("allBookList", allBookList.data.data);
+      try {
+        this.isLoading = true;
+        const response = await bookApi.getBookListByPage(page, pageSize);
+
+        // 如果是第一页则重置数据，否则追加数据
+        if (page === 1) {
+          this.allBookList = response.data.data;
+        } else {
+          this.allBookList = [...this.allBookList, ...response.data.data];
+        }
+
+        // 更新分页信息（假设接口返回总页数）
+        this.currentPage = page;
+        this.totalPages = response.data.totalPages;
+        this.hasMore = page < response.data.totalPages;
+
+        storage.set("allBookList", this.allBookList);
+      } catch (error) {
+        console.error("Failed to load books:", error);
+      } finally {
+        this.isLoading = false;
+      }
     },
     storeOperate(operate: Operate) {
       this.operate = operate;

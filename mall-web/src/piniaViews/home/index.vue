@@ -109,7 +109,19 @@
         </div>
       </div>
     </main>
-
+    <!-- 加载状态提示 -->
+    <div
+      v-if="isLoading"
+      class="py-[0.2rem] text-center text-[0.24rem] text-gray-500"
+    >
+      加载中...
+    </div>
+    <div
+      v-if="!hasMore"
+      class="py-[0.2rem] text-center text-[0.24rem] text-gray-500"
+    >
+      没有更多商品了~
+    </div>
     <!-- 页脚适配 -->
     <footer class="py-[0.3rem] text-center text-[0.2rem] text-gray-500">
       <p>© 2025 E-Shop 版权所有</p>
@@ -120,14 +132,48 @@
 </template>
 <script setup lang="ts">
 import footerNav from "../../components/footer.vue";
-import { ref } from "vue";
+import { onMounted, onUnmounted, ref } from "vue";
 import HomeClass from "./service";
 import { ImgUtil } from "../../utils/imgUtil";
 
 const { getBookListByPage, storeRef } = HomeClass;
-getBookListByPage();
+const { currentPage, getAllBookList, isLoading, hasMore } = storeRef;
 
-const { getAllBookList } = storeRef;
+const debounce = (fn: Function, delay: number) => {
+  let timeoutId: any;
+  return (...args: any[]) => {
+    clearTimeout(timeoutId);
+    timeoutId = setTimeout(() => fn(...args), delay);
+  };
+};
+
+const checkScroll = () => {
+  const { scrollTop, scrollHeight, clientHeight } = document.documentElement;
+  // 滚动到底部100px内触发加载
+  if (
+    scrollHeight - (scrollTop + clientHeight) < 100 &&
+    !isLoading.value &&
+    hasMore.value
+  ) {
+    loadMore();
+  }
+};
+
+const debouncedCheckScroll = debounce(checkScroll, 200);
+
+const loadMore = () => {
+  const nextPage = currentPage.value + 1;
+  getBookListByPage(nextPage);
+};
+
+onMounted(() => {
+  getBookListByPage();
+  window.addEventListener("scroll", debouncedCheckScroll);
+});
+
+onUnmounted(() => {
+  window.removeEventListener("scroll", debouncedCheckScroll);
+});
 
 interface Category {
   id: number;
