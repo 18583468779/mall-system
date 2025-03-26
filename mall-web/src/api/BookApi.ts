@@ -2,6 +2,14 @@ import request from "../utils/axiosUtil";
 
 class BookAPI {
   static api: BookAPI = new BookAPI();
+
+  getBookListByPage(page: number, pageSize: number) {
+    return request.post(`/booksmodule/findBooksByPage`, false, {
+      page,
+      pageSize,
+    });
+  }
+
   getBookList(thirdCtgyId: number, sortField: string, ascOrdesc: string) {
     return request.get(
       `/booksmodule/findBooksByThirdCtgyId/${thirdCtgyId}/${sortField}/${ascOrdesc}`,

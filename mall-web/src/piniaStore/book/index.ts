@@ -25,22 +25,36 @@ export interface Publisher {
 }
 type InitStateType = {
   bookList: BookInfo[];
+  allBookList: BookInfo[];
   publisherList: Publisher[];
   bookDetail: BookInfo | {};
   operate: Operate;
   isbn: string;
+  // 新增分页状态
+  currentPage: number;
+  totalPages: number;
+  isLoading: boolean;
 };
 const initState: InitStateType = {
   bookList: [],
+  allBookList: [],
   publisherList: [],
   bookDetail: {},
   operate: Operate.INIT,
   isbn: "",
+  currentPage: 1,
+  totalPages: 1,
+  isLoading: false,
 };
 
 export default defineStore("bookstore", {
   state: () => initState,
   getters: {
+    getAllBookList(state) {
+      return state.allBookList.length > 0
+        ? state.allBookList
+        : goodStorage.get("allBookList");
+    },
     getBookList(state) {
       return state.bookList.length > 0
         ? state.bookList
@@ -66,6 +80,10 @@ export default defineStore("bookstore", {
     },
   },
   actions: {
+    async getBookListByPage(page = 1, pageSize = 4) {
+      const allBookList = await bookApi.getBookListByPage(page, pageSize);
+      storage.set("allBookList", allBookList.data.data);
+    },
     storeOperate(operate: Operate) {
       this.operate = operate;
       storage.set("operate", this.operate);
