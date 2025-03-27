@@ -3,6 +3,7 @@ import storage from "../utils/goodStorageUtil";
 const home = () => import("../piniaViews/home/index.vue");
 const ctgy = () => import("../piniaViews/ctgy/index.vue");
 const books = () => import("../piniaViews/books/index.vue");
+const order = () => import("../piniaViews/order/index.vue");
 const shopCartList = () =>
   import("../piniaViews/shopCartList/shopCartList.vue");
 const search = () => import("../piniaViews/search/index.vue");
@@ -32,6 +33,11 @@ const routes: RouteRecordRaw[] = [
     name: "books",
     path: "/books",
     component: books,
+  },
+  {
+    name: "order",
+    path: "/order",
+    component: order,
   },
   {
     name: "shopCartList",

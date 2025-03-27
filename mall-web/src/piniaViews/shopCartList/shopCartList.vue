@@ -65,7 +65,7 @@
           <span class="money">¥{{ totalPrice }}</span>
         </span>
       </span>
-      <span class="pay">去结算({{ totalCount }})</span>
+      <span class="pay" @click="handleToOrder">去结算({{ totalCount }})</span>
     </div>
   </div>
 </template>
@@ -83,6 +83,9 @@ const { getCurrentBookItem } = Books;
 const { totalCount, totalPrice } = ShopCart.refreshShopCartList();
 const handleToPage = () => {
   router.back();
+};
+const handleToOrder = () => {
+  router.push({ name: "order" });
 };
 </script>
 
