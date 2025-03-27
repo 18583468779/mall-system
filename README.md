@@ -239,8 +239,6 @@ CREATE TABLE `dangdang`.`reply` (
 
 ## 使用内连接查询有回复的评论表
 
-
-
 ```select
 select * from evaluate e left outer join dangdang.reply r on e.evaluateid=r.evalid where e.isbn='3122312312311';
 ```
@@ -249,4 +247,32 @@ select * from evaluate e left outer join dangdang.reply r on e.evaluateid=r.eval
 
 ```
 select * from evaluate e left outer join dangdang.reply r on e.evaluateid=r.evalid where e.isbn='3122312312311';
+```
+
+
+## 订单表
+
+```
+CREATE TABLE orderinfo (
+  orderid INT NOT NULL AUTO_INCREMENT COMMENT 'id',
+  ordertime DATETIME NULL DEFAULT NULL COMMENT '订单时间',
+  customerid INT NULL DEFAULT NULL COMMENT '客户id',
+  orderstatus TINYINT NULL DEFAULT NULL COMMENT '订单状态',
+  PRIMARY KEY (orderid) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='订单信息表';
+```
+
+## 订单详情表
+
+```
+CREATE TABLE orderdetail (
+  orderdetailid INT NOT NULL AUTO_INCREMENT COMMENT '订单详情id',
+  bookname VARCHAR(50) NOT NULL COMMENT '图书名',
+  bookprice DOUBLE(10, 2) NOT NULL COMMENT '图书价格',
+  bookpicname VARCHAR(20) NOT NULL COMMENT '图书图片名',
+  orderid INT NOT NULL COMMENT '外键订单id',
+  purcharsenum INT NOT NULL COMMENT '图书数量',
+  PRIMARY KEY (orderdetailid) USING BTREE,
+  CONSTRAINT fk_orderid FOREIGN KEY (orderid) REFERENCES orderinfo (orderid) ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='订单详情表';
 ```
