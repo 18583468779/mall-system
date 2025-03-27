@@ -1,5 +1,9 @@
 <template>
-  <div class="min-h-full bg-gray-50">
+  <div class="min-h-full bg-white">
+    <!-- 返回按钮 -->
+    <div class="z-10 px-[0.2rem] pt-[0.2rem] text-[0.3rem]">
+      <el-icon @click="goBack"><ArrowLeftBold /></el-icon>
+    </div>
     <!-- 地址选择 -->
     <div class="px-[0.32rem] py-[0.24rem] bg-white">
       <div class="flex items-center justify-between">
@@ -49,48 +53,79 @@
     <!-- 商品列表 -->
     <div class="px-[0.32rem] py-[0.24rem] bg-white mt-[0.16rem]">
       <div class="text-[0.16rem] font-medium text-gray-800 mb-[0.16rem]">
-        商品信息
+        商品信息（共{{ goodsList.length }}件）
       </div>
-      <div class="flex overflow-x-auto custom-scrollbar">
-        <div class="min-w-[1.8rem] mx-[0.08rem]">
-          <div class="bg-white rounded-[0.08rem] shadow-sm">
-            <img
-              src="https://picsum.photos/200/300"
-              alt="书籍封面"
-              class="w-full h-[1.8rem] object-cover"
-            />
-            <div class="p-[0.1rem]">
-              <div
-                class="text-[0.14rem] font-medium text-gray-800 line-clamp-2 mb-[0.05rem]"
-              >
-                JavaScript高级程序设计（第4版）
+
+      <div class="relative group">
+        <div
+          ref="swiperContainer"
+          class="flex overflow-x-auto snap-x snap-mandatory scroll-smooth custom-scrollbar"
+          @scroll.passive="handleScroll"
+        >
+          <div
+            v-for="item in goodsList"
+            :key="item.id"
+            class="flex-shrink-0 w-[2.6rem] mx-[0.08rem] snap-start"
+          >
+            <div class="bg-white rounded-[0.08rem] shadow-sm overflow-hidden">
+              <div class="relative h-[1.8rem]">
+                <img
+                  :src="item.image"
+                  alt="书籍封面"
+                  class="w-full h-full object-cover"
+                />
+                <div
+                  class="absolute bottom-1 right-1 px-[0.08rem] py-[0.04rem] bg-black/50 text-white text-[0.12rem] rounded-[0.04rem]"
+                >
+                  x{{ item.quantity }}
+                </div>
               </div>
-              <div class="flex items-center justify-between">
-                <div class="text-[0.13rem] text-gray-600">¥79.00</div>
-                <div class="text-[0.13rem] text-gray-600">x1</div>
+              <div class="p-[0.1rem]">
+                <div
+                  class="text-[0.14rem] font-medium text-gray-800 line-clamp-2 mb-[0.05rem]"
+                >
+                  {{ item.name }}
+                </div>
+                <div class="flex items-center justify-between">
+                  <div class="text-[0.13rem] text-red-500">
+                    ¥{{ item.price }}
+                  </div>
+                  <div class="text-[0.13rem] text-gray-600">
+                    小计：¥{{ item.total }}
+                  </div>
+                </div>
               </div>
             </div>
           </div>
         </div>
-        <div class="min-w-[1.8rem] mx-[0.08rem]">
-          <div class="bg-white rounded-[0.08rem] shadow-sm">
-            <img
-              src="https://picsum.photos/200/301"
-              alt="书籍封面"
-              class="w-full h-[1.8rem] object-cover"
-            />
-            <div class="p-[0.1rem]">
-              <div
-                class="text-[0.14rem] font-medium text-gray-800 line-clamp-2 mb-[0.05rem]"
-              >
-                Vue 3 实战项目开发指南
-              </div>
-              <div class="flex items-center justify-between">
-                <div class="text-[0.13rem] text-gray-600">¥89.00</div>
-                <div class="text-[0.13rem] text-gray-600">x2</div>
-              </div>
-            </div>
-          </div>
+
+        <!-- 导航箭头 -->
+        <button
+          v-show="showPrevButton"
+          @click="scrollTo('prev')"
+          class="absolute left-0 top-1/2 -translate-y-1/2 w-[0.32rem] h-[0.32rem] rounded-full flex items-center justify-center backdrop-blur-sm transition-opacity opacity-0 group-hover:opacity-100"
+        >
+          <el-icon><ArrowLeftBold /></el-icon>
+        </button>
+        <button
+          v-show="showNextButton"
+          @click="scrollTo('next')"
+          class="absolute right-0 top-1/2 -translate-y-1/2 w-[0.32rem] h-[0.32rem] b shadow-md rounded-full flex items-center justify-center backdrop-blur-sm transition-opacity opacity-0 group-hover:opacity-100"
+        >
+          <el-icon><ArrowRightBold /></el-icon>
+        </button>
+
+        <!-- 分页指示器 -->
+        <div
+          v-if="totalPages > 1"
+          class="flex justify-center space-x-[0.06rem] mt-[0.16rem]"
+        >
+          <div
+            v-for="page in totalPages"
+            :key="page"
+            class="w-[0.12rem] h-[0.12rem] rounded-full transition-colors"
+            :class="currentPage === page ? 'bg-gray-800' : 'bg-gray-300'"
+          ></div>
         </div>
       </div>
     </div>
@@ -162,38 +197,114 @@
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent, ref } from "vue";
+<script lang="ts" setup>
+import { ref, computed, onMounted } from "vue";
+import { useRouter } from "vue-router";
+const paymentMethod = ref<"alipay" | "wechat">("alipay");
+interface GoodsItem {
+  id: number;
+  name: string;
+  image: string;
+  price: number;
+  quantity: number;
+  total: number;
+}
 
-export default defineComponent({
-  name: "ConfirmOrder",
-  setup() {
-    // 支付方式
-    const paymentMethod = ref<"alipay" | "wechat">("alipay");
+const router = useRouter();
+const swiperContainer = ref<HTMLElement>();
+const currentPage = ref(1);
+const showPrevButton = ref(false);
+const showNextButton = ref(true);
 
-    // 改变支付方式
-    const changePaymentMethod = (method: "alipay" | "wechat") => {
-      paymentMethod.value = method;
-    };
-
-    // 跳转到地址列表
-    const goToAddressList = () => {
-      console.log("跳转到地址列表");
-    };
-
-    // 提交订单
-    const submitOrder = () => {
-      console.log("提交订单");
-    };
-
-    return {
-      paymentMethod,
-      changePaymentMethod,
-      goToAddressList,
-      submitOrder,
-    };
+// 模拟数据
+const goodsList = ref<GoodsItem[]>([
+  {
+    id: 1,
+    name: "JavaScript高级程序设计（第4版）",
+    image: "https://picsum.photos/200/300",
+    price: 79.0,
+    quantity: 1,
+    total: 79.0,
   },
+  {
+    id: 2,
+    name: "Vue 3 实战项目开发指南",
+    image: "https://picsum.photos/200/301",
+    price: 89.0,
+    quantity: 2,
+    total: 178.0,
+  },
+  {
+    id: 3,
+    name: "JavaScript高级程序设计（第4版）",
+    image: "https://picsum.photos/200/300",
+    price: 79.0,
+    quantity: 1,
+    total: 79.0,
+  },
+  // 添加更多测试数据...
+]);
+
+// 计算总页数
+const totalPages = computed(() => {
+  if (!swiperContainer.value) return 0;
+  const containerWidth = swiperContainer.value.offsetWidth;
+  const itemWidth = 2.6; // rem单位
+  return Math.ceil(
+    goodsList.value.length / Math.floor(containerWidth / (itemWidth * 100))
+  );
 });
+
+// 滚动处理
+const handleScroll = () => {
+  if (!swiperContainer.value) return;
+
+  const { scrollLeft, scrollWidth, clientWidth } = swiperContainer.value;
+  showPrevButton.value = scrollLeft > 0;
+  showNextButton.value = scrollLeft + clientWidth < scrollWidth;
+
+  // 计算当前页码
+  currentPage.value = Math.round(scrollLeft / clientWidth) + 1;
+};
+
+// 滚动控制
+const scrollTo = (direction: "prev" | "next") => {
+  if (!swiperContainer.value) return;
+
+  const scrollAmount = swiperContainer.value.clientWidth * 0.8;
+  const newScrollLeft =
+    direction === "next"
+      ? swiperContainer.value.scrollLeft + scrollAmount
+      : swiperContainer.value.scrollLeft - scrollAmount;
+
+  swiperContainer.value.scrollTo({
+    left: newScrollLeft,
+    behavior: "smooth",
+  });
+};
+
+// 返回上一页
+const goBack = () => {
+  router.go(-1);
+};
+
+onMounted(() => {
+  handleScroll();
+});
+// 改变支付方式
+const changePaymentMethod = (method: "alipay" | "wechat") => {
+  paymentMethod.value = method;
+};
+
+// 跳转到地址列表
+const goToAddressList = () => {
+  console.log("跳转到地址列表");
+};
+
+// 提交订单
+const submitOrder = () => {
+  console.log("提交订单");
+};
 </script>
 
 <style>
@@ -212,5 +323,21 @@ export default defineComponent({
   box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.1);
   border-radius: 10px;
   background: rgba(0, 0, 0, 0.1);
+}
+.custom-scrollbar {
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+  height: 4px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  @apply bg-gray-300 rounded-full;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  @apply bg-gray-100 rounded-full;
 }
 </style>

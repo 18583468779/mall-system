@@ -11,6 +11,7 @@
     "lint": "eslint --ext .ts --ext .vue --ext js src/"
   },
   "dependencies": {
+    "@element-plus/icons-vue": "^2.3.1",
     "@types/good-storage": "^1.1.2",
     "axios": "^1.7.9",
     "dotenv": "^16.4.7",
