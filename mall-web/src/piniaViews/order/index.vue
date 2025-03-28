@@ -181,14 +181,14 @@
 
     <!-- 底部结算栏 -->
     <div
-      class="fixed bottom-0 left-0 right-0 p-[0.16rem] bg-white shadow-t-lg flex items-center justify-between"
+      class="fixed bottom-0 left-0 right-0 p-[0.16rem] bg-white rounded-t-[0.2rem] shadow-[0_-0.1rem_0.3rem_rgba(0,0,0,0.1)] flex items-center justify-between"
     >
-      <div>
+      <div class="space-y-[0.08rem]">
         <div class="text-[0.14rem] text-gray-600">实付金额</div>
-        <div class="text-[0.2rem] font-bold text-red-500">¥197.00</div>
+        <div class="text-[0.24rem] font-bold text-red-500">¥197.00</div>
       </div>
       <button
-        class="px-[0.3rem] py-[0.12rem] bg-green-500 text-white rounded-[0.32rem] text-[0.14rem] font-medium"
+        class="px-[0.4rem] py-[0.16rem] border-none bg-gradient-to-r from-red-500 to-red-600 text-white rounded-[0.4rem] text-[0.16rem] font-medium shadow-[0_0.05rem_0.15rem_rgba(255,69,58,0.3)]"
         @click="submitOrder"
       >
         提交订单
