@@ -1,14 +1,26 @@
 @font-face {
   font-family: "iconfont"; /* Project id  */
-  src: url("./iconfont.ttf") format("truetype");
+  src: url("iconfont.ttf?t=1743168244774") format("truetype");
 }
 
 .iconfont {
   font-family: "iconfont" !important;
-  font-size: 16px;
+  font-size: 0.3rem;
   font-style: normal;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-zhifu-_weixinzhifu:before {
+  content: "\e6b3";
+}
+
+.icon-xuanzhong:before {
+  content: "\e52f";
+}
+
+.icon-alipay-active:before {
+  content: "\e516";
 }
 
 .icon-daizhifu:before {

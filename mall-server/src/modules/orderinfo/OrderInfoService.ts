@@ -16,6 +16,7 @@ class OrderInfoDetailService {
     const dbOrderid: number = (
       await ordAndOrDetailDao.addOrderInfo(orderinfo)
     )[0];
+    orderInfoDetail.orderid = dbOrderid;
     // 2.拼接订单id+订单详情信息
     const orderDetailLst = orderInfoDetail.orderDetailList!;
     const lastOrderDetailList = addEntryToArr(

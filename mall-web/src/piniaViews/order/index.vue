@@ -140,40 +140,33 @@
           class="flex items-center p-[0.14rem] bg-white rounded-[0.08rem] cursor-pointer"
           @click="changePaymentMethod('alipay')"
         >
-          <img
-            src="https://alicdn.com/alipay/logo.png"
-            alt="支付宝"
-            class="w-[0.28rem] h-[0.28rem] mr-[0.1rem]"
-          />
+          <i class="iconfont icon-alipay-active mr-[0.05rem] text-blue"></i>
           <div class="text-[0.14rem] text-gray-800 flex-1">支付宝支付</div>
           <div
             class="w-[0.18rem] h-[0.18rem] rounded-full border-2 border-gray-300"
           >
             <i
               v-if="paymentMethod === 'alipay'"
-              class="iconfont icon-check text-green-500 text-[0.14rem]"
-              >✓</i
-            >
+              class="iconfont icon-xuanzhong text-green-500 text-[0.14rem]"
+            ></i>
           </div>
         </div>
         <div
           class="flex items-center p-[0.14rem] bg-white rounded-[0.08rem] cursor-pointer"
           @click="changePaymentMethod('wechat')"
         >
-          <img
-            src="https://wechat.com/favicon.ico"
-            alt="微信"
-            class="w-[0.28rem] h-[0.28rem] mr-[0.1rem]"
-          />
+          <i
+            class="iconfont icon-zhifu-_weixinzhifu text-green mr-[0.05rem]"
+          ></i>
+
           <div class="text-[0.14rem] text-gray-800 flex-1">微信支付</div>
           <div
             class="w-[0.18rem] h-[0.18rem] rounded-full border-2 border-gray-300"
           >
             <i
               v-if="paymentMethod === 'wechat'"
-              class="iconfont icon-check text-green-500 text-[0.14rem]"
-              >✓</i
-            >
+              class="iconfont icon-xuanzhong text-green-500 text-[0.14rem]"
+            ></i>
           </div>
         </div>
       </div>

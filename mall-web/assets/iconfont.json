@@ -6,6 +6,27 @@
   "description": "",
   "glyphs": [
     {
+      "icon_id": "10144367",
+      "name": "支付-_微信支付",
+      "font_class": "zhifu-_weixinzhifu",
+      "unicode": "e6b3",
+      "unicode_decimal": 59059
+    },
+    {
+      "icon_id": "25162597",
+      "name": "选中",
+      "font_class": "xuanzhong",
+      "unicode": "e52f",
+      "unicode_decimal": 58671
+    },
+    {
+      "icon_id": "28045633",
+      "name": "支付宝支付",
+      "font_class": "alipay-active",
+      "unicode": "e516",
+      "unicode_decimal": 58646
+    },
+    {
       "icon_id": "37293397",
       "name": "待支付",
       "font_class": "daizhifu",
