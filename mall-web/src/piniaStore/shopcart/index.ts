@@ -18,6 +18,10 @@ export default defineStore("shopCart", {
         ? state.shopCartList
         : goodStorage.get("shopCartList");
     },
+    getShopCartListIsSelected(): ShopCartType[] {
+      // 获取选中的购物车
+      return this.getShopCartList.filter((item) => item.checked);
+    },
   },
   actions: {
     storeShopCartList(shopCartList: ShopCartType[]) {

@@ -76,6 +76,7 @@ import ShopCart from "../books/service/shopCart";
 import addSubtrsc from "../books/components/addSubtrsc.vue";
 import Books from "../books/service";
 import router from "../../router";
+import { ElMessage } from "element-plus";
 const { getImg } = ImgUtil;
 const { isSelectAll, selectAll, checkEveryCheckBox } = ShopCart;
 const { getShopCartList } = ShopCart.storeRefs;
@@ -85,6 +86,11 @@ const handleToPage = () => {
   router.back();
 };
 const handleToOrder = () => {
+  if (totalCount.value === 0)
+    return ElMessage({
+      message: "您还没有选择商品哦！",
+      type: "warning",
+    });
   router.push({ name: "order" });
 };
 </script>

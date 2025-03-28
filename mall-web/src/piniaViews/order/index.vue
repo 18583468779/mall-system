@@ -53,7 +53,7 @@
     <!-- 商品列表 -->
     <div class="px-[0.32rem] py-[0.24rem] bg-white mt-[0.16rem]">
       <div class="text-[0.16rem] font-medium text-gray-800 mb-[0.16rem]">
-        商品信息（共{{ goodsList.length }}件）
+        商品信息（共{{ totalCount }}件）
       </div>
 
       <div class="relative group">
@@ -63,35 +63,35 @@
           @scroll.passive="handleScroll"
         >
           <div
-            v-for="item in goodsList"
-            :key="item.id"
+            v-for="item in getShopCartListIsSelected"
+            :key="item.bookisbn"
             class="flex-shrink-0 w-[2.6rem] mx-[0.08rem] snap-start"
           >
             <div class="bg-white rounded-[0.08rem] shadow-sm overflow-hidden">
               <div class="relative h-[1.8rem]">
                 <img
-                  :src="item.image"
+                  :src="getImg(item.bookpicname)"
                   alt="书籍封面"
-                  class="w-full h-full object-cover"
+                  class="w-full h-full object-contain"
                 />
                 <div
                   class="absolute bottom-1 right-1 px-[0.08rem] py-[0.04rem] bg-black/50 text-white text-[0.12rem] rounded-[0.04rem]"
                 >
-                  x{{ item.quantity }}
+                  x{{ item.purcharsenum }}
                 </div>
               </div>
               <div class="p-[0.1rem]">
                 <div
                   class="text-[0.14rem] font-medium text-gray-800 line-clamp-2 mb-[0.05rem]"
                 >
-                  {{ item.name }}
+                  {{ item.bookname }}
                 </div>
                 <div class="flex items-center justify-between">
                   <div class="text-[0.13rem] text-red-500">
-                    ¥{{ item.price }}
+                    ¥{{ item.bookprice }}
                   </div>
                   <div class="text-[0.13rem] text-gray-600">
-                    小计：¥{{ item.total }}
+                    小计：¥{{ item.bookprice * item.purcharsenum }}
                   </div>
                 </div>
               </div>
@@ -178,7 +178,9 @@
     >
       <div class="space-y-[0.08rem]">
         <div class="text-[0.14rem] text-gray-600">实付金额</div>
-        <div class="text-[0.24rem] font-bold text-red-500">¥197.00</div>
+        <div class="text-[0.24rem] font-bold text-red-500">
+          ¥{{ totalPrice }}
+        </div>
       </div>
       <button
         class="px-[0.4rem] py-[0.16rem] border-none bg-gradient-to-r from-red-500 to-red-600 text-white rounded-[0.4rem] text-[0.16rem] font-medium shadow-[0_0.05rem_0.15rem_rgba(255,69,58,0.3)]"
@@ -193,6 +195,11 @@
 <script lang="ts" setup>
 import { ref, computed, onMounted } from "vue";
 import { useRouter } from "vue-router";
+import ShopCart from "../books/service/shopCart";
+import { ImgUtil } from "../../utils/imgUtil";
+const { getImg } = ImgUtil;
+const { getShopCartListIsSelected } = ShopCart.storeRefs;
+const { totalCount, totalPrice } = ShopCart.refreshShopCartList();
 const paymentMethod = ref<"alipay" | "wechat">("alipay");
 interface GoodsItem {
   id: number;
@@ -296,6 +303,7 @@ const goToAddressList = () => {
 
 // 提交订单
 const submitOrder = () => {
+  router.push({ name: "orderSort" });
   console.log("提交订单");
 };
 </script>
