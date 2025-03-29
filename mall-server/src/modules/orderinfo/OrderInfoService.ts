@@ -1,6 +1,6 @@
 import { addEntryToArr } from "../commontypes";
 import shopCartDao from "../shopcart/dao/ShopCartDao";
-import { Orderinfo } from "./entity";
+import { OrderDetail, Orderinfo, TransformedOrder } from "./entity";
 import ordAndOrDetailDao from "./OrderInfoDao";
 
 class OrderInfoDetailService {
@@ -41,8 +41,51 @@ class OrderInfoDetailService {
     const [orderInfoList] = await ordAndOrDetailDao.getOrderInfoByCustomerId(
       customerid
     );
-    return orderInfoList;
+    return transformOrders(orderInfoList);
   }
 }
+// 转换函数
+function transformOrders(
+  orders: (OrderDetail & Orderinfo)[]
+): TransformedOrder[] {
+  return orders.reduce(
+    (acc: TransformedOrder[], current: OrderDetail & Orderinfo) => {
+      // 查找已存在的订单
+      const existingOrder = acc.find(
+        (order) => order.orderid === current.orderid
+      );
 
+      if (existingOrder) {
+        // 如果订单已存在，添加商品到 items 数组
+        existingOrder.orderDetailList.push({
+          bookname: current.bookname,
+          bookpicname: current.bookpicname,
+          purcharsenum: current.purcharsenum,
+          orderdetailid: current.orderdetailid!,
+          orderid: current.orderid!,
+        });
+      } else {
+        // 如果订单不存在，创建新订单结构
+        acc.push({
+          orderid: current.orderid!,
+          ordertime: current.ordertime,
+          customerid: current.customerid,
+          orderstatus: current.orderstatus,
+          orderDetailList: [
+            {
+              bookname: current.bookname,
+              bookpicname: current.bookpicname,
+              purcharsenum: current.purcharsenum,
+              orderdetailid: current.orderdetailid!,
+              orderid: current.orderid!,
+            },
+          ],
+        });
+      }
+
+      return acc;
+    },
+    []
+  );
+}
 export default OrderInfoDetailService.orderInfoDetailService;
