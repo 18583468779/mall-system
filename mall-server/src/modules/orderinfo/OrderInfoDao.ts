@@ -5,7 +5,7 @@ class OrdAndOrDetailDao {
   static ordAndOrDetailDao: OrdAndOrDetailDao = new OrdAndOrDetailDao();
 
   async addOrderInfo(ordinfo: Orderinfo): Promise<[any, any]> {
-    const ordSql = `insert into ordinfo(ordertime,customerid,orderstatus) values('${ordinfo.ordertime}',${ordinfo.customerid},${ordinfo.orderstatus})`;
+    const ordSql = `insert into orderinfo(ordertime,customerid,orderstatus) values('${ordinfo.ordertime}',${ordinfo.customerid},${ordinfo.orderstatus})`;
     return await sequelize.query(ordSql);
   }
   async addOrderDetail(orddetail: OrderDetail): Promise<[any, any]> {

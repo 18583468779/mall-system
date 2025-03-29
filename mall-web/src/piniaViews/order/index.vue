@@ -193,119 +193,29 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, computed, onMounted } from "vue";
-import { useRouter } from "vue-router";
 import ShopCart from "../books/service/shopCart";
+import OrderService from "./service";
 import { ImgUtil } from "../../utils/imgUtil";
 const { getImg } = ImgUtil;
 const { getShopCartListIsSelected } = ShopCart.storeRefs;
 const { totalCount, totalPrice } = ShopCart.refreshShopCartList();
-const paymentMethod = ref<"alipay" | "wechat">("alipay");
-interface GoodsItem {
-  id: number;
-  name: string;
-  image: string;
-  price: number;
-  quantity: number;
-  total: number;
-}
+const {
+  goBack,
+  paymentMethod,
+  changePaymentMethod,
+  submitOrder,
+  swiperContainer,
+  currentPage,
+  showPrevButton,
+  showNextButton,
+  init,
+  goToAddressList,
+  handleScroll,
+  scrollTo,
+  totalPages,
+} = OrderService;
 
-const router = useRouter();
-const swiperContainer = ref<HTMLElement>();
-const currentPage = ref(1);
-const showPrevButton = ref(false);
-const showNextButton = ref(true);
-
-// 模拟数据
-const goodsList = ref<GoodsItem[]>([
-  {
-    id: 1,
-    name: "JavaScript高级程序设计（第4版）",
-    image: "https://picsum.photos/200/300",
-    price: 79.0,
-    quantity: 1,
-    total: 79.0,
-  },
-  {
-    id: 2,
-    name: "Vue 3 实战项目开发指南",
-    image: "https://picsum.photos/200/301",
-    price: 89.0,
-    quantity: 2,
-    total: 178.0,
-  },
-  {
-    id: 3,
-    name: "JavaScript高级程序设计（第4版）",
-    image: "https://picsum.photos/200/300",
-    price: 79.0,
-    quantity: 1,
-    total: 79.0,
-  },
-  // 添加更多测试数据...
-]);
-
-// 计算总页数
-const totalPages = computed(() => {
-  if (!swiperContainer.value) return 0;
-  const containerWidth = swiperContainer.value.offsetWidth;
-  const itemWidth = 2.6; // rem单位
-  return Math.ceil(
-    goodsList.value.length / Math.floor(containerWidth / (itemWidth * 100))
-  );
-});
-
-// 滚动处理
-const handleScroll = () => {
-  if (!swiperContainer.value) return;
-
-  const { scrollLeft, scrollWidth, clientWidth } = swiperContainer.value;
-  showPrevButton.value = scrollLeft > 0;
-  showNextButton.value = scrollLeft + clientWidth < scrollWidth;
-
-  // 计算当前页码
-  currentPage.value = Math.round(scrollLeft / clientWidth) + 1;
-};
-
-// 滚动控制
-const scrollTo = (direction: "prev" | "next") => {
-  if (!swiperContainer.value) return;
-
-  const scrollAmount = swiperContainer.value.clientWidth * 0.8;
-  const newScrollLeft =
-    direction === "next"
-      ? swiperContainer.value.scrollLeft + scrollAmount
-      : swiperContainer.value.scrollLeft - scrollAmount;
-
-  swiperContainer.value.scrollTo({
-    left: newScrollLeft,
-    behavior: "smooth",
-  });
-};
-
-// 返回上一页
-const goBack = () => {
-  router.go(-1);
-};
-
-onMounted(() => {
-  handleScroll();
-});
-// 改变支付方式
-const changePaymentMethod = (method: "alipay" | "wechat") => {
-  paymentMethod.value = method;
-};
-
-// 跳转到地址列表
-const goToAddressList = () => {
-  console.log("跳转到地址列表");
-};
-
-// 提交订单
-const submitOrder = () => {
-  router.push({ name: "orderSort" });
-  console.log("提交订单");
-};
+init();
 </script>
 
 <style>

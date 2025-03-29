@@ -28,6 +28,21 @@ export default defineStore("shopCart", {
       this.shopCartList = shopCartList;
       storage.set("shopCartList", shopCartList);
     },
+    /**
+     * 清空购物车
+     * @param {boolean} isSelected - 该参数未被使用，可能用于后续扩展功能，判断是否仅清空选中的商品
+     */
+    clearShopCartList(isSelected: boolean) {
+      // 清空购物车
+      if (isSelected) {
+        // 仅清空选中的商品
+        this.shopCartList = this.shopCartList.filter((item) => !item.checked);
+        storage.set("shopCartList", this.shopCartList);
+        return;
+      }
+      this.shopCartList = [];
+      storage.remove("shopCartList");
+    },
 
     async findCurUseShopCartList(userid: number) {
       // 获取购物车列表

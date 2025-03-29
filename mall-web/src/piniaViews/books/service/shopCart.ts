@@ -19,6 +19,10 @@ export default class ShopCart {
   static isSelectAll = ref(false); // 是否全选购物车
   static ball: Ref<BallType> = ref({ showOrHidden: false });
 
+  static clearShopCartList(isSelected: boolean) {
+    // 清空购物车
+    ShopCart.store.clearShopCartList(isSelected);
+  }
   static checkEveryCheckBox() {
     // 选中购物车列表的商品
     const isSelectAll = ShopCart.store.getShopCartList.every(

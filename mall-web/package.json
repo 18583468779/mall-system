@@ -14,6 +14,7 @@
     "@element-plus/icons-vue": "^2.3.1",
     "@types/good-storage": "^1.1.2",
     "axios": "^1.7.9",
+    "dayjs": "^1.11.13",
     "dotenv": "^16.4.7",
     "element-plus": "^2.9.4",
     "good-storage": "^1.1.1",

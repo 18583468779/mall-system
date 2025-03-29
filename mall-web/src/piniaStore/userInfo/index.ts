@@ -8,7 +8,7 @@ export default defineStore("userStore", {
     return initState;
   },
   getters: {
-    storeLoginUser: (state) => {
+    storeLoginUser: (state): UserInfo => {
       return hasProps(state.userinfo)
         ? state.userinfo
         : storage.get("loginUser");
