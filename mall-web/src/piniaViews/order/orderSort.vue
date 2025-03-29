@@ -66,28 +66,32 @@
     <div class="px-[0.32rem] py-[0.16rem] space-y-[0.32rem]">
       <!-- 订单项 -->
       <el-card
-        v-for="order in orders"
-        :key="order.id"
+        v-for="order in getOrderList"
+        :key="order.orderid"
         class="bg-white rounded-lg shadow-sm"
       >
         <div class="flex justify-between items-center mb-[0.16rem]">
           <div class="text-[0.14rem] text-gray-600">
-            <span class="font-medium">订单号: </span>{{ order.orderId }}
+            <span class="font-medium">订单号: </span>{{ order.orderid }}
           </div>
-          <el-tag :type="getTagType(order.status)" size="small" effect="dark">
-            {{ order.status }}
+          <el-tag
+            :type="getTagType(order.orderstatus)"
+            size="small"
+            effect="dark"
+          >
+            {{ getStatusText(order.orderstatus) }}
           </el-tag>
         </div>
 
         <div class="space-y-[0.16rem]">
           <div
-            v-for="item in order.items"
-            :key="item.id"
+            v-for="item in order.orderDetailList"
+            :key="item.orderdetailid"
             class="flex items-start space-x-[0.16rem]"
           >
             <div class="w-[0.8rem] h-[0.8rem]">
               <img
-                :src="item.image"
+                :src="ImgUtil.getImg(item.bookpicname)"
                 alt="商品图片"
                 class="w-full h-full object-cover rounded"
               />
@@ -96,17 +100,14 @@
               <div
                 class="text-[0.14rem] font-medium text-gray-800 line-clamp-2"
               >
-                {{ item.name }}
+                {{ item.bookname }}
               </div>
-              <div class="text-[0.12rem] text-gray-500">
-                {{ item.spec }}
-              </div>
-              <div class="flex items-center justify-between">
+              <div class="flex items-center justify-between pt-[0.15rem]">
                 <div class="text-[0.14rem] font-medium text-red-500">
-                  ¥{{ item.price }}
+                  ¥{{ item.bookprice }}
                 </div>
                 <div class="text-[0.12rem] text-gray-500">
-                  x{{ item.quantity }}
+                  x{{ item.purcharsenum }}
                 </div>
               </div>
             </div>
@@ -116,22 +117,27 @@
         <div class="mt-[0.16rem]">
           <div class="flex justify-between items-center">
             <div class="text-[0.14rem] text-gray-600">
-              共{{ order.totalItems }}件商品 合计:
+              共{{ sumPurcharsenum(order.orderDetailList!) ?? 0 }}件商品 合计:
             </div>
             <div class="text-[0.14rem] font-medium text-red-500">
-              ¥{{ order.totalPrice }}
+              ¥{{ totalPrice(order.orderDetailList!) ?? 0 }}
             </div>
           </div>
 
           <!-- 倒计时（仅在待付款订单中显示） -->
           <div
-            v-if="order.status === '待付款'"
+            v-if="order.orderstatus === 1"
             class="flex items-center justify-between mt-[0.16rem]"
           >
             <div class="text-[0.14rem] text-red-500">
-              剩余支付时间: {{ formatCountdown(order.countdown) }}
+              剩余支付时间:
+              {{ formatCountdown(orderCountdowns[order.orderid!]) }}
             </div>
-            <el-button type="primary" size="small" @click="payOrder(order.id)">
+            <el-button
+              type="primary"
+              size="small"
+              @click="payOrder(order.orderid!)"
+            >
               立即付款
             </el-button>
           </div>
@@ -158,113 +164,34 @@
 
 <script setup lang="ts">
 import { ref, onMounted } from "vue";
-import { ElInput, ElButton, ElCard, ElTag } from "element-plus";
-import { Search } from "@element-plus/icons-vue";
+import { ElInput, ElButton, ElCard, ElTag, ElIcon } from "element-plus";
+import { Search, ArrowLeftBold } from "@element-plus/icons-vue";
 import router from "../../router";
 import OrderService from "./service";
-
-const { getOrderInfoByCustomerid } = OrderService;
+import { ImgUtil } from "../../utils/imgUtil";
+import { OrderDetail } from "../../piniaStore/order/state";
+const { getOrderInfoByCustomerid, storeRef } = OrderService;
+const { getOrderList } = storeRef;
 getOrderInfoByCustomerid();
 
-interface OrderItem {
-  id: number;
-  name: string;
-  image: string;
-  price: number;
-  quantity: number;
-  spec: string;
+// 为每个待付款订单添加倒计时逻辑
+const orderCountdowns = ref<Record<number, number>>({});
+
+function sumPurcharsenum(orders: OrderDetail[]) {
+  return orders.reduce((total, order) => total + order.purcharsenum, 0);
 }
 
-interface Order {
-  id: number;
-  orderId: string;
-  status: string;
-  countdown: number;
-  items: OrderItem[];
-  totalItems: number;
-  totalPrice: number;
+function totalPrice(orders: OrderDetail[]) {
+  return orders.reduce((total, order) => total + order.bookprice, 0);
 }
+
 // 返回上一页
 const goBack = () => {
   router.go(-1);
 };
-// 模拟订单数据
-const orders = ref<Order[]>([
-  {
-    id: 1,
-    orderId: "2023123456789",
-    status: "待付款",
-    countdown: 300, // 5分钟倒计时
-    items: [
-      {
-        id: 101,
-        name: "JavaScript高级程序设计（第4版）",
-        image: "https://picsum.photos/200/300",
-        price: 79.0,
-        quantity: 1,
-        spec: "精装版",
-      },
-      {
-        id: 102,
-        name: "Vue 3 实战项目开发指南",
-        image: "https://picsum.photos/200/301",
-        price: 89.0,
-        quantity: 2,
-        spec: "平装版",
-      },
-    ],
-    totalItems: 3,
-    totalPrice: 257.0,
-  },
-  {
-    id: 2,
-    orderId: "2023987654321",
-    status: "待收货",
-    countdown: 0,
-    items: [
-      {
-        id: 201,
-        name: "TypeScript实战指南",
-        image: "https://picsum.photos/200/302",
-        price: 69.0,
-        quantity: 1,
-        spec: "精装版",
-      },
-    ],
-    totalItems: 1,
-    totalPrice: 69.0,
-  },
-  {
-    id: 3,
-    orderId: "2023112233445",
-    status: "已完成",
-    countdown: 0,
-    items: [
-      {
-        id: 301,
-        name: "React实战项目开发",
-        image: "https://picsum.photos/200/303",
-        price: 85.0,
-        quantity: 1,
-        spec: "精装版",
-      },
-      {
-        id: 302,
-        name: "Node.js设计模式",
-        image: "https://picsum.photos/200/304",
-        price: 75.0,
-        quantity: 1,
-        spec: "平装版",
-      },
-    ],
-    totalItems: 2,
-    totalPrice: 160.0,
-  },
-]);
 
+// 搜索框和倒计时功能
 const searchQuery = ref("");
-
-// 搜索和倒计时功能保持不变
 const handleSearch = () => {
   console.log("搜索订单: ", searchQuery.value);
 };
@@ -276,9 +203,13 @@ const formatCountdown = (seconds: number) => {
 };
 
 const countdownInterval = setInterval(() => {
-  orders.value.forEach((order) => {
-    if (order.status === "待付款" && order.countdown > 0) {
-      order.countdown--;
+  getOrderList.value.forEach((order) => {
+    if (
+      order.orderstatus === 1 &&
+      order.orderid &&
+      orderCountdowns.value[order.orderid] > 0
+    ) {
+      orderCountdowns.value[order.orderid]--;
     }
   });
 }, 1000);
@@ -287,17 +218,38 @@ const payOrder = (orderId: number) => {
   console.log("支付订单: ", orderId);
 };
 
-const getTagType = (status: string) => {
+const getStatusText = (status: number) => {
   switch (status) {
-    case "待付款":
+    case 0:
+      return "已取消";
+    case 1:
+      return "待付款";
+    case 2:
+      return "待发货";
+    case 3:
+      return "待收货";
+    case 4:
+      return "待评价";
+    case 5:
+      return "交易完成";
+    case 6:
+      return "退款/售后";
+    default:
+      return "未知状态";
+  }
+};
+
+const getTagType = (status: number) => {
+  switch (status) {
+    case 0:
       return "danger";
-    case "待发货":
+    case 1:
       return "warning";
-    case "待收货":
+    case 2:
       return "info";
-    case "待评价":
+    case 3:
       return "success";
-    case "退款/售后":
+    case 4:
       return "danger";
     default:
       return "info";
@@ -305,6 +257,13 @@ const getTagType = (status: string) => {
 };
 
 onMounted(() => {
+  // 初始化倒计时
+  getOrderList.value.forEach((order) => {
+    if (order.orderstatus === 1 && order.orderid) {
+      orderCountdowns.value[order.orderid] = 300; // 默认5分钟倒计时
+    }
+  });
+
   return () => {
     clearInterval(countdownInterval);
   };

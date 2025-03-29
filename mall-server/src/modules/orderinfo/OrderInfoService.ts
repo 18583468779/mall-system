@@ -61,6 +61,7 @@ function transformOrders(
           bookname: current.bookname,
           bookpicname: current.bookpicname,
           purcharsenum: current.purcharsenum,
+          bookprice: current.bookprice,
           orderdetailid: current.orderdetailid!,
           orderid: current.orderid!,
         });
@@ -74,6 +75,7 @@ function transformOrders(
           orderDetailList: [
             {
               bookname: current.bookname,
+              bookprice: current.bookprice,
               bookpicname: current.bookpicname,
               purcharsenum: current.purcharsenum,
               orderdetailid: current.orderdetailid!,

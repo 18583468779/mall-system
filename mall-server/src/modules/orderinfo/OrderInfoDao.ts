@@ -13,7 +13,7 @@ class OrdAndOrDetailDao {
     return await sequelize.query(ordDetailSql);
   }
   async getOrderInfoByCustomerId(customerid: number): Promise<[any, any]> {
-    const ordSql = `select oi.orderid,oi.ordertime,oi.customerid,oi.orderstatus, odi.bookname,odi.bookpicname,odi.orderdetailid,odi.purcharsenum from orderinfo oi inner join orderdetail odi where customerid=${customerid}`;
+    const ordSql = `select oi.orderid,oi.ordertime,oi.customerid,oi.orderstatus, odi.bookname, odi.bookprice,odi.bookpicname,odi.orderdetailid,odi.purcharsenum from orderinfo oi inner join orderdetail odi where customerid=${customerid}`;
     return await sequelize.query(ordSql);
   }
 }

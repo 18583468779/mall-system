@@ -1,4 +1,5 @@
 export type Orderinfo = {
+  orderid?: number; //订单id
   ordertime: string; //订单时间
   customerid: number; //顾客id,就是当前登录开
   orderstatus: number; //订单状态

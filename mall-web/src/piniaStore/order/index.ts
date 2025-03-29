@@ -1,13 +1,16 @@
 import { defineStore } from "pinia";
-import { Orderinfo } from "./state";
+import { OrderDetail, Orderinfo } from "./state";
 import orderApi from "../../api/OrderApi";
+import storage from "../../utils/goodStorageUtil";
 export default defineStore("order", {
   state: () => ({
     initState: [] as Orderinfo[],
   }),
   getters: {
-    getOrderList: (state) => {
-      return state.initState.length > 0 ? state.initState : [];
+    getOrderList: (state): Orderinfo[] => {
+      return state.initState.length > 0
+        ? state.initState
+        : storage.get("orderInfo");
     },
   },
   actions: {
@@ -16,8 +19,11 @@ export default defineStore("order", {
       return res;
     },
     async getOrderInfoByCustomerId(customerid: number) {
-      const res = await orderApi.getOrderInfoByCustomerid(customerid);
-      console.log(res);
+      const res: any = await orderApi.getOrderInfoByCustomerid(customerid);
+      if (res.code === 200) {
+        this.initState = res.data;
+        storage.set("orderInfo", res.data);
+      }
     },
   },
 });

@@ -25,6 +25,7 @@ export interface TransformedOrder {
     orderid: number;
     bookname: string;
     bookpicname: string;
+    bookprice: number;
     purcharsenum: number;
     orderdetailid: number;
   }[];
