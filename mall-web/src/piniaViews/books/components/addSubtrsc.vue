@@ -1,7 +1,7 @@
 <template>
   <div class="shopcart">
     <div class="addBtn" v-if="bookItem && bookItem.purcharsenum === 0">
-      <div class="addBtn-inner" @click="addBkToShopCartWrapper(bookItem)">
+      <div class="addBtn-inner" @click.stop="addBkToShopCartWrapper(bookItem)">
         添加购物车
       </div>
     </div>
