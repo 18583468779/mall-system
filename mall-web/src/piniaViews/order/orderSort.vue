@@ -161,6 +161,11 @@ import { ref, onMounted } from "vue";
 import { ElInput, ElButton, ElCard, ElTag } from "element-plus";
 import { Search } from "@element-plus/icons-vue";
 import router from "../../router";
+import OrderService from "./service";
+
+const { getOrderInfoByCustomerid } = OrderService;
+getOrderInfoByCustomerid();
+
 interface OrderItem {
   id: number;
   name: string;

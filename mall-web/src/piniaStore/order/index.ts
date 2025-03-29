@@ -15,5 +15,9 @@ export default defineStore("order", {
       const res = await orderApi.submitOrder(orderDetail);
       return res;
     },
+    async getOrderInfoByCustomerId(customerid: number) {
+      const res = await orderApi.getOrderInfoByCustomerid(customerid);
+      console.log(res);
+    },
   },
 });

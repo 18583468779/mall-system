@@ -37,6 +37,12 @@ class OrderInfoDetailService {
     orderInfoDetail.orderDetailList = lastOrderDetailList;
     return orderInfoDetail;
   }
+  async getOrderInfoByCustomerid(customerid: number) {
+    const [orderInfoList] = await ordAndOrDetailDao.getOrderInfoByCustomerId(
+      customerid
+    );
+    return orderInfoList;
+  }
 }
 
 export default OrderInfoDetailService.orderInfoDetailService;

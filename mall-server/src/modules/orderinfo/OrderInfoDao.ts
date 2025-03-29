@@ -12,6 +12,10 @@ class OrdAndOrDetailDao {
     const ordDetailSql = `insert into orderdetail(bookname,bookprice,bookpicname,purcharsenum,orderid) values('${orddetail.bookname}',${orddetail.bookprice},'${orddetail.bookpicname}',${orddetail.purcharsenum},${orddetail.orderid})`;
     return await sequelize.query(ordDetailSql);
   }
+  async getOrderInfoByCustomerId(customerid: number): Promise<[any, any]> {
+    const ordSql = `select oi.orderid,oi.ordertime,oi.customerid,oi.orderstatus, odi.bookname,odi.bookpicname,odi.orderdetailid,odi.purcharsenum from orderinfo oi inner join orderdetail odi where customerid=${customerid}`;
+    return await sequelize.query(ordSql);
+  }
 }
 
 export default OrdAndOrDetailDao.ordAndOrDetailDao;

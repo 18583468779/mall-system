@@ -69,6 +69,11 @@ class OrderService {
       router.push({ name: "orderSort" });
     }
   }
+  // 获取订单信息
+  static async getOrderInfoByCustomerid() {
+    const customerid = OrderService.userStore.storeLoginUser.userid; //顾客id,就是当前登录开
+    await OrderService.store.getOrderInfoByCustomerId(customerid);
+  }
   static init() {
     onMounted(() => {
       OrderService.handleScroll();
