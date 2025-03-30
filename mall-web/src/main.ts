@@ -10,6 +10,7 @@ import { ImgUtil } from "./utils/imgUtil";
 import "../assets/iconfont.css";
 import { createPinia } from "pinia";
 import * as ElementPlusIconsVue from "@element-plus/icons-vue";
+
 ImgUtil.storageImaList();
 const app = createApp(App);
 for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
