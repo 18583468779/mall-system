@@ -3,7 +3,7 @@ import { findOneUser, Userinfo } from "../dao/UserDao";
 class UserService {
   static userService: UserService = new UserService();
   async login(username: string, password: string) {
-    const userInfo: any = await findOneUser(username, password);
+    const userInfo: any = await findOneUser({ username, password });
     if (userInfo) this.createJWTToken(userInfo);
     return userInfo;
   }

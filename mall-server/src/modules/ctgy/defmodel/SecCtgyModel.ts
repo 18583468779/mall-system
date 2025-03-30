@@ -25,6 +25,7 @@ class SecondCtgyModel {
       },
       {
         freezeTableName: true, // 使用给定的表名
+
         // timestamps: true, // 带上时间戳属性
       }
     );

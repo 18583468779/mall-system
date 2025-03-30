@@ -1,5 +1,5 @@
 <template>
-  <div class="min-h-screen bg-gray-50 flex items-center justify-center p-4">
+  <div class="min-h-screen bg-gray-200 flex items-center justify-center">
     <div
       class="bg-white rounded-xl shadow-lg overflow-hidden mx-auto max-w-sm lg:max-w-4xl w-full flex flex-col lg:flex-row"
     >
@@ -14,7 +14,7 @@
       <!-- 右侧表单 -->
       <div class="w-full p-8 lg:w-1/2">
         <!-- Tabs切换 -->
-        <el-tabs v-model="activeTab" class="mb-6">
+        <el-tabs v-model="activeTab" class="mb-8">
           <el-tab-pane label="账号登录" name="account"></el-tab-pane>
           <el-tab-pane label="邮箱登录" name="email"></el-tab-pane>
           <el-tab-pane label="手机登录" name="phone"></el-tab-pane>
