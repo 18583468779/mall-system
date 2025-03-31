@@ -4,11 +4,11 @@ class RedisUtil implements RedisClient {
   static redisUtil: RedisUtil = new RedisUtil();
   redisClient: RedisClient = redisConfig.redisServerConf(); // 链接Redis
 
-  set(key: string, value: string) {
-    throw new Error("Method not implemented.");
+  async set(key: string, value: string) {
+    await this.redisClient.set(key, value);
   }
-  get(key: string) {
-    throw new Error("Method not implemented.");
+  async get(key: string) {
+    return await this.redisClient.get(key);
   }
   async hset(obj: string, key: string, value: any) {
     await this.redisClient.hset(obj, key, JSON.stringify(value));
