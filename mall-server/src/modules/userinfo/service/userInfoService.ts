@@ -50,13 +50,29 @@ class UserService {
     })) as unknown as Promise<Userinfo>;
   }
   // 邮箱登录
-  private async emailLogin(email: string, code: string) {
-    const isValid = await EmailService.verifyCode(email, code); // 验证验证码是否正确
-    if (!isValid) throw new Error("验证码错误或已过期"); // 验证码错误，抛出异常
+  private async emailLogin(email: string, code: string): Promise<Userinfo> {
+    // 验证邮箱验证码
+    const isValid = await EmailService.verifyCode(email, code);
+    if (!isValid) throw new Error("验证码错误或已过期");
 
-    const user = (await findOneUser({ email })) as unknown as Promise<Userinfo>; // 根据邮箱查找用户
-    if (!user) throw new Error("用户不存在"); // 用户不存在，抛出异常
+    // 查询现有用户
+    let user: any = await findOneUser({ email });
+
+    // 用户不存在时自动注册
+    if (!user) {
+      user = (await createUser({
+        email,
+        valid: 1, // 默认激活账户
+        username: this.generateDefaultUsername(email), // 自动生成用户名
+      })) as Userinfo;
+    }
+
     return user;
+  }
+
+  // 生成默认用户名
+  private generateDefaultUsername(email: string): string {
+    return email.split("@")[0] + "_" + Math.random().toString(36).substr(2, 4);
   }
   // 发送验证码
   async sendVerificationCode(email: string) {

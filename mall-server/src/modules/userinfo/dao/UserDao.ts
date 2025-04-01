@@ -35,14 +35,27 @@ class UserDao {
     if (params.password) {
       whereClause.password = params.password;
     }
-
+    console.log("whereClause", whereClause);
     return model.findOne({
       raw: true,
       where: whereClause,
     });
   }
-  static createUser(userinfo: Userinfo) {
-    return model.create(userinfo); // 新增一个用户
+  static async createUser(userinfo: Userinfo) {
+    try {
+      return await model.create({
+        ...userinfo,
+        returning: true,
+        valid: userinfo.valid ?? 1, // 默认激活状态
+        created_at: Sequelize.fn("NOW"),
+      });
+    } catch (error: any) {
+      // 处理唯一约束冲突（如邮箱重复注册）
+      if (error.name === "SequelizeUniqueConstraintError") {
+        throw new Error("该邮箱已被注册");
+      }
+      throw error;
+    }
   }
   static findAllUser() {
     return model.findAll({
