@@ -15,7 +15,7 @@ class UserService {
     return UserService.instance;
   }
   async login(credentials: {
-    type: "password" | "email" | "phone" | "weixin";
+    type: "account" | "email" | "phone" | "weixin";
     identifier: string; // 用户名、邮箱、手机号或微信openid
     password?: string; // 密码（仅当type为password时需要）
     code?: string; // 验证码（仅当type为email或phone时需要）
@@ -24,7 +24,7 @@ class UserService {
     let user: Userinfo | null = null;
 
     switch (credentials.type) {
-      case "password":
+      case "account":
         user = await this.passwordLogin(
           credentials.identifier,
           credentials.password!

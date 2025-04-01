@@ -19,7 +19,7 @@ class UserInfoController {
   // 发送邮箱验证码
   @post("/sendVerificationCode")
   async sendVerificationCode(ctx: Context) {
-    const email = ctx.request.body;
+    const { email } = ctx.request.body;
     const code = await userService.sendVerificationCode(email);
     ctx.body = success(code);
   }

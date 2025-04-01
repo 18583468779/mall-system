@@ -23,7 +23,11 @@ class AllCtrlRouterLoader {
     this.app.use(globalException);
     this.app.use(
       koajwt({ secret: "aiaiai123456X" }).unless({
-        path: [/^\/dang\/userinfomodule\/login/, /^\/dang\/ctgymodule/],
+        path: [
+          /^\/dang\/userinfomodule\/login/,
+          /^\/dang\/userinfomodule\/sendVerificationCode/,
+          /^\/dang\/ctgymodule/,
+        ],
       })
     );
   }

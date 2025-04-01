@@ -12,6 +12,11 @@ class UserApi {
   login(userInfo: UserInfo) {
     return request.post(`userinfomodule/login`, false, userInfo);
   }
+  getEmailCode(email: string) {
+    return request.post(`userinfomodule/sendVerificationCode`, false, {
+      email,
+    });
+  }
 }
 
 export default UserApi.api;
