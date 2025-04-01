@@ -160,6 +160,7 @@ import userStore from "../../piniaStore/userInfo/index";
 import storage from "../../utils/goodStorageUtil";
 import { useRouter } from "vue-router";
 import VueQrcode from "vue-qrcode";
+import { ElMessage } from "element-plus";
 const qrCodeValue = ref("https://example.com");
 const qrCodeSize = ref(150);
 // 定义二维码的前景色和背景色
@@ -170,19 +171,33 @@ const activeTab = ref("email");
 const username = ref("");
 const password = ref("");
 const smsCode = ref("");
-
+const store = userStore();
 const login = async () => {
   if (activeTab.value === "wechat") return;
-
-  await userStore().login(username.value, password.value);
+  await store.login(
+    activeTab.value,
+    username.value,
+    password.value,
+    smsCode.value
+  );
 
   if (storage.get("token")) {
+    ElMessage({
+      message: "登录成功",
+      type: "success",
+    });
     router.push({ name: "ctgy" });
   }
 };
 
-const sendSmsCode = () => {
-  console.log("发送验证码");
+const sendSmsCode = async () => {
+  const code = await store.sendCode(username.value);
+  if (code) {
+    ElMessage({
+      message: "验证码发送成功，请查收",
+      type: "success",
+    });
+  }
 };
 </script>
 

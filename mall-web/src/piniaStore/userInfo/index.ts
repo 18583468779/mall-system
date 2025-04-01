@@ -15,12 +15,29 @@ export default defineStore("userStore", {
     },
   },
   actions: {
-    async login(username: string, password: string) {
-      const loginUser = { username, password } as UserInfo;
-      const userInfo: AxiosResponse<UserInfo> = await userApi.login(loginUser);
+    async login(
+      type: string,
+      username: string,
+      password: string,
+      code: string
+    ) {
+      let params: any = {};
+      if (type === "email") {
+        params = { identifier: username, code };
+      } else if (type === "account") {
+        params = { identifier: username, password };
+      }
+      const userInfo: AxiosResponse<UserInfo> = await userApi.login(
+        type,
+        params
+      );
       this.userinfo = userInfo.data;
       storage.set("loginUser", userInfo.data);
       storage.set("token", userInfo.data.token);
+    },
+    async sendCode(email: string) {
+      const code: AxiosResponse<string> = await userApi.getEmailCode(email);
+      return code.data;
     },
   },
 });

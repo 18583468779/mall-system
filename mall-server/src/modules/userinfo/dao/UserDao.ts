@@ -22,14 +22,23 @@ export type Userinfo = {
 
 class UserDao {
   static findOneUser(params: FindUserParams) {
+    // 1. 提取非密码字段构建 OR 条件
+    const orConditions = Object.keys(params)
+      .filter((key) => key !== "password") // 正确过滤密码字段
+      .map((key) => ({ [key]: params[key as keyof FindUserParams] }));
+
+    // 2. 构建完整 WHERE 子句
+    const whereClause: any = {};
+    if (orConditions.length > 0) {
+      whereClause[Op.or] = orConditions;
+    }
+    if (params.password) {
+      whereClause.password = params.password;
+    }
+
     return model.findOne({
       raw: true,
-      where: {
-        [Op.or]: Object.keys(params)
-          .filter(([key]) => key !== "password")
-          .map(([key, value]) => ({ [key]: value })),
-        ...(params.password && { psw: params.password }),
-      },
+      where: whereClause,
     });
   }
   static createUser(userinfo: Userinfo) {
