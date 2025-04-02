@@ -65,6 +65,7 @@
                 <li
                   v-for="third in second.thirdctgys"
                   :key="third.thirdctgyid"
+                  @click="toBookInfo(third, second)"
                   class="text-gray-600 hover:text-blue-500 transition-colors cursor-pointer"
                 >
                   {{ third.thirdctgyname }}
@@ -86,7 +87,8 @@ import { FstToThrdCtgy } from "../service/index";
 const showCategory = ref(false);
 const activeFirstIndex = ref(0);
 
-const { storeRefs, getFirstCtgys, getSecondCtgys, changeTab } = FstToThrdCtgy;
+const { storeRefs, getFirstCtgys, getSecondCtgys, changeTab, toBookInfo } =
+  FstToThrdCtgy;
 
 const { firstCtgyList, secondCtgyList } = storeRefs;
 
