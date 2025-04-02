@@ -102,8 +102,8 @@ const handleFirstCtgyHover = (index: number) => {
 
 <style scoped>
 .nav-item {
-  @apply flex items-center gap-1 px-4 h-full cursor-pointer transition-colors
-     hover:text-blue-500;
+  @apply px-3 py-2 text-gray-600 hover:text-red-500 transition-colors 
+    flex items-center text-[15px] font-medium cursor-pointer;
 }
 
 /* 自定义滚动条 */

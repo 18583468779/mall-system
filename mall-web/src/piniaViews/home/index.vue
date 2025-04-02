@@ -13,19 +13,22 @@
 
         <h1 class="text-xl font-bold text-red-500 mx-4">代码小库</h1>
 
-        <!-- 主导航 -->
         <nav class="hidden lg:flex space-x-8 flex-1 justify-center">
-          <router-link
-            v-for="nav in ['首页', '新品', '热卖']"
-            :key="nav"
-            to="/"
-            class="nav-item"
-          >
-            {{ nav }}
-          </router-link>
+          <template v-for="navItem in navItems" :key="navItem.name">
+            <!-- 普通导航项 -->
+            <router-link
+              v-if="navItem.type === 'link'"
+              :to="navItem.path!"
+              class="nav-item"
+            >
+              {{ navItem.name }}
+            </router-link>
 
-          <!-- 集成分类下拉 -->
-          <CategoryDropdown />
+            <!-- 分类下拉项 -->
+            <div v-else>
+              <CategoryDropdown />
+            </div>
+          </template>
         </nav>
 
         <div class="flex items-center space-x-6">
@@ -176,7 +179,28 @@ import CategoryDropdown from "../ctgy/components/Ctgy.vue";
 const { getBookListByPage, storeRef } = HomeClass;
 const { handleToPage } = Books;
 const { currentPage, getAllBookList, isLoading, hasMore } = storeRef;
-
+// 导航项数据结构
+const navItems = [
+  {
+    name: "首页",
+    type: "link",
+    path: "/",
+  },
+  {
+    name: "分类",
+    type: "dropdown",
+  },
+  {
+    name: "新品",
+    type: "link",
+    path: "/new",
+  },
+  {
+    name: "热卖",
+    type: "link",
+    path: "/hot",
+  },
+];
 // 原始滚动加载逻辑
 const debounce = (fn: Function, delay: number) => {
   let timeoutId: any;
@@ -240,6 +264,10 @@ onUnmounted(() => {
 </script>
 
 <style>
+.nav-item {
+  @apply px-3 py-2 text-gray-600 hover:text-red-500 transition-colors 
+   flex items-center text-[15px] font-medium;
+}
 .el-carousel__arrow {
   @apply !w-10 !h-10 bg-white/80 hover:bg-white !text-gray-600 shadow-md;
 }
