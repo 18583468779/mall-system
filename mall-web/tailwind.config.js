@@ -29,6 +29,7 @@ export default {
       transitionProperty: {
         height: "height",
         "max-height": "max-height",
+        filter: "opacity, transform",
       },
     },
   },
