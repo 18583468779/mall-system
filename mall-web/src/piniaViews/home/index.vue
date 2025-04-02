@@ -11,16 +11,21 @@
           <Menu />
         </el-icon>
 
-        <h1 class="text-xl font-bold text-red-500 mx-4">E-Shop</h1>
+        <h1 class="text-xl font-bold text-red-500 mx-4">代码小库</h1>
 
+        <!-- 主导航 -->
         <nav class="hidden lg:flex space-x-8 flex-1 justify-center">
-          <a
-            v-for="nav in ['首页', '新品', '热卖', '分类']"
+          <router-link
+            v-for="nav in ['首页', '新品', '热卖']"
             :key="nav"
-            class="text-gray-600 hover:text-red-500 transition-colors cursor-pointer"
+            to="/"
+            class="nav-item"
           >
             {{ nav }}
-          </a>
+          </router-link>
+
+          <!-- 集成分类下拉 -->
+          <CategoryDropdown />
         </nav>
 
         <div class="flex items-center space-x-6">
@@ -167,7 +172,7 @@ import FooterNav from "./FooterNav.vue";
 import HomeClass from "./service";
 import { ImgUtil } from "../../utils/imgUtil";
 import Books from "../books/service";
-
+import CategoryDropdown from "../ctgy/components/Ctgy.vue";
 const { getBookListByPage, storeRef } = HomeClass;
 const { handleToPage } = Books;
 const { currentPage, getAllBookList, isLoading, hasMore } = storeRef;
