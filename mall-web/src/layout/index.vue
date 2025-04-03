@@ -1,14 +1,22 @@
 <template>
   <div class="min-h-screen bg-gray-50">
-    <mainComponent />
+    <!-- 导航栏 -->
+    <headerComponent />
+    <!-- 右侧固定导航 -->
+    <rightComponent />
+    <!-- 内容 -->
+    <router-view />
+    <!-- 底部导航 -->
+    <footer-nav />
   </div>
 </template>
 
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted } from "vue";
-
-import HomeClass from "./service";
-import mainComponent from "./component/mainComponent.vue";
+import rightComponent from "../components/rightComponent.vue";
+import FooterNav from "../components/footer.vue";
+import HomeClass from "../piniaViews/home/service";
+import headerComponent from "../components/headerComponent.vue";
 const { getBookListByPage, storeRef } = HomeClass;
 const { currentPage, isLoading, hasMore } = storeRef;
 
@@ -61,7 +69,7 @@ onUnmounted(() => {
 <style>
 .nav-item {
   @apply px-3 py-2 text-gray-600 hover:text-red-500 transition-colors 
-   flex items-center text-[15px] font-medium;
+     flex items-center text-[15px] font-medium;
 }
 .el-carousel__arrow {
   @apply !w-10 !h-10 bg-white/80 hover:bg-white !text-gray-600 shadow-md;

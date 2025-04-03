@@ -1,5 +1,6 @@
 import { createRouter, createWebHashHistory, RouteRecordRaw } from "vue-router";
 import storage from "../utils/goodStorageUtil";
+const layout = () => import("../layout/index.vue");
 const home = () => import("../piniaViews/home/index.vue");
 const ctgy = () => import("../piniaViews/ctgy/index.vue");
 const books = () => import("../piniaViews/books/index.vue");
@@ -20,42 +21,63 @@ const routes: RouteRecordRaw[] = [
   {
     path: "/",
     redirect: "/home",
+    component: layout,
+    children: [
+      {
+        name: "home",
+        path: "/home",
+        component: home,
+      },
+      {
+        name: "ctgy",
+        path: "/ctgy",
+        component: ctgy,
+      },
+      {
+        name: "books",
+        path: "/books",
+        component: books,
+      },
+      {
+        name: "order",
+        path: "/order",
+        component: order,
+      },
+      {
+        name: "orderSort",
+        path: "/orderSort",
+        component: orderSort,
+      },
+      {
+        name: "shopCartList",
+        path: "/shopCartList",
+        component: shopCartList,
+      },
+      {
+        name: "search",
+        path: "/search",
+        component: search,
+      },
+      {
+        name: "bookdetail",
+        path: "/bookdetail",
+        component: BookDetail,
+        children: [
+          {
+            name: "goods",
+            path: "goods",
+            component: Goods,
+          },
+          {
+            name: "evaluate",
+            path: "evaluate",
+            component: Evaluate,
+          },
+        ],
+      },
+    ],
   },
-  {
-    name: "home",
-    path: "/home",
-    component: home,
-  },
-  {
-    name: "ctgy",
-    path: "/ctgy",
-    component: ctgy,
-  },
-  {
-    name: "books",
-    path: "/books",
-    component: books,
-  },
-  {
-    name: "order",
-    path: "/order",
-    component: order,
-  },
-  {
-    name: "orderSort",
-    path: "/orderSort",
-    component: orderSort,
-  },
-  {
-    name: "shopCartList",
-    path: "/shopCartList",
-    component: shopCartList,
-  },
-  {
-    name: "search",
-    path: "/search",
-    component: search,
-  },
+
   {
     name: "login",
     path: "/login",
@@ -68,28 +90,6 @@ const routes: RouteRecordRaw[] = [
         next();
       }
     },
-  },
-
-  {
-    name: "bookdetail",
-    path: "/bookdetail",
-    component: BookDetail,
-    children: [
-      // {
-      //   path: "", // 默认子路由
-      //   redirect: "goods",
-      // },
-      {
-        name: "goods",
-        path: "goods",
-        component: Goods,
-      },
-      {
-        name: "evaluate",
-        path: "evaluate",
-        component: Evaluate,
-      },
-    ],
   },
 ];
 const router = createRouter({
