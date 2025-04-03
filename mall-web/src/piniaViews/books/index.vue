@@ -1,5 +1,5 @@
 <template>
-  <div class="min-h-screen bg-gray-50">
+  <div class="min-h-screen bg-gray-50 pt-10">
     <!-- 顶部导航和搜索栏 -->
     <to-search />
 

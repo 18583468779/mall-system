@@ -30,9 +30,13 @@
       </nav>
 
       <div class="flex items-center space-x-6">
-        <el-icon class="text-2xl"><Search /></el-icon>
+        <el-icon class="text-2xl">
+          <Search />
+        </el-icon>
         <div class="relative cursor-pointer">
-          <el-icon class="text-2xl"><ShoppingCart /></el-icon>
+          <el-icon class="text-2xl">
+            <ShoppingCart />
+          </el-icon>
           <span
             class="absolute -top-2 -right-2 bg-red-500 text-white text-xs w-5 h-5 rounded-full flex items-center justify-center"
           >
@@ -42,13 +46,16 @@
         <el-icon class="hidden lg:inline-block text-2xl"><User /></el-icon>
       </div>
     </div>
+    <SearchComponent v-model="showSearch" />
   </header>
 </template>
 
 <script setup lang="ts">
 import { Menu, Search, ShoppingCart, User } from "@element-plus/icons-vue";
 import CategoryDropdown from "../piniaViews/ctgy/components/Ctgy.vue";
+import SearchComponent from "../piniaViews/search/index.vue";
 import { ref } from "vue";
+const showSearch = ref(false);
 // 导航项数据结构
 const navItems = [
   {
