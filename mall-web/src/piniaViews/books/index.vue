@@ -20,7 +20,6 @@
           </div>
         </div>
       </div>
-
       <!-- 右侧内容 -->
       <div class="flex-1">
         <!-- 面包屑导航 -->
@@ -38,46 +37,7 @@
               :key="product.ISBN"
               class="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-shadow"
             >
-              <!-- 商品图片 -->
-              <div class="aspect-square relative">
-                <img
-                  :src="ImgUtil.getImg(product.bookpicname)"
-                  class="w-full h-full object-cover"
-                />
-                <!-- 折扣标签 -->
-                <div
-                  v-if="product.discount"
-                  class="absolute top-2 right-2 bg-red-500 text-white px-2 py-1 rounded-full text-xs"
-                >
-                  {{ product.discount }}折
-                </div>
-              </div>
-
-              <!-- 商品信息 -->
-              <div class="p-4">
-                <h3 class="font-medium truncate mb-2 text-gray-800">
-                  {{ product.bookname }}
-                </h3>
-                <div class="text-sm text-gray-500 truncate mb-2">
-                  {{ product.author }} | {{ product.publishername }}
-                </div>
-
-                <!-- 价格和操作 -->
-                <div class="flex items-center w-full">
-                  <div class="space-y-1">
-                    <div class="text-red-500 font-bold text-lg">
-                      ¥{{ product.discountprice }}
-                      <span class="text-gray-400 text-sm line-through ml-2"
-                        >¥{{ product.originalprice }}</span
-                      >
-                    </div>
-                    <div class="text-sm text-gray-500">
-                      月售 {{ product.monthsalecount }}
-                    </div>
-                  </div>
-                  <add-subtrsc :book-item="product" class="flex-1" />
-                </div>
-              </div>
+              <bookItem :product="product" />
             </div>
           </div>
 
@@ -104,8 +64,7 @@
 import breadcrumbs from "./components/breadcrumbs.vue";
 import bookSort from "./components/bookSort.vue";
 import shopCart from "./components/shopCart.vue";
-import addSubtrsc from "./components/addSubtrsc.vue";
-import { ImgUtil } from "../../utils/imgUtil";
+import bookItem from "./components/bookItem.vue";
 const { handleSelectThird } = FstToThrdCtgy;
 import Books from "./service";
 import { ref } from "vue";
