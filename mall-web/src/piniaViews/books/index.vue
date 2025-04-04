@@ -63,7 +63,7 @@
                 </div>
 
                 <!-- 价格和操作 -->
-                <div class="flex items-center justify-between">
+                <div class="flex items-center w-full">
                   <div class="space-y-1">
                     <div class="text-red-500 font-bold text-lg">
                       ¥{{ product.discountprice }}
@@ -75,7 +75,7 @@
                       月售 {{ product.monthsalecount }}
                     </div>
                   </div>
-                  <add-subtrsc :book-item="product" />
+                  <add-subtrsc :book-item="product" class="flex-1" />
                 </div>
               </div>
             </div>
@@ -104,6 +104,7 @@
 import breadcrumbs from "./components/breadcrumbs.vue";
 import bookSort from "./components/bookSort.vue";
 import shopCart from "./components/shopCart.vue";
+import addSubtrsc from "./components/addSubtrsc.vue";
 import { ImgUtil } from "../../utils/imgUtil";
 const { handleSelectThird } = FstToThrdCtgy;
 import Books from "./service";
