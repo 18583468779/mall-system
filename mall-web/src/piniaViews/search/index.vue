@@ -1,12 +1,18 @@
 <template>
-  <div class="min-h-screen p-4 md:p-6 bg-[#a2afb999] absolute top-0 w-full">
+  <div
+    class="min-h-screen p-4 md:p-6 bg-[#a2afb999] absolute top-0 w-full"
+    @click="handleShowSearch"
+  >
     <!-- 主容器 -->
-    <div class="max-w-2xl mx-auto bg-[#f9f9f9] p-8 rounded-lg mt-10">
+    <div
+      class="max-w-2xl mx-auto bg-[#f9f9f9] p-8 rounded-lg mt-10"
+      @click.stop
+    >
       <!-- 头部 -->
       <div class="flex items-center gap-3 mb-6">
         <el-icon
           class="text-gray-600 hover:text-black cursor-pointer transition-colors"
-          @click=""
+          @click="handleShowSearch"
         >
           <ArrowLeftBold />
         </el-icon>
@@ -123,14 +129,17 @@ import {
   Refresh,
   Search,
 } from "@element-plus/icons-vue";
-import { onMounted } from "vue";
+import { onMounted, defineEmits } from "vue";
 import SearchClass from "./service";
 
 const { keywordList, getHistoryKeywordList, geHistoryKeywordObjList } =
   SearchClass.storeRefs;
 
 const keyword = SearchClass.storeRefs.keyword;
-
+const emit = defineEmits(["handleShowSearch"]);
+const handleShowSearch = () => {
+  emit("handleShowSearch");
+};
 onMounted(() => {
   SearchClass.init();
 });

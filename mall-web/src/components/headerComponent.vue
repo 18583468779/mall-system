@@ -30,7 +30,7 @@
       </nav>
 
       <div class="flex items-center space-x-6">
-        <el-icon class="text-2xl">
+        <el-icon class="text-2xl" @click="handleShowSearch">
           <Search />
         </el-icon>
         <div class="relative cursor-pointer">
@@ -46,7 +46,11 @@
         <el-icon class="hidden lg:inline-block text-2xl"><User /></el-icon>
       </div>
     </div>
-    <SearchComponent v-model="showSearch" />
+    <Transition>
+      <div v-show="showSearch">
+        <SearchComponent @handleShowSearch="handleShowSearch" />
+      </div>
+    </Transition>
   </header>
 </template>
 
@@ -56,6 +60,11 @@ import CategoryDropdown from "../piniaViews/ctgy/components/Ctgy.vue";
 import SearchComponent from "../piniaViews/search/index.vue";
 import { ref } from "vue";
 const showSearch = ref(false);
+
+const handleShowSearch = () => {
+  showSearch.value = !showSearch.value;
+};
+
 // 导航项数据结构
 const navItems = [
   {
@@ -82,4 +91,14 @@ const navItems = [
 const cartCount = ref(0);
 </script>
 
-<style scoped></style>
+<style scoped>
+.v-enter-active,
+.v-leave-active {
+  transition: opacity 0.5s ease;
+}
+
+.v-enter-from,
+.v-leave-to {
+  opacity: 0;
+}
+</style>
