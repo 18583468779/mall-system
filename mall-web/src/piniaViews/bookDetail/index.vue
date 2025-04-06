@@ -177,7 +177,9 @@ import addSubtrsc from "../books/components/addSubtrsc.vue";
 const { evalRplLst } = EvaluateClass.storeRef;
 const route = useRoute();
 
-const bookData = JSON.parse(route.params.bookData as string);
+const bookData = JSON.parse(
+  decodeURIComponent(route.params.bookData as string)
+);
 // 假数据
 const activeTab = ref("detail");
 const filterType = ref("all");

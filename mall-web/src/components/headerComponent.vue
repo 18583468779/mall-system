@@ -33,14 +33,14 @@
         <el-icon class="text-2xl" @click="handleShowSearch">
           <Search />
         </el-icon>
-        <div class="relative cursor-pointer">
+        <div class="relative cursor-pointer" @click="handleToCart">
           <el-icon class="text-2xl">
             <ShoppingCart />
           </el-icon>
           <span
             class="absolute -top-2 -right-2 bg-red-500 text-white text-xs w-5 h-5 rounded-full flex items-center justify-center"
           >
-            {{ cartCount }}
+            {{ totalCount }}
           </span>
         </div>
         <el-icon class="hidden lg:inline-block text-2xl"><User /></el-icon>
@@ -58,6 +58,9 @@
 import { Menu, Search, ShoppingCart, User } from "@element-plus/icons-vue";
 import CategoryDropdown from "../piniaViews/ctgy/components/Ctgy.vue";
 import SearchComponent from "../piniaViews/search/index.vue";
+import ShopCart from "../piniaViews/books/service/shopCart";
+const { handleToCart } = ShopCart;
+const { totalCount } = ShopCart.refreshShopCartList();
 import { ref } from "vue";
 const showSearch = ref(false);
 
@@ -87,8 +90,6 @@ const navItems = [
     path: "/hot",
   },
 ];
-// 购物车功能
-const cartCount = ref(0);
 </script>
 
 <style scoped>

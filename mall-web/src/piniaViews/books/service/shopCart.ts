@@ -182,6 +182,9 @@ export default class ShopCart {
     ShopCart.ball.value.showOrHidden = false;
     ShopCart.ball.value.curTarget = undefined;
   }
+  static handleToCart() {
+    router.push("/shopCartList");
+  }
 }
 
 function procDecimalZero(num: number) {

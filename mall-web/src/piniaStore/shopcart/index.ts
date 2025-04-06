@@ -1,4 +1,3 @@
-import goodStorage from "good-storage";
 import { defineStore } from "pinia";
 import { initShopcart, ShopCartType } from "./state";
 import shopCartApi from "../../api/ShopApi";
@@ -16,7 +15,7 @@ export default defineStore("shopCart", {
       // 获取购物车列表
       return state.shopCartList.length > 0
         ? state.shopCartList
-        : goodStorage.get("shopCartList");
+        : storage.get("shopCartList");
     },
     getShopCartListIsSelected(): ShopCartType[] {
       // 获取选中的购物车

@@ -25,7 +25,7 @@ export default class Books {
     router.push({
       name: `bookdetail`,
       params: {
-        bookData: JSON.stringify(item),
+        bookData: encodeURIComponent(JSON.stringify(item)),
       },
     });
   };

@@ -186,7 +186,7 @@ const login = async () => {
       message: "登录成功",
       type: "success",
     });
-    router.push({ name: "ctgy" });
+    router.push({ name: "home" });
   }
 };
 
