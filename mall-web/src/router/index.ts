@@ -60,20 +60,20 @@ const routes: RouteRecordRaw[] = [
       },
       {
         name: "bookdetail",
-        path: "/bookdetail",
+        path: "/bookdetail/:bookData",
         component: BookDetail,
-        children: [
-          {
-            name: "goods",
-            path: "goods",
-            component: Goods,
-          },
-          {
-            name: "evaluate",
-            path: "evaluate",
-            component: Evaluate,
-          },
-        ],
+        // children: [
+        //   {
+        //     name: "goods",
+        //     path: "goods",
+        //     component: Goods,
+        //   },
+        //   {
+        //     name: "evaluate",
+        //     path: "evaluate",
+        //     component: Evaluate,
+        //   },
+        // ],
       },
     ],
   },
