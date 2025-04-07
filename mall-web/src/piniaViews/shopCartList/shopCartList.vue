@@ -1,157 +1,144 @@
 <template>
-  <div class="shopcartlist h-full">
-    <!-- 头部 -->
+  <div class="min-h-screen bg-gray-50">
+    <!-- 空状态 -->
     <div
-      class="header fixed top-0 left-0 right-0 bg-white shadow-sm p-[0.2rem] flex items-center justify-between"
+      v-if="getShopCartList?.length === 0"
+      class="container mx-auto px-4 py-12 flex flex-col items-center justify-center min-h-[calc(100vh-8rem)]"
     >
-      <div class="back" @click="handleToPage">
-        <el-icon class="text-gray-500"><Back /></el-icon>
-      </div>
-      <div class="flex items-center">
-        <el-checkbox
-          v-model="isSelectAll"
-          class="mr-[0.1rem]"
-          @change="selectAll"
-        ></el-checkbox>
-        <span class="label font-medium text-gray-800 text-[0.18rem]"
-          >当当网</span
-        >
-      </div>
+      <el-icon class="text-gray-300 mb-6" :size="80"><ShoppingCart /></el-icon>
+      <p class="text-gray-500 mb-4">您的购物车是空的</p>
+      <el-button
+        type="primary"
+        class="!rounded-full px-8"
+        @click="handelToHome"
+      >
+        立即选购
+      </el-button>
     </div>
 
     <!-- 商品列表 -->
-    <div
-      v-if="getShopCartList?.length === 0"
-      class="h-full flex items-center justify-center"
-    >
-      <div class="flex flex-col items-center mt-[3rem]">
-        <el-icon class="text-gray-400 text-[0.8rem]"><ShoppingCart /></el-icon>
-        <div class="text-gray-500 text-[0.16rem] mt-[0.1rem] text-center">
-          <p>购物车是空的，请选购商品吧！！</p>
-          <el-button type="danger" class="mt-[0.5rem]" @click="handelToHome"
-            >去选购</el-button
-          >
-        </div>
-      </div>
-    </div>
-    <div
+    <main
       v-else
-      class="items overflow-y-auto h-[calc(100vh-1.6rem)] p-[0.2rem] pt-[1.2rem]"
+      class="container mx-auto px-4 py-6 lg:grid lg:grid-cols-12 lg:gap-8"
     >
-      <div
-        class="item bg-white rounded-lg shadow-sm mb-[0.2rem] p-[0.2rem] flex items-center"
-        v-for="item in getShopCartList"
-        :key="item.shopcartid"
-      >
-        <el-checkbox
-          v-model="item.checked"
-          class="mr-[0.1rem]"
-          @change="checkEveryCheckBox"
-        ></el-checkbox>
-        <div
-          class="pic w-[0.8rem] h-[0.8rem] bg-gray-100 rounded overflow-hidden"
-        >
-          <img
-            :src="getImg(item.bookpicname)"
-            class="w-full h-full object-cover"
-          />
-        </div>
-        <div class="descri flex-1 ml-[0.1rem]">
-          <div
-            class="book-title text-gray-800 font-medium text-[0.16rem] line-clamp-2 mb-[0.1rem]"
+      <div class="lg:col-span-8">
+        <!-- 全选控制 -->
+        <div class="bg-white p-4 rounded-xl shadow-sm mb-4 flex items-center">
+          <el-checkbox
+            v-model="isSelectAll"
+            @change="selectAll"
+            class="mr-3"
+          ></el-checkbox>
+          <span class="text-gray-600"
+            >全选（{{ getShopCartList.length }}件）</span
           >
-            {{ item.bookname }}
-          </div>
-          <div class="price flex justify-between items-center">
-            <span class="curprice text-red-500 font-medium text-[0.16rem]"
-              >¥{{ item.bookprice }}</span
-            >
-            <span class="addsubtrcbktosc">
-              <addSubtrsc
-                :book-item="
-                  getCurrentBookItem(item.bookisbn, item.purcharsenum)
-                "
-              />
-            </span>
+        </div>
+
+        <!-- 商品项 -->
+        <div class="space-y-4">
+          <div
+            v-for="item in getShopCartList"
+            :key="item.shopcartid"
+            class="bg-white rounded-xl shadow-sm p-4 flex items-start transition-all hover:shadow-md"
+          >
+            <el-checkbox
+              v-model="item.checked"
+              @change="checkEveryCheckBox"
+              class="mr-4 mt-2"
+            ></el-checkbox>
+            <img
+              :src="getImg(item.bookpicname)"
+              class="w-24 h-24 object-cover rounded-lg"
+            />
+            <div class="ml-4 flex-1">
+              <h3 class="font-medium text-gray-900 line-clamp-2 mb-2">
+                {{ item.bookname }}
+              </h3>
+              <div class="flex items-center justify-between">
+                <p class="text-red-500 font-bold text-lg">
+                  ¥{{ item.bookprice }}
+                </p>
+                <add-subtrsc
+                  :book-item="
+                    getCurrentBookItem(item.bookisbn, item.purcharsenum)
+                  "
+                  class="w-32"
+                />
+              </div>
+            </div>
           </div>
         </div>
       </div>
-    </div>
 
-    <!-- 结算栏 -->
-    <div
-      class="cal fixed bottom-0 left-0 right-0 bg-white shadow-inner p-[0.2rem] flex items-center justify-between"
-    >
-      <div class="checkall flex items-center">
-        <el-checkbox class="mr-[0.1rem]"></el-checkbox>
-        <span class="label text-gray-600 text-[0.16rem]">全选</span>
-        <span class="total ml-[0.1rem] text-gray-800 font-medium">
-          合计：
-          <span class="money text-red-500">¥{{ totalPrice }}</span>
-        </span>
+      <!-- 结算栏 -->
+      <div class="lg:col-span-4 lg:sticky lg:top-16 lg:h-[calc(100vh-4rem)]">
+        <div class="bg-white rounded-xl shadow-sm p-6 mt-4 lg:mt-0">
+          <div class="space-y-4">
+            <div class="flex justify-between items-center">
+              <span class="text-gray-600">商品合计：</span>
+              <span class="text-red-500 font-bold text-lg"
+                >¥{{ totalPrice }}</span
+              >
+            </div>
+            <div class="flex justify-between items-center">
+              <span class="text-gray-600">优惠折扣：</span>
+              <span class="text-red-500">-¥0.00</span>
+            </div>
+            <el-divider />
+            <div class="flex justify-between items-center font-bold">
+              <span>应付总额：</span>
+              <span class="text-red-500 text-xl">¥{{ totalPrice }}</span>
+            </div>
+            <el-button
+              type="primary"
+              class="w-full !px-4 !py-5 !bg-red-100 hover:!bg-red-200 !text-red-600 !rounded-lg transition-colors border-none text-sm font-bold"
+              @click="handleToOrder"
+            >
+              立即结算（{{ totalCount }}件）
+            </el-button>
+          </div>
+        </div>
       </div>
-      <el-button
-        class="pay bg-red-500 text-white px-[0.3rem] py-[0.08rem] rounded-full font-medium text-[0.16rem]"
-        @click="handleToOrder"
-      >
-        <span class="mr-[0.05rem]"
-          ><el-icon><ShoppingCart /></el-icon
-        ></span>
-        去结算({{ totalCount }})
-      </el-button>
-    </div>
+    </main>
   </div>
 </template>
 
 <script setup lang="ts">
+// 保持原有脚本逻辑不变，仅添加样式相关响应式处理
 import { ImgUtil } from "../../utils/imgUtil";
 import ShopCart from "../books/service/shopCart";
 import addSubtrsc from "../books/components/addSubtrsc.vue";
 import Books from "../books/service";
 import router from "../../router";
 import { ElCheckbox, ElButton, ElIcon } from "element-plus";
-import { Back, ShoppingCart } from "@element-plus/icons-vue";
+import { ShoppingCart } from "@element-plus/icons-vue";
 import { ElMessage } from "element-plus";
+
 const { getImg } = ImgUtil;
 const { isSelectAll, selectAll, checkEveryCheckBox } = ShopCart;
 const { getShopCartList } = ShopCart.storeRefs;
 const { getCurrentBookItem } = Books;
 const { totalCount, totalPrice } = ShopCart.refreshShopCartList();
-const handleToPage = () => {
-  router.back();
-};
-const handelToHome = () => {
-  router.push({ name: "home" });
-};
+
+const handelToHome = () => router.push({ name: "home" });
 const handleToOrder = () => {
-  if (totalCount.value === 0)
-    return ElMessage({
-      message: "您还没有选择商品哦！",
-      type: "warning",
-    });
+  if (totalCount.value === 0) {
+    ElMessage.warning("请先选择要结算的商品");
+    return;
+  }
   router.push({ name: "order" });
 };
 </script>
 
 <style scoped>
-/* 根据你的比例设置，确保文字大小和间距合适 */
-.shopcartlist {
-  font-size: 0.16rem;
-}
+/* 优化移动端显示 */
+@media (max-width: 1024px) {
+  .lg\:grid {
+    display: block;
+  }
 
-.items {
-  padding-top: 0.5rem;
-}
-
-.item {
-  margin-bottom: 0.2rem;
-}
-
-.cal {
-  font-size: 0.16rem;
-}
-
-.pay {
-  font-size: 0.16rem;
+  .lg\:col-span-4 {
+    margin-top: 2rem;
+  }
 }
 </style>

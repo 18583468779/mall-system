@@ -5,7 +5,9 @@
     <!-- 右侧固定导航 -->
     <rightComponent />
     <!-- 内容 -->
-    <router-view />
+    <div class="pt-16">
+      <router-view />
+    </div>
     <!-- 底部导航 -->
     <footer-nav />
   </div>
