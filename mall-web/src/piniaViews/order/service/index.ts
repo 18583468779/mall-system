@@ -66,7 +66,7 @@ class OrderService {
     const res: any = await OrderService.store.submitOrder(orderDetail);
     if (res && res.code == 200) {
       ShopCart.clearShopCartList(true); // 清空选中的购物车
-      router.push({ name: "orderSort" });
+      router.push({ name: "payPage" });
     }
   }
   // 获取订单信息
