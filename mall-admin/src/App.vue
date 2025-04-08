@@ -1,16 +1,6 @@
 <script setup lang="ts"></script>
 
-<template>
-  <div class="">
-    <a href="https://vite.dev" target="_blank">
-      <img src="/vite.svg" class="logo" alt="Vite logo" />
-    </a>
-    <a href="https://vuejs.org/" target="_blank">
-      <img src="./assets/vue.svg" class="logo vue" alt="Vue logo" />
-    </a>
-  </div>
-  <div class="bg-red-700">111</div>
-</template>
+<template></template>
 
 <style scoped>
 .logo {
