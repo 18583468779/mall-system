@@ -49,13 +49,10 @@
           <div class="bg-white rounded-xl shadow-sm p-6">
             <div class="flex items-center justify-between mb-4">
               <h2 class="text-lg font-medium text-gray-900">收货地址</h2>
-              <button
-                @click="goToAddressList"
-                class="text-blue-600 hover:text-blue-800 flex items-center text-sm"
-              >
+              <el-button type="default" @click="goToAddressList">
                 修改地址
                 <el-icon :size="16" class="ml-1"><ArrowRight /></el-icon>
-              </button>
+              </el-button>
             </div>
             <div class="flex items-start">
               <el-icon :size="24" class="text-gray-500 mr-3"
@@ -78,19 +75,29 @@
                 v-for="method in paymentMethods"
                 :key="method.id"
                 @click="changePaymentMethod(method.id)"
-                class="flex items-center p-4 border rounded-lg cursor-pointer transition-all"
+                class="flex items-center py-4 border rounded-lg cursor-pointer transition-all"
                 :class="{ 'border-blue-500': paymentMethod === method.id }"
               >
                 <component :is="method.icon" class="text-2xl mr-3" />
-                <div class="flex-1">
-                  <p class="font-medium text-gray-900">{{ method.name }}</p>
-                  <p class="text-gray-500 text-sm mt-1">
-                    {{ method.description }}
-                  </p>
+                <div class="flex-1 flex items-center gap-2">
+                  <i
+                    v-if="method.id === 'wechat'"
+                    class="iconfont icon-zhifu-_weixinzhifu text-[30px] text-green-500"
+                  ></i>
+                  <i
+                    v-else
+                    class="iconfont icon-alipay-active text-[30px] text-blue-500"
+                  ></i>
+                  <div>
+                    <p class="font-medium text-gray-900">{{ method.name }}</p>
+                    <p class="text-gray-500 text-sm mt-1">
+                      {{ method.description }}
+                    </p>
+                  </div>
                 </div>
                 <el-icon
                   v-if="paymentMethod === method.id"
-                  class="text-blue-500 text-xl"
+                  class="text-red-500 text-xl"
                 >
                   <CircleCheck />
                 </el-icon>
@@ -122,7 +129,8 @@
               </div>
               <el-button
                 type="primary"
-                class="w-full !rounded-full !py-4 !text-base mt-4"
+                class="w-full !rounded-lg !py-4 !text-base"
+                color="rgb(239 68 68)"
                 @click="submitOrder"
               >
                 提交订单
