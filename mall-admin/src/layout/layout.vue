@@ -1,15 +1,8 @@
 <template>
-  <template>
-    <h1>Hello App!</h1>
-    <p><strong>Current route path:</strong> {{ $route.fullPath }}</p>
-    <nav>
-      <RouterLink to="/">Go to Home</RouterLink>
-      <RouterLink to="/goods">Go to goods</RouterLink>
-    </nav>
-    <main>
-      <RouterView />
-    </main>
-  </template>
+  <div class="text-black">左侧菜单栏</div>
+  <div>
+    <router-view />
+  </div>
 </template>
 
 <script setup lang="ts"></script>

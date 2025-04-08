@@ -1,6 +1,8 @@
 <script setup lang="ts"></script>
 
-<template>app</template>
+<template>
+  <router-view />
+</template>
 
 <style scoped>
 .logo {
