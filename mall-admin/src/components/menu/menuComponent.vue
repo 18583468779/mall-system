@@ -4,11 +4,13 @@
     default-active="dashboard"
     router
     active-text-color="#646cff"
+    :collapse="menuCollapse"
   >
-    <div class="h-16 flex items-center justify-center">
-      <span class="text-[18px] font-bold text-[#4a4aff]"
-        >代码小库后台管理系统</span
-      >
+    <div
+      class="h-16 flex gap-2 items-center justify-center text-[18px] font-bold text-[#4a4aff]"
+    >
+      <span class="text-[24px]">D</span>
+      <span v-show="!menuCollapse">代码小库后台管理系统</span>
     </div>
 
     <template v-for="route in menuRoutes" :key="route.path">
@@ -44,9 +46,10 @@
 <script setup lang="ts">
 import { computed } from "vue";
 import { useRouter } from "vue-router";
-
+import layoutService from "../../layout/service";
+const { menuStoreRefs } = layoutService;
+const { menuCollapse } = menuStoreRefs;
 const router = useRouter();
-
 const menuRoutes: any = computed(() => {
   return (
     router.options.routes

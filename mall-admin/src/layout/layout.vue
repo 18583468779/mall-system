@@ -1,20 +1,11 @@
 <template>
   <div class="h-screen flex">
     <!-- 左侧菜单 -->
-    <MenuComponent />
+    <menu-component />
     <!-- 主内容区 -->
     <div class="flex-1 flex flex-col">
       <!-- 顶部导航 -->
-      <header class="h-16 border-b flex items-center px-6">
-        <div class="flex-1"></div>
-        <el-dropdown>
-          <span class="flex items-center">
-            <el-avatar :size="32" src="https://example.com/avatar.png" />
-            <span class="ml-2">管理员</span>
-          </span>
-        </el-dropdown>
-      </header>
-
+      <header-component />
       <!-- 内容区域 -->
       <main class="flex-1 p-6 bg-gray-50">
         <router-view v-slot="{ Component }">
@@ -29,6 +20,7 @@
 
 <script setup lang="ts">
 import MenuComponent from "../components/menu/menuComponent.vue";
+import HeaderComponent from "../components/header/headerComponent.vue";
 </script>
 
 <style scoped>

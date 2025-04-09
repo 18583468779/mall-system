@@ -1,11 +1,9 @@
 import { createWebHashHistory, createRouter } from "vue-router";
 
-import Layout from "../layout/layout.vue";
-
 const routes = [
   {
     path: "/",
-    component: Layout,
+    component: () => import("../layout/layout.vue"),
     redirect: "/dashboard",
     children: [
       {
