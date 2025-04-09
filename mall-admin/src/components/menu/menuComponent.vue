@@ -12,7 +12,26 @@
     </div>
 
     <template v-for="route in menuRoutes" :key="route.path">
-      <el-menu-item :index="route.path">
+      <el-sub-menu :index="route.path" v-if="route.meta.isSubMenu">
+        <template #title>
+          <el-icon>
+            <component :is="route.meta.icon" />
+          </el-icon>
+          <span>{{ route.meta.title }}</span>
+        </template>
+        <el-menu-item
+          v-for="child in route.children"
+          :key="child.name"
+          :index="child.path"
+        >
+          <el-icon>
+            <component :is="child.meta.icon" />
+          </el-icon>
+          <span>{{ child.meta.title }}</span>
+        </el-menu-item>
+      </el-sub-menu>
+
+      <el-menu-item :index="route.path" v-else>
         <el-icon>
           <component :is="route.meta.icon" />
         </el-icon>
