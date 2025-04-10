@@ -1,52 +1,119 @@
 <template>
-  <div class="product-list">
-    <div class="flex justify-between mb-4">
-      <el-input
-        v-model="searchKey"
-        placeholder="搜索商品"
-        class="w-64"
-        clearable
-      />
-      <el-button type="primary" @click="handleCreate"> 新增商品 </el-button>
+  <el-card>
+    <template #header>
+      <div class="card-header">
+        <h2 class="font-bold text-xl">商品管理</h2>
+      </div>
+    </template>
+    <div>
+      <el-form :inline="true" :model="formInline" class="demo-form-inline">
+        <el-form-item label="Approved by">
+          <el-input
+            v-model="formInline.user"
+            placeholder="Approved by"
+            clearable
+          />
+        </el-form-item>
+        <el-form-item label="Activity zone">
+          <el-select
+            v-model="formInline.region"
+            placeholder="Activity zone"
+            clearable
+          >
+            <el-option label="Zone one" value="shanghai" />
+            <el-option label="Zone two" value="beijing" />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="Activity time">
+          <el-date-picker
+            v-model="formInline.date"
+            type="date"
+            placeholder="Pick a date"
+            clearable
+          />
+        </el-form-item>
+        <el-form-item>
+          <el-button type="primary" @click="onSubmit">Query</el-button>
+        </el-form-item>
+      </el-form>
+    </div>
+    <div class="border border-1 border-solid border-dark-500">
+      <el-table :data="tableData" style="width: 100%">
+        <el-table-column fixed prop="date" label="Date" width="150" />
+        <el-table-column prop="name" label="Name" width="120" />
+        <el-table-column prop="state" label="State" width="120" />
+        <el-table-column prop="city" label="City" width="120" />
+        <el-table-column prop="address" label="Address" width="600" />
+        <el-table-column prop="zip" label="Zip" width="120" />
+        <el-table-column fixed="right" label="Operations" min-width="120">
+          <template #default>
+            <el-button link type="primary" size="small" @click="handleClick">
+              Detail
+            </el-button>
+            <el-button link type="primary" size="small">Edit</el-button>
+          </template>
+        </el-table-column>
+      </el-table>
     </div>
 
-    <el-table :data="filteredList" height="calc(100vh - 220px)">
-      <el-table-column prop="name" label="商品名称" width="300" />
-      <el-table-column prop="price" label="价格" width="120">
-        <template #default="{ row }"> ¥{{ row.price.toFixed(2) }} </template>
-      </el-table-column>
-      <el-table-column prop="stock" label="库存" width="120" />
-      <el-table-column label="操作" width="200">
-        <template #default="{ row }">
-          <el-button size="small">编辑</el-button>
-          <el-button type="danger" size="small">删除</el-button>
-        </template>
-      </el-table-column>
-    </el-table>
-  </div>
+    <div class="flex justify-end mt-10">
+      <el-pagination background layout="prev, pager, next" :total="1000" />
+    </div>
+  </el-card>
 </template>
 
-<script setup lang="ts">
-import { ref, computed } from "vue";
+<script lang="ts" setup>
+import { reactive } from "vue";
 
-interface Product {
-  id: number;
-  name: string;
-  price: number;
-  stock: number;
-}
-
-const searchKey = ref("");
-const products = ref<Product[]>([
-  { id: 1, name: "商品1", price: 100, stock: 50 },
-  { id: 2, name: "商品2", price: 200, stock: 30 },
-]);
-
-const filteredList = computed(() => {
-  return products.value.filter((p) => p.name.includes(searchKey.value));
+const formInline = reactive({
+  user: "",
+  region: "",
+  date: "",
 });
 
-const handleCreate = () => {
-  // 创建逻辑
+const onSubmit = () => {
+  console.log("submit!");
 };
+const handleClick = () => {
+  console.log("click");
+};
+
+const tableData = [
+  {
+    date: "2016-05-03",
+    name: "Tom",
+    state: "California",
+    city: "Los Angeles",
+    address: "No. 189, Grove St, Los Angeles",
+    zip: "CA 90036",
+    tag: "Home",
+  },
+  {
+    date: "2016-05-02",
+    name: "Tom",
+    state: "California",
+    city: "Los Angeles",
+    address: "No. 189, Grove St, Los Angeles",
+    zip: "CA 90036",
+    tag: "Office",
+  },
+  {
+    date: "2016-05-04",
+    name: "Tom",
+    state: "California",
+    city: "Los Angeles",
+    address: "No. 189, Grove St, Los Angeles",
+    zip: "CA 90036",
+    tag: "Home",
+  },
+  {
+    date: "2016-05-01",
+    name: "Tom",
+    state: "California",
+    city: "Los Angeles",
+    address: "No. 189, Grove St, Los Angeles",
+    zip: "CA 90036",
+    tag: "Office",
+  },
+];
 </script>
