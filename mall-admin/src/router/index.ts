@@ -1,4 +1,6 @@
 import { createWebHashHistory, createRouter } from "vue-router";
+import LayoutService from "../layout/service";
+
 
 const routes = [
   {
@@ -60,6 +62,13 @@ const routes = [
 const router = createRouter({
   history: createWebHashHistory(),
   routes,
+});
+
+router.beforeEach((to) => {
+  const {tabsStore} = LayoutService
+  if (to.path === "/login") return true;
+  tabsStore.addTab(to);
+  return true;
 });
 
 export default router;

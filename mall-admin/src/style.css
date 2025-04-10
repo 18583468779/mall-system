@@ -1,3 +1,35 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+
+/* 全局滚动条样式 */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+    background-color: transparent;
+  }
+  
+  /* 滚动轨道 */
+  ::-webkit-scrollbar-track {
+    @apply bg-gray-100 rounded-full;
+    border: 2px solid transparent;
+    background-clip: content-box;
+  }
+  
+  /* 滚动滑块 */
+  ::-webkit-scrollbar-thumb {
+    @apply bg-gradient-to-b from-blue-400 to-blue-500 rounded-full;
+    border: 2px solid rgba(255,255,255,0.2);
+    transition: all 0.3s ease;
+  }
+  
+  /* 悬浮效果 */
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-gradient-to-b from-blue-500 to-blue-600;
+  }
+  
+  /* 滚动条角落 */
+  ::-webkit-scrollbar-corner {
+    @apply bg-gray-50;
+  }

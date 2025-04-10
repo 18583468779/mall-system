@@ -1,7 +1,7 @@
 <template>
   <el-menu
     class="h-full w-64 border-r"
-    default-active="dashboard"
+    :default-active="routes.fullPath"
     router
     active-text-color="#646cff"
     :collapse="menuCollapse"
@@ -45,11 +45,15 @@
 
 <script setup lang="ts">
 import { computed } from "vue";
-import { useRouter } from "vue-router";
+import { useRouter,useRoute } from "vue-router";
 import layoutService from "../../layout/service";
 const { menuStoreRefs } = layoutService;
 const { menuCollapse } = menuStoreRefs;
 const router = useRouter();
+const routes = useRoute();
+
+
+console.log('r',)
 const menuRoutes: any = computed(() => {
   return (
     router.options.routes
