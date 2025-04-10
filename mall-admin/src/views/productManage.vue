@@ -6,36 +6,7 @@
       </div>
     </template>
     <div>
-      <el-form :inline="true" :model="formInline" class="demo-form-inline">
-        <el-form-item label="Approved by">
-          <el-input
-            v-model="formInline.user"
-            placeholder="Approved by"
-            clearable
-          />
-        </el-form-item>
-        <el-form-item label="Activity zone">
-          <el-select
-            v-model="formInline.region"
-            placeholder="Activity zone"
-            clearable
-          >
-            <el-option label="Zone one" value="shanghai" />
-            <el-option label="Zone two" value="beijing" />
-          </el-select>
-        </el-form-item>
-        <el-form-item label="Activity time">
-          <el-date-picker
-            v-model="formInline.date"
-            type="date"
-            placeholder="Pick a date"
-            clearable
-          />
-        </el-form-item>
-        <el-form-item>
-          <el-button type="primary" @click="onSubmit">Query</el-button>
-        </el-form-item>
-      </el-form>
+      <search-form :fields="searchFields" @submit="onSubmit" />
     </div>
     <div class="border border-1 border-solid border-dark-500">
       <el-table :data="tableData" style="width: 100%">
@@ -63,16 +34,38 @@
 </template>
 
 <script lang="ts" setup>
-import { reactive } from "vue";
+import SearchForm from "../components/searchForm/SearchForm.vue";
+import type { SearchField } from "../components/searchForm/types";
+const searchFields: SearchField[] = [
+  {
+    type: "input",
+    prop: "user",
+    label: "创建人",
+    placeholder: "请输入创建人",
+    span: 6,
+  },
+  {
+    type: "select",
+    prop: "region",
+    label: "商品分类",
+    placeholder: "请选择商品分类",
+    options: [
+      { label: "电子产品", value: "electronics" },
+      { label: "家用电器", value: "appliances" },
+    ],
+    span: 6,
+  },
+  {
+    type: "date",
+    prop: "date",
+    label: "创建时间",
+    placeholder: "请选择创建时间",
+    span: 6,
+  },
+];
 
-const formInline = reactive({
-  user: "",
-  region: "",
-  date: "",
-});
-
-const onSubmit = () => {
-  console.log("submit!");
+const onSubmit = (val: any) => {
+  console.log("submit!", val);
 };
 const handleClick = () => {
   console.log("click");
@@ -117,3 +110,37 @@ const tableData = [
   },
 ];
 </script>
+<style scoped>
+:deep(.el-card__header) {
+  @apply border-b border-gray-200 !py-3;
+}
+
+:deep(.el-table) {
+  @apply border border-gray-200 rounded-lg overflow-hidden;
+
+  th {
+    @apply bg-gray-50 !text-gray-600 font-medium;
+  }
+
+  td {
+    @apply !py-3;
+  }
+}
+
+:deep(.el-pagination) {
+  @apply justify-end;
+
+  .btn-prev,
+  .btn-next {
+    @apply border border-gray-300 rounded-md;
+  }
+
+  .number {
+    @apply border border-gray-300 rounded-md;
+  }
+
+  .active {
+    @apply bg-blue-500 text-white;
+  }
+}
+</style>
