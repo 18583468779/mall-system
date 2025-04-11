@@ -1,5 +1,9 @@
 <template>
-  <!-- <el-table
+  <div v-if="props.data && props.data.length === 0">
+    <el-empty :image-size="200" description="暂无数据" />
+  </div>
+  <el-table
+    v-else
     v-bind="$attrs"
     :data="props.data"
     :loading="props.loading"
@@ -13,8 +17,7 @@
         </template>
       </el-table-column>
     </template>
-  </el-table> -->
-  1
+  </el-table>
 </template>
 
 <script setup lang="ts">

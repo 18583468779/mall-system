@@ -28,7 +28,7 @@
     </template>
 
     <el-form-item class="!mr-0 !mb-0">
-      <el-button type="primary" @click="handleSubmit">查询</el-button>
+      <el-button color="#626aef" @click="handleSubmit">查询</el-button>
       <el-button @click="console.log(11)">重置</el-button>
     </el-form-item>
   </el-form>

@@ -1,44 +1,27 @@
 <template>
-  <el-card
-    class="!border-0 !shadow-card hover:!shadow-card-hover transition-all duration-300"
-  >
+  <el-card class="!border-0 !shadow-card hover:!shadow-card-hover ">
     <!-- 卡片头部 -->
     <template #header>
-      <div class="card-header px-4 py-3 bg-gray-50">
-        <h2 class="text-2xl font-semibold text-primary-600">
+      <div class="card-header px-4 py-6 bg-gray-50">
+        <!-- 搜索表单 -->
+        <search-form :fields="searchFields" @submit="handleSearch" />
+        <h2 class="text-xl font-semibold text-primary-600 flex items-center justify-between">
           <slot name="title">商品管理</slot>
+          <div>
+            <el-button color="#626aef" @click="onOpen">新增</el-button>
+          </div>
         </h2>
       </div>
     </template>
 
-    <!-- 搜索表单 -->
-    <div class="px-4 pb-4 border-b border-gray-200">
-      <search-form :fields="searchFields" @submit="handleSearch" />
-    </div>
-
     <!-- 数据表格 -->
     <div class="mt-4 px-4">
-      <data-table
-        :columns="columns"
-        :data="tableData"
-        :loading="loading"
-        @row-click="handleRowClick"
-      >
+      <data-table :columns="columns" :data="tableData" :loading="loading" @row-click="handleRowClick">
         <template #actions="{ row }">
-          <el-button
-            link
-            type="primary"
-            size="small"
-            @click.stop="handleDetail(row)"
-          >
+          <el-button link type="primary" size="small" @click.stop="handleDetail(row)">
             详情
           </el-button>
-          <el-button
-            link
-            type="warning"
-            size="small"
-            @click.stop="handleEdit(row)"
-          >
+          <el-button link type="warning" size="small" @click.stop="handleEdit(row)">
             编辑
           </el-button>
         </template>
@@ -47,23 +30,86 @@
 
     <!-- 分页 -->
     <div class="mt-6 px-4 pb-4">
-      <pagination
-        v-model:current-page="currentPage"
-        v-model:page-size="pageSize"
-        :total="total"
-      />
+      <pagination v-model:current-page="currentPage" v-model:page-size="pageSize" :total="total" />
     </div>
   </el-card>
+  <dialog-component title="新增商品" v-model="dialogFormVisible" @cancel="onCancel" @ok="onOk">
+    <dialog-form-component v-model="formData" :fields="formFields" :rules="formRules" ref="formRef" />
+  </dialog-component>
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
+import { reactive, ref } from "vue";
 import type { TableColumn } from "../components/tableComponent/types";
 import type { SearchField } from "../components/searchForm/types";
 import SearchForm from "../components/searchForm/SearchForm.vue";
 import DataTable from "../components/tableComponent/TableComponent.vue";
+import useVisiblehooks from '../hooks/useVisblehooks';
+import DialogComponent from '../components/dialogCompoennt/DialogCompoennt.vue';
+import DialogFormComponent, { type FormField } from "../components/dialogCompoennt/DialogFormComponent.vue";
+const { dialogFormVisible, onCancel, onOk, onOpen, formRef } = useVisiblehooks();
+
 const loading = ref(false);
 const tableData = ref([]); // 你的数据
+
+const formData = reactive({
+  name: '',
+  category: '',
+  price: 0,
+  stock: 100
+})
+const formFields: FormField[] = [
+  {
+    type: 'input',
+    prop: 'name',
+    label: '商品名称',
+    attrs: {
+      placeholder: '请输入商品名称',
+      clearable: true
+    }
+  },
+  {
+    type: 'select',
+    prop: 'category',
+    label: '商品分类',
+    options: [
+      { label: '电子产品', value: 1 },
+      { label: '家用电器', value: 2 }
+    ],
+    attrs: {
+      placeholder: '请选择分类'
+    }
+  },
+  {
+    type: 'input',
+    prop: 'price',
+    label: '商品价格',
+    attrs: {
+      type: 'number',
+      min: 0,
+      step: 0.01
+    }
+  }
+]
+
+const formRules = {
+  name: [
+    { required: true, message: '商品名称不能为空', trigger: 'blur' }
+  ],
+  category: [
+    { required: true, message: '请选择商品分类', trigger: 'change' }
+  ],
+  price: [
+    {
+      validator: (_: any, value: number, callback: (arg0: Error | undefined) => void) => {
+        if (value <= 0) return callback(new Error('价格必须大于0'))
+        callback(undefined)
+      },
+      trigger: 'blur'
+    }
+  ]
+}
+
 
 const handleRowClick = (row: any) => {
   console.log("Row clicked:", row);
@@ -80,6 +126,7 @@ const searchFields: SearchField[] = [
     type: "select",
     prop: "region",
     label: "商品分类",
+    placeholder: "请选择商品分类",
     options: [
       { label: "电子产品", value: "electronics" },
       { label: "家用电器", value: "appliances" },
@@ -90,6 +137,7 @@ const searchFields: SearchField[] = [
     type: "date",
     prop: "date",
     label: "创建时间",
+    placeholder: "请选择创建时间",
     span: 6,
   },
 ];
@@ -152,7 +200,6 @@ const handleEdit = (row: any) => {
     @apply border border-gray-300 rounded-md;
   }
 
-  .active {
-  }
+  .active {}
 }
 </style>
