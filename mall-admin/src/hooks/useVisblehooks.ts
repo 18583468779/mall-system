@@ -4,7 +4,7 @@ import { ref } from "vue";
  * @description: 封装一个对话框的hooks
  * @param {*}
  * @return {*}
-*/
+ */
 
 export default function useVisiblehooks() {
   const dialogFormVisible = ref(false);
@@ -13,7 +13,6 @@ export default function useVisiblehooks() {
     dialogFormVisible.value = true;
   };
   const onOk = () => {
-    console.log('formRef', formRef.value.value)
     dialogFormVisible.value = false;
   };
   const onCancel = () => {
