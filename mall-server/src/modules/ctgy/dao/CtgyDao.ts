@@ -18,16 +18,29 @@ class CtgyDao {
     return convert(res);
   }
   async findAllCtgys() {
-    // 原生查询所有分类
-    const sql = `select * from firstctgy fc inner join secondctgy sc on fc.firstctgyid = sc.firstctgyid inner join thirdctgy tc on sc.secondctgyid = tc.secctgyid`;
-    let res: Array<any> = (await sequelize.query(sql))[0];
+    // 使用LEFT JOIN保留所有层级
+    const sql = `
+      SELECT 
+        fc.firstctgyid,
+        fc.firstctgyname,
+        sc.secondctgyid,
+        sc.secctgyname,
+        tc.thirdctgyid,
+        tc.thirdctgyname
+      FROM firstctgy fc
+      LEFT JOIN secondctgy sc ON fc.firstctgyid = sc.firstctgyid
+      LEFT JOIN thirdctgy tc ON sc.secondctgyid = tc.secctgyid
+    `;
+
+    const res: any = (await sequelize.query(sql))[0];
     return convertToTree(res);
   }
+
   async findSecCtgys() {
     // 查找所有的一级和二级分类
     const sql = `select * from firstctgy fc inner join secondctgy sc on fc.firstctgyid = sc.firstctgyid`;
     let res: Array<any> = (await sequelize.query(sql))[0];
-    return convertToTree(res, false);
+    return convertToTree(res);
   }
   async addCtgys(type: CtgyType, name: string) {
     // 添加分类

@@ -1,12 +1,3 @@
-interface FlatCategory {
-  firstctgyId: number;
-  firstctgyname: string;
-  secondctgyid: number;
-  secctgyname: string;
-  thirdctgyid: number;
-  thirdctgyname: string;
-}
-
 interface ThirdCtgy {
   thirdctgyid: number;
   thirdctgyname: string;
@@ -24,52 +15,62 @@ interface FirstCtgy {
   secondCtgys: SecondCtgy[];
 }
 
-export function convertToTree(
-  flatData: FlatCategory[],
-  haveThird = true
-): FirstCtgy[] {
-  // 使用 Map 存储一级分类
-  const firstCtgyMap = new Map<number, FirstCtgy>();
+interface FlatCategory {
+  firstctgyid: number;
+  firstctgyname: string;
+  secondctgyid: number | null; // 允许null值
+  secctgyname: string | null;
+  thirdctgyid: number | null;
+  thirdctgyname: string | null;
+}
 
-  for (const item of flatData) {
-    // 处理一级分类
-    let firstCtgy = firstCtgyMap.get(item.firstctgyId);
-    if (!firstCtgy) {
-      firstCtgy = {
-        firstctgyId: item.firstctgyId,
+export function convertToTree(flatData: FlatCategory[]): FirstCtgy[] {
+  // 创建一级分类Map
+  const firstMap = new Map<number, FirstCtgy>();
+
+  // 第一遍遍历：创建所有一级分类
+  flatData.forEach((item) => {
+    if (!firstMap.has(item.firstctgyid)) {
+      firstMap.set(item.firstctgyid, {
+        firstctgyId: item.firstctgyid,
         firstctgyname: item.firstctgyname,
         secondCtgys: [],
-      };
-      firstCtgyMap.set(item.firstctgyId, firstCtgy);
-    }
-
-    // 处理二级分类
-    let secondCtgy = firstCtgy.secondCtgys.find(
-      (s) => s.secondctgyid === item.secondctgyid
-    );
-    if (!secondCtgy && haveThird) {
-      secondCtgy = {
-        secondctgyid: item.secondctgyid,
-        secctgyname: item.secctgyname,
-        thirdCtgys: [],
-      };
-    } else {
-      secondCtgy = {
-        secondctgyid: item.secondctgyid,
-        secctgyname: item.secctgyname,
-      };
-    }
-
-    firstCtgy.secondCtgys.push(secondCtgy);
-
-    if (haveThird) {
-      // 处理三级分类
-      secondCtgy?.thirdCtgys?.push({
-        thirdctgyid: item.thirdctgyid,
-        thirdctgyname: item.thirdctgyname,
       });
     }
-  }
+  });
 
-  return Array.from(firstCtgyMap.values());
+  // 第二遍遍历：处理二级分类
+  const secondMap = new Map<string, SecondCtgy>();
+  flatData.forEach((item) => {
+    if (item.secondctgyid !== null) {
+      const key = `${item.firstctgyid}-${item.secondctgyid}`;
+      if (!secondMap.has(key)) {
+        secondMap.set(key, {
+          secondctgyid: item.secondctgyid,
+          secctgyname: item.secctgyname || "未命名二级分类",
+          thirdCtgys: [],
+        });
+
+        // 挂载到一级分类
+        const first = firstMap.get(item.firstctgyid)!;
+        first.secondCtgys.push(secondMap.get(key)!);
+      }
+    }
+  });
+
+  // 第三遍遍历：处理三级分类
+  flatData.forEach((item) => {
+    if (item.thirdctgyid !== null && item.secondctgyid !== null) {
+      const key = `${item.firstctgyid}-${item.secondctgyid}`;
+      const second = secondMap.get(key);
+      if (second) {
+        second.thirdCtgys?.push({
+          thirdctgyid: item.thirdctgyid,
+          thirdctgyname: item.thirdctgyname || "未命名三级分类",
+        });
+      }
+    }
+  });
+
+  return Array.from(firstMap.values());
 }
