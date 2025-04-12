@@ -1,7 +1,6 @@
 import { createWebHashHistory, createRouter } from "vue-router";
 import LayoutService from "../layout/service";
 
-
 const routes = [
   {
     path: "/",
@@ -40,9 +39,15 @@ const routes = [
         ],
       },
       {
+        path: "/ctgyManage",
+        name: "ctgyManage",
+        component: () => import("../views/ctgyManage/CtgyManage.vue"),
+        meta: { title: "商品分类管理", icon: "Grid" },
+      },
+      {
         path: "/productManage",
         name: "productManage",
-        component: () => import("../views/productManage.vue"),
+        component: () => import("../views/productManage/productManage.vue"),
         meta: { title: "商品管理", icon: "Goods" },
       },
       {
@@ -65,7 +70,7 @@ const router = createRouter({
 });
 
 router.beforeEach((to) => {
-  const {tabsStore} = LayoutService
+  const { tabsStore } = LayoutService;
   if (to.path === "/login") return true;
   tabsStore.addTab(to);
   return true;

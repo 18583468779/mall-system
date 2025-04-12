@@ -7,6 +7,7 @@
     v-bind="$attrs"
     :data="props.data"
     :loading="props.loading"
+    row-key="id"
     highlight-current-row
     @row-click="handleRowClick"
   >

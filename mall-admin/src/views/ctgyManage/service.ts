@@ -1,0 +1,70 @@
+import { ref } from "vue";
+import ctgyApi from "../../api/CtgyApi.ts";
+
+interface Category {
+  [key: string]: any;
+  children?: Category[];
+}
+
+interface SecondCategory {
+  secondctgyid: number;
+  secctgyname: string;
+  thirdCtgys?: ThirdCategory[];
+}
+
+interface ThirdCategory {
+  thirdctgyid: number;
+  thirdctgyname: string;
+}
+
+class Service {
+  static tableData = ref<Array<Record<string, any>>>([]);
+
+  static async init() {
+    // 初始化数据
+    await this.getTableData();
+  }
+  static async getTableData() {
+    // 模拟异步请求数据
+    let res: any = await ctgyApi.getAllCtgyList();
+    if (res.code === 200) {
+      Service.tableData.value = normalizeTree(res.data);
+    }
+  }
+}
+
+function normalizeTree(arr: Category[], parentFullId = ""): Category[] {
+  return arr.map((item) => {
+    // 自动检测ID和名称字段
+    const idKey = Object.keys(item).find((k) => /ctgy.*id/i.test(k)) || "id";
+    const nameKey =
+      Object.keys(item).find((k) => /ctgy.*name/i.test(k)) || "name";
+    const childrenKey =
+      Object.keys(item).find((k) => Array.isArray(item[k])) || "children";
+
+    // 生成当前节点的完整ID
+    const currentId = item[idKey].toString();
+    const fullId = parentFullId ? `${parentFullId}-${currentId}` : currentId;
+
+    // 构建标准化节点
+    const node: Category = {
+      id: fullId,
+      name: item[nameKey],
+      // 保留原始数据中的其他属性
+      ...Object.fromEntries(
+        Object.entries(item).filter(
+          ([k]) => k !== idKey && k !== nameKey && k !== childrenKey
+        )
+      ),
+    };
+
+    // 递归处理子节点
+    if (childrenKey && item[childrenKey]?.length) {
+      node.children = normalizeTree(item[childrenKey], fullId);
+    }
+
+    return node;
+  });
+}
+
+export default Service;

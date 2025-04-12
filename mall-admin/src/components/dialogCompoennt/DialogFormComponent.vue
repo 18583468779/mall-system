@@ -12,7 +12,7 @@
             :is="getComponent(field.type)"
             v-model="modelValue[field.prop]"
             v-bind="field.attrs"
-            v-on="field.listeners"
+            v-on="field.listeners || {}"
           >
             <!-- 下拉选项 -->
             <template v-if="field.type === 'select'">
@@ -39,7 +39,13 @@
 import type { FormInstance, FormRules } from "element-plus";
 import { ref } from "vue";
 
-type FormFieldType = "input" | "select" | "date" | "radio" | "checkbox";
+type FormFieldType =
+  | "input"
+  | "select"
+  | "date"
+  | "radio"
+  | "checkbox"
+  | "treeSelect";
 
 export interface FormField {
   type: FormFieldType; // 表单类型
@@ -75,6 +81,7 @@ const componentMap: Record<FormFieldType, any> = {
   date: "el-date-picker",
   checkbox: "el-checkbox-group",
   radio: "el-radio-group",
+  treeSelect: "el-tree-select",
 };
 const getComponent = (type: FormFieldType) => {
   return componentMap[type] || "el-input";

@@ -1,85 +1,87 @@
 <template>
-  <el-card class="!border-0 !shadow-card hover:!shadow-card-hover">
-    <!-- 卡片头部 -->
-    <template #header>
-      <div class="card-header px-4 py-6 bg-gray-50">
-        <!-- 搜索表单 -->
-        <search-form :fields="searchFields" @submit="handleSearch" />
-        <h2
-          class="text-xl font-semibold text-primary-600 flex items-center justify-between"
+  <div>
+    <el-card class="!border-0 !shadow-card hover:!shadow-card-hover">
+      <!-- 卡片头部 -->
+      <template #header>
+        <div class="card-header px-4 py-6 bg-gray-50">
+          <!-- 搜索表单 -->
+          <search-form :fields="searchFields" @submit="handleSearch" />
+          <h2
+            class="text-xl font-semibold text-primary-600 flex items-center justify-between"
+          >
+            <slot name="title">商品管理</slot>
+            <div>
+              <el-button color="#626aef" @click="onOpen">新增</el-button>
+            </div>
+          </h2>
+        </div>
+      </template>
+
+      <!-- 数据表格 -->
+      <div class="mt-4 px-4">
+        <data-table
+          :columns="columns"
+          :data="tableData"
+          :loading="loading"
+          @row-click="handleRowClick"
         >
-          <slot name="title">商品管理</slot>
-          <div>
-            <el-button color="#626aef" @click="onOpen">新增</el-button>
-          </div>
-        </h2>
+          <template #actions="{ row }">
+            <el-button
+              link
+              type="primary"
+              size="small"
+              @click.stop="handleDetail(row)"
+            >
+              详情
+            </el-button>
+            <el-button
+              link
+              type="warning"
+              size="small"
+              @click.stop="handleEdit(row)"
+            >
+              编辑
+            </el-button>
+          </template>
+        </data-table>
       </div>
-    </template>
 
-    <!-- 数据表格 -->
-    <div class="mt-4 px-4">
-      <data-table
-        :columns="columns"
-        :data="tableData"
-        :loading="loading"
-        @row-click="handleRowClick"
-      >
-        <template #actions="{ row }">
-          <el-button
-            link
-            type="primary"
-            size="small"
-            @click.stop="handleDetail(row)"
-          >
-            详情
-          </el-button>
-          <el-button
-            link
-            type="warning"
-            size="small"
-            @click.stop="handleEdit(row)"
-          >
-            编辑
-          </el-button>
-        </template>
-      </data-table>
-    </div>
-
-    <!-- 分页 -->
-    <div class="mt-6 px-4 pb-4">
-      <pagination
-        v-model:current-page="currentPage"
-        v-model:page-size="pageSize"
-        :total="total"
+      <!-- 分页 -->
+      <div class="mt-6 px-4 pb-4">
+        <pagination
+          v-model:current-page="currentPage"
+          v-model:page-size="pageSize"
+          :total="total"
+        />
+      </div>
+    </el-card>
+    <dialog-component
+      title="新增商品"
+      v-model="dialogFormVisible"
+      :footer="false"
+    >
+      <dialog-form-component
+        v-model="formData"
+        :fields="formFields"
+        :rules="formRules"
+        @ok="handleOk"
+        ref="formRef"
       />
-    </div>
-  </el-card>
-  <dialog-component
-    title="新增商品"
-    v-model="dialogFormVisible"
-    :footer="false"
-  >
-    <dialog-form-component
-      v-model="formData"
-      :fields="formFields"
-      :rules="formRules"
-      @ok="handleOk"
-      ref="formRef"
-    />
-  </dialog-component>
+    </dialog-component>
+  </div>
 </template>
 
 <script setup lang="ts">
 import { reactive, ref } from "vue";
-import type { TableColumn } from "../components/tableComponent/types";
-import type { SearchField } from "../components/searchForm/types";
-import SearchForm from "../components/searchForm/SearchForm.vue";
-import DataTable from "../components/tableComponent/TableComponent.vue";
-import useVisiblehooks from "../hooks/useVisblehooks";
-import DialogComponent from "../components/dialogCompoennt/DialogCompoennt.vue";
+import type { TableColumn } from "../../components/tableComponent/types";
+import type { SearchField } from "../../components/searchForm/types";
+import SearchForm from "../../components/searchForm/SearchForm.vue";
+import DataTable from "../../components/tableComponent/TableComponent.vue";
+import useVisiblehooks from "../../hooks/useVisblehooks";
+import DialogComponent from "../../components/dialogCompoennt/DialogCompoennt.vue";
 import DialogFormComponent, {
   type FormField,
-} from "../components/dialogCompoennt/DialogFormComponent.vue";
+} from "../../components/dialogCompoennt/DialogFormComponent.vue";
 import { ElMessage } from "element-plus";
 const { dialogFormVisible, onOk, onOpen, formRef } = useVisiblehooks();
 
