@@ -19,10 +19,11 @@ interface ThirdCategory {
 
 class Service {
   static tableData = ref<Array<Record<string, any>>>([]);
-
+  static firstSecondCtgys = ref<Array<Record<string, any>>>([]);
   static async init() {
     // 初始化数据
-    await this.getTableData();
+    await Service.getTableData();
+    await Service.findSecCtgys();
   }
   static async getTableData() {
     // 模拟异步请求数据
@@ -31,14 +32,31 @@ class Service {
       Service.tableData.value = normalizeTree(res.data);
     }
   }
+  static async findSecCtgys() {
+    // 模拟异步请求数据
+    let res: any = await ctgyApi.findSecCtgys();
+    if (res.code === 200) {
+      Service.firstSecondCtgys.value = normalizeTree(
+        res.data,
+        "",
+        "value",
+        "label"
+      );
+    }
+  }
 }
 
-function normalizeTree(arr: Category[], parentFullId = ""): Category[] {
+function normalizeTree(
+  arr: Category[],
+  parentFullId = "",
+  id = "id",
+  name = "name"
+): Category[] {
   return arr.map((item) => {
     // 自动检测ID和名称字段
-    const idKey = Object.keys(item).find((k) => /ctgy.*id/i.test(k)) || "id";
+    const idKey = Object.keys(item).find((k) => /ctgy.*id/i.test(k)) || id;
     const nameKey =
-      Object.keys(item).find((k) => /ctgy.*name/i.test(k)) || "name";
+      Object.keys(item).find((k) => /ctgy.*name/i.test(k)) || name;
     const childrenKey =
       Object.keys(item).find((k) => Array.isArray(item[k])) || "children";
 
@@ -48,8 +66,8 @@ function normalizeTree(arr: Category[], parentFullId = ""): Category[] {
 
     // 构建标准化节点
     const node: Category = {
-      id: fullId,
-      name: item[nameKey],
+      [id]: fullId,
+      [name]: item[nameKey],
       // 保留原始数据中的其他属性
       ...Object.fromEntries(
         Object.entries(item).filter(
@@ -60,7 +78,7 @@ function normalizeTree(arr: Category[], parentFullId = ""): Category[] {
 
     // 递归处理子节点
     if (childrenKey && item[childrenKey]?.length) {
-      node.children = normalizeTree(item[childrenKey], fullId);
+      node.children = normalizeTree(item[childrenKey], fullId, id, name);
     }
 
     return node;

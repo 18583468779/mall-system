@@ -5,5 +5,8 @@ class CtgyAPI {
   getAllCtgyList() {
     return request.get("/ctgymodule/findAllCtgys", false);
   }
+  findSecCtgys() {
+    return request.get("/ctgymodule/findSecCtgys", false);
+  }
 }
 export default CtgyAPI.api;

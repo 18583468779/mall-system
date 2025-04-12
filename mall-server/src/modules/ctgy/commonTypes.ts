@@ -15,7 +15,7 @@ interface ThirdCtgy {
 interface SecondCtgy {
   secondctgyid: number;
   secctgyname: string;
-  thirdCtgys: ThirdCtgy[];
+  thirdCtgys?: ThirdCtgy[];
 }
 
 interface FirstCtgy {
@@ -24,7 +24,10 @@ interface FirstCtgy {
   secondCtgys: SecondCtgy[];
 }
 
-export function convertToTree(flatData: FlatCategory[]): FirstCtgy[] {
+export function convertToTree(
+  flatData: FlatCategory[],
+  haveThird = true
+): FirstCtgy[] {
   // 使用 Map 存储一级分类
   const firstCtgyMap = new Map<number, FirstCtgy>();
 
@@ -44,20 +47,28 @@ export function convertToTree(flatData: FlatCategory[]): FirstCtgy[] {
     let secondCtgy = firstCtgy.secondCtgys.find(
       (s) => s.secondctgyid === item.secondctgyid
     );
-    if (!secondCtgy) {
+    if (!secondCtgy && haveThird) {
       secondCtgy = {
         secondctgyid: item.secondctgyid,
         secctgyname: item.secctgyname,
         thirdCtgys: [],
       };
-      firstCtgy.secondCtgys.push(secondCtgy);
+    } else {
+      secondCtgy = {
+        secondctgyid: item.secondctgyid,
+        secctgyname: item.secctgyname,
+      };
     }
 
-    // 处理三级分类
-    secondCtgy.thirdCtgys.push({
-      thirdctgyid: item.thirdctgyid,
-      thirdctgyname: item.thirdctgyname,
-    });
+    firstCtgy.secondCtgys.push(secondCtgy);
+
+    if (haveThird) {
+      // 处理三级分类
+      secondCtgy?.thirdCtgys?.push({
+        thirdctgyid: item.thirdctgyid,
+        thirdctgyname: item.thirdctgyname,
+      });
+    }
   }
 
   return Array.from(firstCtgyMap.values());

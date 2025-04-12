@@ -16,6 +16,12 @@ class CtgyDao {
     let res: Array<any> = (await sequelize.query(sql))[0];
     return convertToTree(res);
   }
+  async findSecCtgys() {
+    // 查找所有的一级和二级分类
+    const sql = `select * from firstctgy fc inner join secondctgy sc on fc.firstctgyid = sc.firstctgyid`;
+    let res: Array<any> = (await sequelize.query(sql))[0];
+    return convertToTree(res, false);
+  }
   async findFirstCtgys() {
     return await FirstCtgy.findAll({
       raw: true,

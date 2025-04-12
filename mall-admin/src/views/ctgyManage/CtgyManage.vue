@@ -42,6 +42,14 @@
             >
               编辑
             </el-button>
+            <el-button
+              link
+              type="danger"
+              size="small"
+              @click.stop="handleEdit(row)"
+            >
+              删除
+            </el-button>
           </template>
         </data-table>
       </div>
@@ -72,33 +80,29 @@
 </template>
 
 <script setup lang="ts">
-import { reactive, ref } from "vue";
+import { computed, reactive, ref } from "vue";
 import type { TableColumn } from "../../components/tableComponent/types";
 import type { SearchField } from "../../components/searchForm/types";
 import SearchForm from "../../components/searchForm/SearchForm.vue";
 import DataTable from "../../components/tableComponent/TableComponent.vue";
 import useVisiblehooks from "../../hooks/useVisblehooks";
 import DialogComponent from "../../components/dialogCompoennt/DialogCompoennt.vue";
-import DialogFormComponent, {
-  type FormField,
-} from "../../components/dialogCompoennt/DialogFormComponent.vue";
+import DialogFormComponent from "../../components/dialogCompoennt/DialogFormComponent.vue";
 import { ElMessage } from "element-plus";
 import service from "./service";
 import { onMounted } from "vue";
-const { getTableData, tableData } = service;
+const { init, tableData, firstSecondCtgys } = service;
 const { dialogFormVisible, onOk, onOpen, formRef } = useVisiblehooks();
 onMounted(() => {
-  getTableData();
+  init();
 });
 const loading = ref(false);
 
 const formData = reactive({
   name: "",
   category: "",
-  price: 0,
-  stock: 100,
 });
-const formFields: FormField[] = [
+const formFields: any = ref([
   {
     type: "input",
     prop: "name",
@@ -112,100 +116,17 @@ const formFields: FormField[] = [
     type: "treeSelect",
     prop: "category",
     label: "父级分类",
-
-    attrs: {
+    attrs: computed(() => ({
       placeholder: "请选择分类",
       "check-strictly": true,
-      data: [
-        {
-          value: "1",
-          label: "Level one 1",
-          children: [
-            {
-              value: "1-1",
-              label: "Level two 1-1",
-              children: [
-                {
-                  value: "1-1-1",
-                  label: "Level three 1-1-1",
-                },
-              ],
-            },
-          ],
-        },
-        {
-          value: "2",
-          label: "Level one 2",
-          children: [
-            {
-              value: "2-1",
-              label: "Level two 2-1",
-              children: [
-                {
-                  value: "2-1-1",
-                  label: "Level three 2-1-1",
-                },
-              ],
-            },
-            {
-              value: "2-2",
-              label: "Level two 2-2",
-              children: [
-                {
-                  value: "2-2-1",
-                  label: "Level three 2-2-1",
-                },
-              ],
-            },
-          ],
-        },
-        {
-          value: "3",
-          label: "Level one 3",
-          children: [
-            {
-              value: "3-1",
-              label: "Level two 3-1",
-              children: [
-                {
-                  value: "3-1-1",
-                  label: "Level three 3-1-1",
-                },
-              ],
-            },
-            {
-              value: "3-2",
-              label: "Level two 3-2",
-              children: [
-                {
-                  value: "3-2-1",
-                  label: "Level three 3-2-1",
-                },
-              ],
-            },
-          ],
-        },
-      ],
-    },
+      data: firstSecondCtgys.value, // 使用计算属性保持响应式
+      clearable: true,
+    })),
   },
-];
+]);
 
 const formRules = {
   name: [{ required: true, message: "商品名称不能为空", trigger: "blur" }],
-  category: [{ required: true, message: "请选择商品分类", trigger: "change" }],
-  price: [
-    {
-      validator: (
-        _: any,
-        value: number,
-        callback: (arg0: Error | undefined) => void
-      ) => {
-        if (value <= 0) return callback(new Error("价格必须大于0"));
-        callback(undefined);
-      },
-      trigger: "blur",
-    },
-  ],
 };
 const handleOk = async () => {
   try {
