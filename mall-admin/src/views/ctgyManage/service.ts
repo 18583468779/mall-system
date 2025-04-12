@@ -1,5 +1,6 @@
 import { ref } from "vue";
-import ctgyApi from "../../api/CtgyApi.ts";
+import ctgyApi, { CtgyType } from "../../api/CtgyApi.ts";
+import { ElMessage } from "element-plus";
 
 interface Category {
   [key: string]: any;
@@ -42,6 +43,15 @@ class Service {
         "value",
         "label"
       );
+    }
+  }
+  static async addCtgys(type: CtgyType, name: string) {
+    // 模拟异步请求数据
+    let res: any = await ctgyApi.addCtgys(type, name);
+    if (res.code === 200) {
+      await Service.getTableData();
+      await Service.findSecCtgys();
+      console.log("res", res);
     }
   }
 }

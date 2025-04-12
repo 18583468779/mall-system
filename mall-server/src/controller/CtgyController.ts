@@ -1,7 +1,7 @@
 // ts 装饰器重构koa路由中的方法装饰器
 
 import { success } from "../common/ResResult";
-import { get } from "../decorator/requestmethoddecorator";
+import { get, post } from "../decorator/requestmethoddecorator";
 import { Controller } from "../decorator/controllerdecorator";
 import { Context } from "koa";
 import ctgyDao from "../modules/ctgy/dao/CtgyDao";
@@ -21,6 +21,12 @@ class CtgyController {
   @get("/findSecCtgys")
   async findSecCtgys(ctx: Context) {
     const data = success(await ctgyDao.findSecCtgys());
+    ctx.body = data;
+  }
+  @post("/addCtgys")
+  async addCtgys(ctx: Context) {
+    const { type, name } = ctx.request.body;
+    const data = success(await ctgyDao.addCtgys(type, name));
     ctx.body = data;
   }
   @get("/findFirstCtgys")

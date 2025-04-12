@@ -91,14 +91,15 @@ import DialogFormComponent from "../../components/dialogCompoennt/DialogFormComp
 import { ElMessage } from "element-plus";
 import service from "./service";
 import { onMounted } from "vue";
-const { init, tableData, firstSecondCtgys } = service;
+import { CtgyType } from "../../api/CtgyApi";
+const { init, tableData, firstSecondCtgys, addCtgys } = service;
 const { dialogFormVisible, onOk, onOpen, formRef } = useVisiblehooks();
 onMounted(() => {
   init();
 });
 const loading = ref(false);
 
-const formData = reactive({
+const formData: any = reactive({
   name: "",
   category: "",
 });
@@ -138,7 +139,11 @@ const handleOk = async () => {
 
     // 3. 提交数据（示例）
     console.log("Form Data:", formData);
-
+    if (!formData.category) {
+      // 没有选择父类，就是一级分类
+      await addCtgys(CtgyType.first, formData.name);
+    }
+    // addCtgys(formData);
     // 4. 处理成功
     ElMessage.success("提交成功");
     onOk(); // 关闭弹窗

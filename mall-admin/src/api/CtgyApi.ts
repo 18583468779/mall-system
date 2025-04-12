@@ -1,5 +1,11 @@
 import request from "../utils/axiosUtil";
 
+export enum CtgyType {
+  first = 1, // 一级分类
+  second = 2, // 二级分类
+  third = 3, // 三级分类
+}
+
 class CtgyAPI {
   static api: CtgyAPI = new CtgyAPI();
   getAllCtgyList() {
@@ -7,6 +13,10 @@ class CtgyAPI {
   }
   findSecCtgys() {
     return request.get("/ctgymodule/findSecCtgys", false);
+  }
+  addCtgys(type: CtgyType, name: string) {
+    let params = { type, name };
+    return request.post("/ctgymodule/addCtgys", false, params);
   }
 }
 export default CtgyAPI.api;

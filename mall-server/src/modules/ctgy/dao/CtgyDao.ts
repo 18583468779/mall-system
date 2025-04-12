@@ -2,6 +2,13 @@ import { sequelize } from "../../../modules/BaseDao";
 import { convertToTree } from "../commonTypes";
 import FirstCtgy from "../defmodel/FirstCtgy";
 import convert from "../moduletypes";
+
+export enum CtgyType {
+  first = 1, // 一级分类
+  second = 2, // 二级分类
+  third = 3, // 三级分类
+}
+
 class CtgyDao {
   static ctgyDao: CtgyDao = new CtgyDao();
   async findSecThrdCtgys(firstctgyid: number) {
@@ -21,6 +28,13 @@ class CtgyDao {
     const sql = `select * from firstctgy fc inner join secondctgy sc on fc.firstctgyid = sc.firstctgyid`;
     let res: Array<any> = (await sequelize.query(sql))[0];
     return convertToTree(res, false);
+  }
+  async addCtgys(type: CtgyType, name: string) {
+    // 添加分类
+    switch (type) {
+      case CtgyType.first:
+        return await FirstCtgy.create({ firstctgyname: name });
+    }
   }
   async findFirstCtgys() {
     return await FirstCtgy.findAll({
