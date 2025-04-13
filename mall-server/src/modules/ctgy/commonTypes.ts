@@ -24,7 +24,10 @@ interface FlatCategory {
   thirdctgyname: string | null;
 }
 
-export function convertToTree(flatData: FlatCategory[]): FirstCtgy[] {
+export function convertToTree(
+  flatData: FlatCategory[],
+  showThird = true
+): FirstCtgy[] {
   // 创建一级分类Map
   const firstMap = new Map<number, FirstCtgy>();
 
@@ -45,11 +48,14 @@ export function convertToTree(flatData: FlatCategory[]): FirstCtgy[] {
     if (item.secondctgyid !== null) {
       const key = `${item.firstctgyid}-${item.secondctgyid}`;
       if (!secondMap.has(key)) {
-        secondMap.set(key, {
+        let obj: SecondCtgy = {
           secondctgyid: item.secondctgyid,
           secctgyname: item.secctgyname || "未命名二级分类",
-          thirdCtgys: [],
-        });
+        };
+        if (showThird) {
+          obj.thirdCtgys = [];
+        }
+        secondMap.set(key, obj);
 
         // 挂载到一级分类
         const first = firstMap.get(item.firstctgyid)!;
@@ -63,7 +69,7 @@ export function convertToTree(flatData: FlatCategory[]): FirstCtgy[] {
     if (item.thirdctgyid !== null && item.secondctgyid !== null) {
       const key = `${item.firstctgyid}-${item.secondctgyid}`;
       const second = secondMap.get(key);
-      if (second) {
+      if (second && showThird) {
         second.thirdCtgys?.push({
           thirdctgyid: item.thirdctgyid,
           thirdctgyname: item.thirdctgyname || "未命名三级分类",

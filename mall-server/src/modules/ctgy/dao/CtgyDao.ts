@@ -1,6 +1,8 @@
 import { sequelize } from "../../../modules/BaseDao";
 import { convertToTree } from "../commonTypes";
 import FirstCtgy from "../defmodel/FirstCtgy";
+import { secondCtgyModel } from "../defmodel/SecCtgyModel";
+import { thirdCtgyModel } from "../defmodel/ThirdCtgyModel";
 import convert from "../moduletypes";
 
 export enum CtgyType {
@@ -38,15 +40,33 @@ class CtgyDao {
 
   async findSecCtgys() {
     // 查找所有的一级和二级分类
-    const sql = `select * from firstctgy fc inner join secondctgy sc on fc.firstctgyid = sc.firstctgyid`;
+    const sql = `
+    SELECT 
+      fc.firstctgyid,
+      fc.firstctgyname,
+      sc.secondctgyid,
+      sc.secctgyname FROM firstctgy fc LEFT JOIN secondctgy sc ON fc.firstctgyid = sc.firstctgyid
+  `;
     let res: Array<any> = (await sequelize.query(sql))[0];
-    return convertToTree(res);
+    return convertToTree(res, false);
   }
-  async addCtgys(type: CtgyType, name: string) {
+  async addCtgys(type: CtgyType, name: string, id?: number) {
     // 添加分类
     switch (type) {
       case CtgyType.first:
         return await FirstCtgy.create({ firstctgyname: name });
+      case CtgyType.second:
+        return await secondCtgyModel.create({
+          secctgyname: name,
+          firstctgyId: id,
+        });
+      case CtgyType.third:
+        return await thirdCtgyModel.create({
+          thirdctgyname: name,
+          secctgyid: id,
+        });
+      default:
+        throw new Error("Invalid category type");
     }
   }
   async findFirstCtgys() {

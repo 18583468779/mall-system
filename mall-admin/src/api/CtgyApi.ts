@@ -14,8 +14,8 @@ class CtgyAPI {
   findSecCtgys() {
     return request.get("/ctgymodule/findSecCtgys", false);
   }
-  addCtgys(type: CtgyType, name: string) {
-    let params = { type, name };
+  addCtgys(type: CtgyType, name: string, parentId?: number) {
+    let params = { type, name, id: parentId };
     return request.post("/ctgymodule/addCtgys", false, params);
   }
 }

@@ -136,14 +136,20 @@ const handleOk = async () => {
 
     // 2. 显示加载状态
     loading.value = true;
-
     // 3. 提交数据（示例）
-    console.log("Form Data:", formData);
     if (!formData.category) {
       // 没有选择父类，就是一级分类
       await addCtgys(CtgyType.first, formData.name);
+    } else if (formData.category.split("-").length === 1) {
+      // 选择了父类，就是二级分类
+      await addCtgys(CtgyType.second, formData.name, formData.category);
+    } else {
+      await addCtgys(
+        CtgyType.third,
+        formData.name,
+        formData.category.split("-")[1]
+      );
     }
-    // addCtgys(formData);
     // 4. 处理成功
     ElMessage.success("提交成功");
     onOk(); // 关闭弹窗

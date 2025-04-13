@@ -25,8 +25,8 @@ class CtgyController {
   }
   @post("/addCtgys")
   async addCtgys(ctx: Context) {
-    const { type, name } = ctx.request.body;
-    const data = success(await ctgyDao.addCtgys(type, name));
+    const { type, name, id } = ctx.request.body;
+    const data = success(await ctgyDao.addCtgys(type, name, id));
     ctx.body = data;
   }
   @get("/findFirstCtgys")
