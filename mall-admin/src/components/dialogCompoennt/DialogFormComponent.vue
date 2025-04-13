@@ -13,6 +13,7 @@
             <el-upload
               v-model:file-list="modelValue[field.prop]"
               v-bind="field.attrs"
+              :http-request="customUpload"
               v-on="field.listeners || {}"
               class="w-full"
             >
@@ -59,8 +60,9 @@
 </template>
 
 <script setup lang="ts">
-import { type FormInstance, type FormRules } from "element-plus";
+import { ElMessage, type FormInstance, type FormRules } from "element-plus";
 import { ref } from "vue";
+import request from "../../utils/axiosUtil";
 
 type FormFieldType =
   | "input"
@@ -98,6 +100,41 @@ const onOk = () => {
 };
 const formRef = ref<FormInstance>();
 const modelValue: Record<string, any> = defineModel();
+
+const customUpload = async (options: any) => {
+  // 自定义上传逻辑
+  try {
+    // 1. 获取预签名URL
+    const presignedRes: any = await request.post(
+      "filemodule/generatePresignedUrl",
+      false,
+      {
+        fileName: options.file.name,
+        fileType: options.file.type,
+      }
+    );
+    console.log("presignedRes", presignedRes);
+    if (presignedRes.code === 200) {
+      // 2. 上传文件到存储服务minio
+      const uploadRes = await request.put(
+        presignedRes.data.presignedUrl,
+        false,
+        options.file
+      );
+      // 3. 更新表单数据
+      modelValue.value[options.field.prop] = {
+        url: presignedRes.data.publicUrl,
+        name: options.file.name,
+        status: "success",
+      };
+      // 4. 触发成功回调
+      options.onSuccess(uploadRes);
+    }
+  } catch (error) {
+    options.onError(error);
+    ElMessage.error("文件上传失败");
+  }
+};
 
 const componentMap: Record<FormFieldType, any> = {
   input: "el-input",

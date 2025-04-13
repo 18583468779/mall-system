@@ -27,6 +27,7 @@ class AllCtrlRouterLoader {
           /^\/dang\/userinfomodule\/login/,
           /^\/dang\/userinfomodule\/sendVerificationCode/,
           /^\/dang\/ctgymodule/,
+          /^\/dang\/filemodule/,
         ],
       })
     );
