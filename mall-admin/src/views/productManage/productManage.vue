@@ -155,7 +155,7 @@ const formFields: any = ref([
     prop: "bookpicname",
     label: "商品封面",
     attrs: {
-      action: "/api/upload/image",
+      action: "/dang/filemodule/generatePresignedUrl",
       accept: ".png,.jpg,.jpeg",
       listType: "picture-card",
       tip: "建议尺寸：800x800px，支持PNG/JPG格式",
