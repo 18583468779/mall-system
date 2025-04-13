@@ -84,7 +84,14 @@ import { ElMessage } from "element-plus";
 import service from "./service";
 import { onMounted } from "vue";
 import { CtgyType } from "../../api/CtgyApi";
-const { init, tableData, firstSecondCtgys, addCtgys, deleteCtgys } = service;
+const {
+  init,
+  tableData,
+  firstSecondCtgys,
+  addCtgys,
+  deleteCtgys,
+  handleCtgys,
+} = service;
 const { dialogFormVisible, onOk, onOpen, formRef } = useVisiblehooks();
 onMounted(() => {
   init();
@@ -216,17 +223,6 @@ const handleDelete = async (row: any) => {
 
 const handleEdit = (row: any) => {
   console.log("Edit:", row);
-};
-
-const handleCtgys = (val: string): { type: CtgyType; id: string } => {
-  let valArr = val.split("-");
-  if (valArr.length === 1) {
-    return { type: CtgyType.first, id: val };
-  } else if (valArr.length === 2) {
-    return { type: CtgyType.second, id: valArr[1] };
-  } else {
-    return { type: CtgyType.third, id: valArr[2] };
-  }
 };
 </script>
 

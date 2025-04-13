@@ -6,17 +6,6 @@ interface Category {
   children?: Category[];
 }
 
-interface SecondCategory {
-  secondctgyid: number;
-  secctgyname: string;
-  thirdCtgys?: ThirdCategory[];
-}
-
-interface ThirdCategory {
-  thirdctgyid: number;
-  thirdctgyname: string;
-}
-
 class Service {
   static tableData = ref<Array<Record<string, any>>>([]);
   static firstSecondCtgys = ref<Array<Record<string, any>>>([]);
@@ -63,6 +52,16 @@ class Service {
       return res;
     }
   }
+  static handleCtgys = (val: string): { type: CtgyType; id: string } => {
+    let valArr = val.split("-");
+    if (valArr.length === 1) {
+      return { type: CtgyType.first, id: val };
+    } else if (valArr.length === 2) {
+      return { type: CtgyType.second, id: valArr[1] };
+    } else {
+      return { type: CtgyType.third, id: valArr[2] };
+    }
+  };
 }
 
 function normalizeTree(
