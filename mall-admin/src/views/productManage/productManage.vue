@@ -28,19 +28,19 @@
           <template #actions="{ row }">
             <el-button
               link
-              type="primary"
-              size="small"
-              @click.stop="handleDetail(row)"
-            >
-              详情
-            </el-button>
-            <el-button
-              link
               type="warning"
               size="small"
               @click.stop="handleEdit(row)"
             >
               编辑
+            </el-button>
+            <el-button
+              link
+              type="danger"
+              size="small"
+              @click.stop="handleDelete(row)"
+            >
+              删除
             </el-button>
           </template>
         </data-table>
@@ -48,11 +48,11 @@
 
       <!-- 分页 -->
       <div class="mt-6 px-4 pb-4">
-        <pagination
+        <!-- <pagination
           v-model:current-page="currentPage"
           v-model:page-size="pageSize"
           :total="total"
-        />
+        /> -->
       </div>
     </el-card>
     <dialog-component
@@ -72,29 +72,37 @@
 </template>
 
 <script setup lang="ts">
-import { reactive, ref } from "vue";
+import { computed, reactive, ref } from "vue";
 import type { TableColumn } from "../../components/tableComponent/types";
 import type { SearchField } from "../../components/searchForm/types";
 import SearchForm from "../../components/searchForm/SearchForm.vue";
 import DataTable from "../../components/tableComponent/TableComponent.vue";
 import useVisiblehooks from "../../hooks/useVisblehooks";
 import DialogComponent from "../../components/dialogCompoennt/DialogCompoennt.vue";
-import DialogFormComponent, {
-  type FormField,
-} from "../../components/dialogCompoennt/DialogFormComponent.vue";
+import DialogFormComponent from "../../components/dialogCompoennt/DialogFormComponent.vue";
 import { ElMessage } from "element-plus";
+import service from "../ctgyManage/service";
+import { onMounted } from "vue";
+import { CtgyType } from "../../api/CtgyApi";
+const {
+  init,
+  tableData,
+  firstSecondCtgys,
+  addCtgys,
+  deleteCtgys,
+  handleCtgys,
+} = service;
 const { dialogFormVisible, onOk, onOpen, formRef } = useVisiblehooks();
-
+onMounted(() => {
+  init();
+});
 const loading = ref(false);
-const tableData = ref([]); // 你的数据
 
-const formData = reactive({
+const formData: any = reactive({
   name: "",
   category: "",
-  price: 0,
-  stock: 100,
 });
-const formFields: FormField[] = [
+const formFields: any = ref([
   {
     type: "input",
     prop: "name",
@@ -105,59 +113,128 @@ const formFields: FormField[] = [
     },
   },
   {
-    type: "select",
+    type: "treeSelect",
     prop: "category",
-    label: "商品分类",
-    options: [
-      { label: "电子产品", value: 1 },
-      { label: "家用电器", value: 2 },
-    ],
-    attrs: {
+    label: "分类",
+    attrs: computed(() => ({
       placeholder: "请选择分类",
-    },
+      "check-strictly": true,
+      data: firstSecondCtgys.value, // 使用计算属性保持响应式
+      clearable: true,
+    })),
   },
   {
     type: "input",
     prop: "price",
-    label: "商品价格",
+    label: "价格",
     attrs: {
-      type: "number",
-      min: 0,
-      step: 0.01,
+      placeholder: "请输入价格",
+      clearable: true,
     },
   },
-];
+  {
+    type: "input",
+    prop: "originalprice",
+    label: "原价",
+    attrs: {
+      placeholder: "请输入原价",
+      clearable: true,
+    },
+  },
+  {
+    type: "input",
+    prop: "author",
+    label: "作者",
+    attrs: {
+      placeholder: "请输入作者",
+      clearable: true,
+    },
+  },
+  {
+    type: "upload",
+    prop: "bookpicname",
+    label: "商品封面",
+    attrs: {
+      action: "/api/upload/image",
+      accept: ".png,.jpg,.jpeg",
+      listType: "picture-card",
+      tip: "建议尺寸：800x800px，支持PNG/JPG格式",
+      beforeUpload: (file: File) => {
+        const isImage = ["image/jpeg", "image/png"].includes(file.type);
+        if (!isImage) {
+          ElMessage.error("只能上传图片文件!");
+          return false;
+        }
+        return true;
+      },
+    },
+    listeners: {
+      "on-success": (res: any) => {
+        console.log("上传成功", res);
+      },
+    },
+  },
+  {
+    type: "upload",
+    prop: "code",
+    label: "源码附件",
+    attrs: {
+      action: "/api/upload/file",
+      accept: ".zip,.rar",
+      multiple: true,
+      tip: "文件大小不超过50MB",
+      beforeUpload: (file: File) => {
+        const isZip = [
+          "application/zip",
+          "application/x-rar-compressed",
+        ].includes(file.type);
+        if (!isZip) {
+          ElMessage.error("只能上传ZIP/RAR压缩包!");
+          return false;
+        }
+        return true;
+      },
+    },
+  },
+  {
+    type: "input",
+    prop: "description",
+    label: "简介",
+    attrs: {
+      placeholder: "请输入简介",
+      clearable: true,
+    },
+  },
+]);
 
 const formRules = {
   name: [{ required: true, message: "商品名称不能为空", trigger: "blur" }],
-  category: [{ required: true, message: "请选择商品分类", trigger: "change" }],
-  price: [
-    {
-      validator: (
-        _: any,
-        value: number,
-        callback: (arg0: Error | undefined) => void
-      ) => {
-        if (value <= 0) return callback(new Error("价格必须大于0"));
-        callback(undefined);
-      },
-      trigger: "blur",
-    },
-  ],
+  category: [{ required: true, message: "请选择分类", trigger: "blur" }],
 };
 const handleOk = async () => {
   try {
     // 1. 执行表单验证
     await formRef.value?.validate();
-
     // 2. 显示加载状态
     loading.value = true;
-
     // 3. 提交数据（示例）
-    console.log("Form Data:", formData);
-
+    if (!formData.category) {
+      // 没有选择父类，就是一级分类
+      await addCtgys(CtgyType.first, formData.name);
+    } else if (formData.category.split("-").length === 1) {
+      // 选择了父类，就是二级分类
+      await addCtgys(CtgyType.second, formData.name, formData.category);
+    } else {
+      await addCtgys(
+        CtgyType.third,
+        formData.name,
+        formData.category.split("-")[1]
+      );
+    }
     // 4. 处理成功
     ElMessage.success("提交成功");
+    formData.name = "";
+    formData.category = "";
     onOk(); // 关闭弹窗
   } catch (error: any) {
     // 5. 错误处理
@@ -204,27 +281,27 @@ const searchFields: SearchField[] = [
 ];
 
 const columns: TableColumn[] = [
-  { prop: "date", label: "创建日期", width: 150, sortable: true },
-  { prop: "name", label: "商品名称", width: 120 },
-  { prop: "state", label: "状态", width: 120 },
-  { prop: "city", label: "城市", width: 120 },
-  { prop: "address", label: "详细地址", minWidth: 200 },
-  { prop: "zip", label: "邮编", width: 120 },
+  { prop: "id", label: "分类ID" },
+  { prop: "name", label: "分类名称" },
   { label: "操作", width: 180, slot: "actions", fixed: "right" },
 ];
 
 // 分页数据
-const currentPage = ref(1);
-const pageSize = ref(10);
-const total = ref(1000);
+// const currentPage = ref(1);
+// const pageSize = ref(10);
+// const total = ref(1000);
 
 // 操作方法
 const handleSearch = (form: any) => {
   console.log("Search:", form);
 };
 
-const handleDetail = (row: any) => {
-  console.log("Detail:", row);
+const handleDelete = async (row: any) => {
+  const { type, id } = handleCtgys(row.id);
+  let res: any = await deleteCtgys(type, Number(id));
+  if (res.code === 200) {
+    ElMessage.success("删除成功");
+  }
 };
 
 const handleEdit = (row: any) => {

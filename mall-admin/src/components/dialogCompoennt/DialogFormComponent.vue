@@ -8,7 +8,30 @@
     >
       <div v-for="(field, index) in fields" :key="index">
         <el-form-item :prop="field.prop" :label="field.label">
+          <!-- 上传组件特殊处理 -->
+          <template v-if="field.type === 'upload'">
+            <el-upload
+              v-model:file-list="modelValue[field.prop]"
+              v-bind="field.attrs"
+              v-on="field.listeners || {}"
+              class="w-full"
+            >
+              <template #trigger>
+                <el-button type="primary" v-if="!field.attrs?.listType"
+                  >选择文件</el-button
+                >
+                <el-icon v-else><Plus /></el-icon>
+              </template>
+              <template #tip>
+                <div class="text-gray-400 text-xs mt-1">
+                  {{ field.attrs?.tip || "支持扩展名：.png/.jpg/.zip" }}
+                </div>
+              </template>
+            </el-upload>
+          </template>
+
           <component
+            v-else
             :is="getComponent(field.type)"
             v-model="modelValue[field.prop]"
             v-bind="field.attrs"
@@ -36,7 +59,7 @@
 </template>
 
 <script setup lang="ts">
-import type { FormInstance, FormRules } from "element-plus";
+import { type FormInstance, type FormRules } from "element-plus";
 import { ref } from "vue";
 
 type FormFieldType =
@@ -45,7 +68,8 @@ type FormFieldType =
   | "date"
   | "radio"
   | "checkbox"
-  | "treeSelect";
+  | "treeSelect"
+  | "upload";
 
 export interface FormField {
   type: FormFieldType; // 表单类型
@@ -82,6 +106,7 @@ const componentMap: Record<FormFieldType, any> = {
   checkbox: "el-checkbox-group",
   radio: "el-radio-group",
   treeSelect: "el-tree-select",
+  upload: "el-upload",
 };
 const getComponent = (type: FormFieldType) => {
   return componentMap[type] || "el-input";
