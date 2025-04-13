@@ -18,5 +18,9 @@ class CtgyAPI {
     let params = { type, name, id: parentId };
     return request.post("/ctgymodule/addCtgys", false, params);
   }
+  deleteCtgys(type: CtgyType, id: number) {
+    let params = { type, id };
+    return request.post(`/ctgymodule/deleteCtgys`, false, params);
+  }
 }
 export default CtgyAPI.api;

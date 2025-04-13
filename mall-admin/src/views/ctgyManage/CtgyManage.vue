@@ -28,14 +28,6 @@
           <template #actions="{ row }">
             <el-button
               link
-              type="primary"
-              size="small"
-              @click.stop="handleDetail(row)"
-            >
-              详情
-            </el-button>
-            <el-button
-              link
               type="warning"
               size="small"
               @click.stop="handleEdit(row)"
@@ -46,7 +38,7 @@
               link
               type="danger"
               size="small"
-              @click.stop="handleEdit(row)"
+              @click.stop="handleDelete(row)"
             >
               删除
             </el-button>
@@ -92,7 +84,7 @@ import { ElMessage } from "element-plus";
 import service from "./service";
 import { onMounted } from "vue";
 import { CtgyType } from "../../api/CtgyApi";
-const { init, tableData, firstSecondCtgys, addCtgys } = service;
+const { init, tableData, firstSecondCtgys, addCtgys, deleteCtgys } = service;
 const { dialogFormVisible, onOk, onOpen, formRef } = useVisiblehooks();
 onMounted(() => {
   init();
@@ -133,7 +125,6 @@ const handleOk = async () => {
   try {
     // 1. 执行表单验证
     await formRef.value?.validate();
-
     // 2. 显示加载状态
     loading.value = true;
     // 3. 提交数据（示例）
@@ -152,6 +143,8 @@ const handleOk = async () => {
     }
     // 4. 处理成功
     ElMessage.success("提交成功");
+    formData.name = "";
+    formData.category = "";
     onOk(); // 关闭弹窗
   } catch (error: any) {
     // 5. 错误处理
@@ -213,12 +206,27 @@ const handleSearch = (form: any) => {
   console.log("Search:", form);
 };
 
-const handleDetail = (row: any) => {
-  console.log("Detail:", row);
+const handleDelete = async (row: any) => {
+  const { type, id } = handleCtgys(row.id);
+  let res: any = await deleteCtgys(type, Number(id));
+  if (res.code === 200) {
+    ElMessage.success("删除成功");
+  }
 };
 
 const handleEdit = (row: any) => {
   console.log("Edit:", row);
+};
+
+const handleCtgys = (val: string): { type: CtgyType; id: string } => {
+  let valArr = val.split("-");
+  if (valArr.length === 1) {
+    return { type: CtgyType.first, id: val };
+  } else if (valArr.length === 2) {
+    return { type: CtgyType.second, id: valArr[1] };
+  } else {
+    return { type: CtgyType.third, id: valArr[2] };
+  }
 };
 </script>
 

@@ -32,6 +32,10 @@ class Service {
       Service.tableData.value = normalizeTree(res.data);
     }
   }
+  static async resetCtgys() {
+    await Service.getTableData();
+    await Service.findSecCtgys();
+  }
   static async findSecCtgys() {
     // 模拟异步请求数据
     let res: any = await ctgyApi.findSecCtgys();
@@ -48,8 +52,15 @@ class Service {
     // 模拟异步请求数据
     let res: any = await ctgyApi.addCtgys(type, name, parentId);
     if (res.code === 200) {
-      await Service.getTableData();
-      await Service.findSecCtgys();
+      await Service.resetCtgys();
+    }
+  }
+  static async deleteCtgys(type: CtgyType, id: number) {
+    // 模拟异步请求数据
+    let res: any = await ctgyApi.deleteCtgys(type, id);
+    if (res.code === 200) {
+      await Service.resetCtgys();
+      return res;
     }
   }
 }

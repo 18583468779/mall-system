@@ -29,6 +29,12 @@ class CtgyController {
     const data = success(await ctgyDao.addCtgys(type, name, id));
     ctx.body = data;
   }
+  @post("/deleteCtgys")
+  async deleteCtgys(ctx: Context) {
+    const { type, id } = ctx.request.body;
+    const data = success(await ctgyDao.deleteCtgys(type, id));
+    ctx.body = data;
+  }
   @get("/findFirstCtgys")
   async findFirstCtgys(ctx: Context) {
     const data = success(await ctgyService.findFirstCtgys());

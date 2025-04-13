@@ -69,6 +69,17 @@ class CtgyDao {
         throw new Error("Invalid category type");
     }
   }
+  async deleteCtgys(type: CtgyType, id: number) {
+    // 删除分类
+    switch (type) {
+      case CtgyType.first:
+        return await FirstCtgy.destroy({ where: { firstctgyId: id } });
+      case CtgyType.second:
+        return await secondCtgyModel.destroy({ where: { secondctgyid: id } });
+      case CtgyType.third:
+        return await thirdCtgyModel.destroy({ where: { thirdctgyid: id } });
+    }
+  }
   async findFirstCtgys() {
     return await FirstCtgy.findAll({
       raw: true,
