@@ -39,6 +39,9 @@ class UserDao {
     return model.findOne({
       raw: true,
       where: whereClause,
+      attributes: { 
+        exclude: ['password', 'weixin_openid'] // 排除敏感字段
+      },
     });
   }
   static async createUser(userinfo: Userinfo) {

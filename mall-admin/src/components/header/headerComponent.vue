@@ -9,15 +9,19 @@
             <Fold v-show="!menuCollapse" />
           </el-icon>
         </div>
-        <breadcrumb-component/>
+        <breadcrumb-component />
       </div>
 
     </div>
     <el-dropdown>
-      <span class="flex items-center">
-        <el-avatar :size="32" src="https://example.com/avatar.png" />
-        <span class="ml-2">管理员</span>
+      <span class="user-info">
+        {{ userInfo?.username }}<el-icon><arrow-down /></el-icon>
       </span>
+      <template #dropdown>
+        <el-dropdown-menu>
+          <el-dropdown-item @click="handleLogout">退出登录</el-dropdown-item>
+        </el-dropdown-menu>
+      </template>
     </el-dropdown>
   </header>
 </template>
@@ -27,8 +31,18 @@ import layoutService from "../../layout/service";
 const { menuStoreRefs, setMenuCollapse } = layoutService;
 import BreadcrumbComponent from "./breadcrumbComponent.vue";
 const { menuCollapse } = menuStoreRefs;
+import useUserStore from "../../store/useUserStore";
+
+import { storeToRefs } from "pinia";
+
+const store = useUserStore();
+
+const { userInfo } = storeToRefs(store);
 
 
+const handleLogout = () => {
+  store.logout();
+};
 </script>
 
 <style scoped>

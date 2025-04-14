@@ -56,9 +56,11 @@
 
 <script setup lang="ts">
 import { ref, reactive } from 'vue'
-import { ElMessage, type FormInstance, type FormRules } from 'element-plus'
+import { ElMessage, type FormInstance, type FormRules } from 'element-plus';
+import useUserStore from '../store/useUserStore';
 import userApi from '../api/UserApi';
 import router from '../router';
+const {setUserInfo} = useUserStore();
 
 export interface UserInfo {
   username: string
@@ -104,6 +106,7 @@ const handleSubmit = async () => {
 
     let res: any = await userApi.login(form);
     if (res.code === 200 && res.data) {
+      setUserInfo(res.data)
       ElMessage.success('登录成功');
       router.push('/');
     }

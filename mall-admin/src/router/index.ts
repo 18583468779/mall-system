@@ -6,6 +6,7 @@ const routes = [
     path: "/",
     component: () => import("../layout/layout.vue"),
     redirect: "/dashboard",
+    meta: { requiresAuth: true }, // 添加鉴权标记
     children: [
       {
         path: "/dashboard",
@@ -61,6 +62,7 @@ const routes = [
   {
     path: "/login",
     component: () => import("../views/login.vue"),
+    meta: { guestOnly: true } // 仅游客可访问
   },
 ];
 
@@ -69,11 +71,37 @@ const router = createRouter({
   routes,
 });
 
-router.beforeEach((to) => {
+router.beforeEach(async (to, from) => {
   const { tabsStore } = LayoutService;
-  if (to.path === "/login") return true;
-  tabsStore.addTab(to);
+  const isAuthenticated = checkAuthStatus(); // 检查登录状态
+  
+  // 标签页管理逻辑
+  if (to.path !== '/login') {
+    tabsStore.addTab(to);
+  }
+
+  // 权限检查逻辑
+  if (to.meta.requiresAuth && !isAuthenticated) {
+    return { 
+      path: '/login',
+      query: { redirect: to.fullPath } // 记录原始目标路径
+    };
+  }
+
+  if (to.meta.guestOnly && isAuthenticated) {
+    return from || { path: '/' }; // 阻止已登录用户访问登录页
+  }
+
   return true;
 });
+
+
+function checkAuthStatus(): boolean {
+  // 1. 检查本地是否存在有效token
+  const token = localStorage.getItem('userInfo');
+  if (!(token && JSON.parse(token).access_token)) return false;
+  return true;
+
+}
 
 export default router;
