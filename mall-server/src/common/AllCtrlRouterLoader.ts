@@ -25,6 +25,7 @@ class AllCtrlRouterLoader {
       koajwt({ secret: "aiaiai123456X" }).unless({
         path: [
           /^\/dang\/userinfomodule\/login/,
+          /^\/dang\/userinfomodule\/register/,
           /^\/dang\/userinfomodule\/sendVerificationCode/,
           /^\/dang\/ctgymodule/,
           /^\/dang\/filemodule/,

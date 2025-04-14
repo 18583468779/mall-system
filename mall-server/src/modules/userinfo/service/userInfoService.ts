@@ -87,5 +87,17 @@ class UserService {
     });
     userInfo.token = token;
   }
+
+  async register(userInfo: { username: string; password: string,confirmPassword:string }){
+    // TODO: 注册逻辑 使用用户名和密码注册
+    const { username, password,confirmPassword } = userInfo;
+    if(password !== confirmPassword) return { message: "两次密码不一致",data:0 };
+    const user = await findOneUser({ username });
+    if (user) return { message: "用户名已存在",data:0 };
+    await createUser({ username, password });
+    return { message: "注册成功",data:1 };
+
+
+  }
 }
 export default UserService.getInstance();

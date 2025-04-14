@@ -23,4 +23,10 @@ class UserInfoController {
     const code = await userService.sendVerificationCode(email);
     ctx.body = success(code);
   }
+  @post("/register")
+  async register(ctx: Context) {
+    const userInfo = ctx.request.body;
+    const result = await userService.register(userInfo);
+    ctx.body = success(result);
+  }
 }
