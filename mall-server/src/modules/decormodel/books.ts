@@ -1,14 +1,15 @@
-import { Column, Model, Table } from "sequelize-typescript";
+import { Column, DataType, Model, Table } from "sequelize-typescript";
 
 @Table({
   tableName: "books",
 })
 export default class BooksModel extends Model<BooksModel> {
   @Column({
+    type: DataType.INTEGER, // 改为整数类型
     primaryKey: true,
-    autoIncrement: true,
+    autoIncrement: true     // 启用自增
   })
-  ISBN!: string;
+  ISBN!: number;
   @Column
   public bookname!: string;
   @Column

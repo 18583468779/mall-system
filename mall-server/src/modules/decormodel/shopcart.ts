@@ -1,12 +1,13 @@
-import { Column, Model, Table } from "sequelize-typescript";
+import { Column, DataType, Model, Table } from "sequelize-typescript";
 
 @Table({
   tableName: "shopcart",
 })
 export default class ShopcartModel extends Model<ShopcartModel> {
   @Column({
+    type: DataType.INTEGER, // 改为整数类型
     primaryKey: true,
-    autoIncrement: true,
+    autoIncrement: true     // 启用自增
   })
   shopcartid!: string;
   @Column
