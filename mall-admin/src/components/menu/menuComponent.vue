@@ -14,7 +14,7 @@
     </div>
 
     <template v-for="route in menuRoutes" :key="route.path">
-      <el-sub-menu :index="route.path" v-if="route.meta.isSubMenu">
+      <el-sub-menu :index="route.path" v-if="route.meta?.isSubMenu">
         <template #title>
           <el-icon>
             <component :is="route.meta.icon" />
@@ -27,17 +27,17 @@
           :index="child.path"
         >
           <el-icon>
-            <component :is="child.meta.icon" />
+            <component :is="child.meta?.icon" />
           </el-icon>
-          <span>{{ child.meta.title }}</span>
+          <span>{{ child.meta?.title }}</span>
         </el-menu-item>
       </el-sub-menu>
 
       <el-menu-item :index="route.path" v-else>
         <el-icon>
-          <component :is="route.meta.icon" />
+          <component :is="route.meta?.icon" />
         </el-icon>
-        <span>{{ route.meta.title }}</span>
+        <span>{{ route.meta?.title }}</span>
       </el-menu-item>
     </template>
   </el-menu>

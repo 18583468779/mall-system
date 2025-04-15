@@ -19,6 +19,7 @@
       </span>
       <template #dropdown>
         <el-dropdown-menu>
+          <el-dropdown-item @click="handleToCenter">个人中心</el-dropdown-item>
           <el-dropdown-item @click="handleLogout">退出登录</el-dropdown-item>
         </el-dropdown-menu>
       </template>
@@ -34,11 +35,15 @@ const { menuCollapse } = menuStoreRefs;
 import useUserStore from "../../store/useUserStore";
 
 import { storeToRefs } from "pinia";
+import router from "../../router";
 
 const store = useUserStore();
 
 const { userInfo } = storeToRefs(store);
 
+const handleToCenter = () => {
+  router.push("/userInfo"); 
+}
 
 const handleLogout = () => {
   store.logout();

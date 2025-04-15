@@ -57,6 +57,12 @@ const routes = [
         component: () => import("../views/ordersManage/ordersManage.vue"),
         meta: { title: "订单管理", icon: "Collection" },
       },
+      {
+        path: "/userInfo",
+        name: "userInfo",
+        component: () => import("../views/userInfo.vue"),
+        meta: { title: "个人中心", icon: "User",showInMenu: false },
+      }
     ],
   },
   {
