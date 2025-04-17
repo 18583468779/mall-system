@@ -1,12 +1,12 @@
 import { secondCtgyModel } from "./SecCtgyModel";
-import { thirdCtgyModel } from "./ThirdCtgyModel";
+import { ThirdCtgyModel } from "../../decormodel/ThirdCtgyModel";
 // OneToMany 一对多的关系
-secondCtgyModel.hasMany(thirdCtgyModel, {
+secondCtgyModel.hasMany(ThirdCtgyModel, {
   as: "thirdctgy",
   foreignKey: "secctgyid",
 });
 // ManyToOne 多对一的关系
-thirdCtgyModel.belongsTo(secondCtgyModel, {
+ThirdCtgyModel.belongsTo(secondCtgyModel, {
   foreignKey: "secctgyid",
   targetKey: "secondctgyid",
 });
@@ -19,7 +19,7 @@ export async function findSecThrdCtgysByFstCtgyId(firstctgyId: number) {
     },
     include: [
       {
-        model: thirdCtgyModel,
+        model: ThirdCtgyModel,
         as: "thirdctgy",
       },
     ],

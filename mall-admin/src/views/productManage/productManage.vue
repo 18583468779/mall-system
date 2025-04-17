@@ -6,9 +6,7 @@
         <div class="card-header px-4 py-6 bg-gray-50">
           <!-- 搜索表单 -->
           <search-form :fields="searchFields" @submit="handleSearch" />
-          <h2
-            class="text-xl font-semibold text-primary-600 flex items-center justify-between"
-          >
+          <h2 class="text-xl font-semibold text-primary-600 flex items-center justify-between">
             <slot name="title">商品管理</slot>
             <div>
               <el-button color="#626aef" @click="onOpen">新增</el-button>
@@ -19,27 +17,12 @@
 
       <!-- 数据表格 -->
       <div class="mt-4 px-4">
-        <data-table
-          :columns="columns"
-          :data="tableData"
-          :loading="loading"
-          @row-click="handleRowClick"
-        >
+        <data-table :columns="columns" :data="tableData" :loading="loading">
           <template #actions="{ row }">
-            <el-button
-              link
-              type="warning"
-              size="small"
-              @click.stop="handleEdit(row)"
-            >
+            <el-button link type="warning" size="small" @click.stop="handleEdit(row)">
               编辑
             </el-button>
-            <el-button
-              link
-              type="danger"
-              size="small"
-              @click.stop="handleDelete(row)"
-            >
+            <el-button link type="danger" size="small" @click.stop="handleDelete(row)">
               删除
             </el-button>
           </template>
@@ -48,59 +31,52 @@
 
       <!-- 分页 -->
       <div class="mt-6 px-4 pb-4">
-        <!-- <pagination
-          v-model:current-page="currentPage"
-          v-model:page-size="pageSize"
-          :total="total"
-        /> -->
+        <pagination
+          v-model:current-page="tablePageData.currentPage"
+          v-model:page-size="tablePageData.totalPages"
+          :total="tablePageData.total"
+        />
       </div>
     </el-card>
-    <dialog-component
-      title="新增商品"
-      v-model="dialogFormVisible"
-      :footer="false"
-    >
-      <dialog-form-component
-        v-model="formData"
-        :fields="formFields"
-        :rules="formRules"
-        @ok="handleOk"
-        ref="formRef"
-      />
+    <dialog-component title="新增商品" v-model="dialogFormVisible" :footer="false">
+      <dialog-form-component v-model="formData" :fields="formFields" :rules="formRules" @ok="handleOk" ref="formRef" />
     </dialog-component>
   </div>
 </template>
 
 <script setup lang="ts">
-import { computed, reactive, ref } from "vue";
-import type { TableColumn } from "../../components/tableComponent/types";
+import { computed, h, reactive, ref } from "vue";
 import type { SearchField } from "../../components/searchForm/types";
 import SearchForm from "../../components/searchForm/SearchForm.vue";
 import DataTable from "../../components/tableComponent/TableComponent.vue";
 import useVisiblehooks from "../../hooks/useVisblehooks";
 import DialogComponent from "../../components/dialogCompoennt/DialogCompoennt.vue";
 import DialogFormComponent from "../../components/dialogCompoennt/DialogFormComponent.vue";
-import { ElMessage } from "element-plus";
-import service from "../ctgyManage/service";
+import { ElIcon, ElImage, ElLink, ElMessage } from "element-plus";
+import ctgyService from "../ctgyManage/service";
+import service from "./service";
+import useUserStore from "../../store/useUserStore";
+import { Document } from '@element-plus/icons-vue'
 import { onMounted } from "vue";
-import { CtgyType } from "../../api/CtgyApi";
+const userStore = useUserStore();
 const {
   init,
-  tableData,
-  firstSecondCtgys,
-  addCtgys,
+  allCtgys,
   deleteCtgys,
   handleCtgys,
-} = service;
+} = ctgyService;
+const { saveBooks,getTableData,tableData,tablePageData } = service;
 const { dialogFormVisible, onOk, onOpen, formRef } = useVisiblehooks();
 onMounted(() => {
   init();
+  getTableData();
 });
 const loading = ref(false);
-
 const formData: any = reactive({
   name: "",
   category: "",
+  bookpicname: [], // 初始化为数组
+  code: [],        // 初始化为数组
 });
 const formFields: any = ref([
   {
@@ -118,20 +94,11 @@ const formFields: any = ref([
     label: "分类",
     attrs: computed(() => ({
       placeholder: "请选择分类",
-      "check-strictly": true,
-      data: firstSecondCtgys.value, // 使用计算属性保持响应式
+      data: allCtgys.value, // 使用计算属性保持响应式
       clearable: true,
     })),
   },
-  {
-    type: "input",
-    prop: "price",
-    label: "价格",
-    attrs: {
-      placeholder: "请输入价格",
-      clearable: true,
-    },
-  },
+
   {
     type: "input",
     prop: "originalprice",
@@ -143,22 +110,22 @@ const formFields: any = ref([
   },
   {
     type: "input",
-    prop: "author",
-    label: "作者",
+    prop: "discount",
+    label: "折扣",
     attrs: {
-      placeholder: "请输入作者",
+      placeholder: "请输入折扣",
       clearable: true,
     },
   },
   {
     type: "upload",
-    prop: "bookpicname",
+    prop: "imageUrlList",
     label: "商品封面",
     attrs: {
-      // action: "/dang/filemodule/generatePresignedUrl",
       accept: ".png,.jpg,.jpeg",
       listType: "picture-card",
       tip: "建议尺寸：800x800px，支持PNG/JPG格式",
+      multiple: false, // 明确单文件
       beforeUpload: (file: File) => {
         const isImage = ["image/jpeg", "image/png"].includes(file.type);
         if (!isImage) {
@@ -176,16 +143,15 @@ const formFields: any = ref([
   },
   {
     type: "upload",
-    prop: "code",
+    prop: "attachmentUrlList",
     label: "源码附件",
     attrs: {
-      // action: "/api/upload/file",
       accept: ".zip,.rar",
       multiple: true,
       tip: "文件大小不超过50MB",
       beforeUpload: (file: File) => {
         const isZip = [
-          "application/zip",
+          "application/x-zip-compressed",
           "application/x-rar-compressed",
         ].includes(file.type);
         if (!isZip) {
@@ -197,7 +163,7 @@ const formFields: any = ref([
     },
   },
   {
-    type: "input",
+    type: "textarea",
     prop: "description",
     label: "简介",
     attrs: {
@@ -209,32 +175,41 @@ const formFields: any = ref([
 
 const formRules = {
   name: [{ required: true, message: "商品名称不能为空", trigger: "blur" }],
-  category: [{ required: true, message: "请选择分类", trigger: "blur" }],
+  category: [{ required: true, message: "请选择分类", trigger: "change" }],
+  price: [{ required: true, message: "价格不能为空", trigger: "blur" }],
+  originalprice: [{ required: true, message: "原价不能为空", trigger: "blur" }],
+  author: [{ required: true, message: "作者不能为空", trigger: "blur" }],
+  bookpicurl: [{ required: true, message: "请上传商品封面", trigger: "change" }],
+  code: [{ required: true, message: "请上传源码附件", trigger: "change" }],
+  description: [{ required: true, message: "简介不能为空", trigger: "blur" }],
 };
 const handleOk = async () => {
   try {
     // 1. 执行表单验证
     await formRef.value?.validate();
-    // 2. 显示加载状态
     loading.value = true;
-    // 3. 提交数据（示例）
-    if (!formData.category) {
-      // 没有选择父类，就是一级分类
-      await addCtgys(CtgyType.first, formData.name);
-    } else if (formData.category.split("-").length === 1) {
-      // 选择了父类，就是二级分类
-      await addCtgys(CtgyType.second, formData.name, formData.category);
-    } else {
-      await addCtgys(
-        CtgyType.third,
-        formData.name,
-        formData.category.split("-")[1]
-      );
+    const { id } = handleCtgys(formRef.value.value.category);
+    let params = {
+      bookname: formRef.value.value.name,
+      author: userStore.userInfo.username,
+      thirdctgyid: Number(id),
+      originalprice: formRef.value.value.originalprice,
+      discount: formRef.value.value.discount,
+      imageUrlList: handleDealFile(formRef.value.value.imageUrlList), // 图片list
+      attachmentUrlList: handleDealFile(formRef.value.value.attachmentUrlList), // 附件list
+      description: formRef.value.value.description,
     }
-    // 4. 处理成功
+    await saveBooks(params);
+
     ElMessage.success("提交成功");
     formData.name = "";
     formData.category = "";
+    formData.bookpicname = []; // 清空数组
+    formData.code = [];        // 清空数组
+    formData.price = "";
+    formData.originalprice = "";
+    formData.author = "";
+    formData.description = "";
     onOk(); // 关闭弹窗
   } catch (error: any) {
     // 5. 错误处理
@@ -249,9 +224,20 @@ const handleOk = async () => {
   }
 };
 
-const handleRowClick = (row: any) => {
-  console.log("Row clicked:", row);
-};
+const handleDealFile = (list: any) => {
+  if (!list || list.length === 0) {
+    return [];
+  }
+  return list.map((item: any) => {
+    return {
+      url: item.url,
+      filename: item.name,
+      filetype: item.type,
+    }
+  })
+}
+
+
 const searchFields: SearchField[] = [
   {
     type: "input",
@@ -280,16 +266,87 @@ const searchFields: SearchField[] = [
   },
 ];
 
-const columns: TableColumn[] = [
-  { prop: "id", label: "分类ID" },
-  { prop: "name", label: "分类名称" },
+const columns: any[] = [
+  {
+    prop: "bookname",
+    label: "商品名称",
+  }
+  ,
+  {
+    prop: "category",
+    label: "分类",
+    formatter: (row: any) => {
+      return row.thirdCtgy.thirdctgyname;
+    }
+  },
+  {
+    prop: "price",
+    label: "价格",
+    formatter: (row: any) => {
+      return row.originalprice * row.discount / 10; 
+    }
+  },
+  {
+    prop: "originalprice",
+    label: "原价",
+  },
+  {
+    prop: "author",
+    label: "作者",
+  },
+  {
+    prop: "discount",
+    label: "折扣",
+  },
+  {
+  prop: "images",
+  label: "封面",
+  formatter: (row: any) => {
+    return h('div', { class: 'flex gap-2' }, 
+      row.images?.map((img: any) => 
+        h(ElImage, {
+          style: { width: '40px', height: '40px' },
+          src: img.url,
+          fit: 'cover',
+          previewSrcList: [img.url],
+          hideOnClickModal: true,
+          previewTeleported: true
+        })
+      )
+    )
+  }
+},
+{
+  prop: "attachments",
+  label: "源码附件",
+  formatter: (row: any) => {
+    return h('div', { class: 'flex flex-col gap-1' }, 
+      row.attachments?.map((file: any) => 
+        h(ElLink, {
+          type: 'primary',
+          underline: false,
+          href: file.url,
+          target: '_blank',
+          class: 'inline-flex items-center'
+        }, [
+          h(ElIcon, { class: 'mr-1' }, () => h(Document)),
+          `${file.filename} (${file.fileType || '未知类型'})`
+        ])
+      )
+    )
+  }
+},
+  {
+    prop: "description",
+    label: "简介",
+    formatter: (row: any) => {
+      return row.description.length > 10 ? row.description.slice(0, 10) + "..." : row.description;
+    },
+  },
   { label: "操作", width: 180, slot: "actions", fixed: "right" },
 ];
 
-// 分页数据
-// const currentPage = ref(1);
-// const pageSize = ref(10);
-// const total = ref(1000);
+
 
 // 操作方法
 const handleSearch = (form: any) => {
@@ -338,7 +395,5 @@ const handleEdit = (row: any) => {
     @apply border border-gray-300 rounded-md;
   }
 
-  .active {
-  }
 }
 </style>

@@ -1,7 +1,10 @@
 import { Op } from "sequelize";
 import BooksModel from "../../../modules/decormodel/books";
 import { getNoReptItem } from "../../../modules/commontypes";
-import PaginationService from "../../../common/PagerService";
+import { PaginationService } from "../../../common/PagerService";
+import BookImageModel from "../../../modules/decormodel/bookImage";
+import BookAttachment from "../../../modules/decormodel/bookAttachment";
+import { ThirdCtgyModel } from "../../decormodel/ThirdCtgyModel";
 
 class BookDao {
   static bookDao: BookDao = new BookDao();
@@ -28,6 +31,26 @@ class BookDao {
       };
     }
 
+    // ✅ 新增关联配置
+    const include = [
+      {
+        model: BookImageModel,
+        as: "images",
+        attributes: ["url", "filename"],
+      },
+      {
+        model: BookAttachment,
+        as: "attachments",
+        attributes: ["url", "filename", "fileType"],
+      },
+      {
+        model: ThirdCtgyModel,
+        as: "thirdCtgy",            // 与@BelongsTo定义的别名一致
+        attributes: ["thirdctgyname"],
+        required: true              // 使用INNER JOIN
+      }
+    ];
+
     return PaginationService.paginate({
       page,
       pageSize,
@@ -35,6 +58,7 @@ class BookDao {
       ascOrDesc,
       where: whereCondition,
       model: BooksModel,
+      include, // 传递关联配置
     });
   }
   /**
@@ -120,6 +144,40 @@ class BookDao {
       where: {
         ISBN,
       },
+    });
+  }
+
+  async saveBooks(bookData: any) {
+    // ✅ 使用事务保证数据一致性
+    return BooksModel.sequelize!.transaction(async (t) => {
+      const book = await BooksModel.create(bookData, { transaction: t });
+
+      // 批量创建图片记录
+      if (bookData.imageUrlList?.length) {
+        await BookImageModel.bulkCreate(
+          bookData.imageUrlList.map((item: any) => ({
+            ISBN: book.ISBN,
+            url: item.url,
+            filename: item.filename,
+          })),
+          { transaction: t }
+        );
+      }
+
+      // 批量创建附件记录
+      if (bookData.attachmentUrlList?.length) {
+        await BookAttachment.bulkCreate(
+          bookData.attachmentUrlList.map((item: any) => ({
+            ISBN: book.ISBN,
+            url: item.url,
+            filename: item.filename,
+            fileType: item.fileType,
+          })),
+          { transaction: t }
+        );
+      }
+
+      return book;
     });
   }
 }

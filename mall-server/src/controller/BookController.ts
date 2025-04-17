@@ -58,4 +58,12 @@ class BookController {
     const res = await bookDao.findBooksByISBN(ISBN);
     ctx.body = success(res);
   }
+  @post("/saveBooks")
+  async saveBooks(ctx: Context) {
+    const bookData = ctx.request.body;
+    
+    // ✅ 使用改进后的保存方法
+    const res = await bookDao.saveBooks(bookData);
+    ctx.body = success(res);
+  }
 }

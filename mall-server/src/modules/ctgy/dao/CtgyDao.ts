@@ -2,7 +2,7 @@ import { sequelize } from "../../../modules/BaseDao";
 import { convertToTree } from "../commonTypes";
 import FirstCtgy from "../defmodel/FirstCtgy";
 import { secondCtgyModel } from "../defmodel/SecCtgyModel";
-import { thirdCtgyModel } from "../defmodel/ThirdCtgyModel";
+import { ThirdCtgyModel } from "../../decormodel/ThirdCtgyModel";
 import convert from "../moduletypes";
 
 export enum CtgyType {
@@ -61,7 +61,7 @@ class CtgyDao {
           firstctgyId: id,
         });
       case CtgyType.third:
-        return await thirdCtgyModel.create({
+        return await ThirdCtgyModel.create({
           thirdctgyname: name,
           secctgyid: id,
         });
@@ -77,7 +77,7 @@ class CtgyDao {
       case CtgyType.second:
         return await secondCtgyModel.destroy({ where: { secondctgyid: id } });
       case CtgyType.third:
-        return await thirdCtgyModel.destroy({ where: { thirdctgyid: id } });
+        return await ThirdCtgyModel.destroy({ where: { thirdctgyid: id } });
     }
   }
   async findFirstCtgys() {

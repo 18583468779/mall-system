@@ -12,7 +12,7 @@ class FileDao {
   async generatePresignedUrl(fileName: string, fileType?: string) {
     // 生成预签名 URL
     const objectName = `${Date.now()}-${fileName}`; // 生成唯一的对象名称
-    const presignedUrl = await minioClient.presignedGetObject(
+    const presignedUrl = await minioClient.presignedPutObject(
       minioConfig.bucket,
       objectName,
       60 * 15 // 15分钟有效期

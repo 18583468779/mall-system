@@ -9,6 +9,7 @@
     :loading="props.loading"
     row-key="id"
     highlight-current-row
+    style="width: 100%;"
     @row-click="handleRowClick"
   >
     <template v-for="col in props.columns" :key="col.prop || col.label">

@@ -9,6 +9,7 @@ interface Category {
 class Service {
   static tableData = ref<Array<Record<string, any>>>([]);
   static firstSecondCtgys = ref<Array<Record<string, any>>>([]);
+  static allCtgys = ref<Array<Record<string, any>>>([]);
   static async init() {
     // 初始化数据
     await Service.getTableData();
@@ -19,6 +20,7 @@ class Service {
     let res: any = await ctgyApi.getAllCtgyList();
     if (res.code === 200) {
       Service.tableData.value = normalizeTree(res.data);
+      Service.allCtgys.value = normalizeTree(res.data, "", "value", "label");
     }
   }
   static async resetCtgys() {
@@ -53,6 +55,7 @@ class Service {
     }
   }
   static handleCtgys = (val: string): { type: CtgyType; id: string } => {
+    console.log(111,val);
     let valArr = val.split("-");
     if (valArr.length === 1) {
       return { type: CtgyType.first, id: val };

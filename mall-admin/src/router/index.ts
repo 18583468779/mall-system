@@ -70,6 +70,11 @@ const routes = [
     component: () => import("../views/login.vue"),
     meta: { guestOnly: true } // 仅游客可访问
   },
+  {
+    path: "/:pathMatch(.*)*", // 匹配所有未知路径
+    component: () => import("../views/notFound.vue"), // 404页面
+    meta: { title: "404", icon: "Document" } // 404页面的元信息
+  }
 ];
 
 const router = createRouter({

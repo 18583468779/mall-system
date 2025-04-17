@@ -2,6 +2,7 @@ import axios, {
   type AxiosInstance,
   type AxiosPromise,
   type AxiosRequestConfig,
+  type AxiosRequestHeaders,
   type InternalAxiosRequestConfig,
 } from "axios";
 import { ElMessage } from "element-plus";
@@ -10,12 +11,19 @@ import router from "../router";
 const SERVER_ERR = "请求服务器的网址错误或网络连接失败";
 interface AxiosRequestConfig_ extends AxiosRequestConfig {
   isMock: boolean;
+  noAuth: boolean;
 }
 
 type Method = "get" | "post" | "put" | "delete" | "patch";
 
 const methods: Method[] = ["get", "post", "put", "delete", "patch"];
-type ReqFn = (url: string, isMock: boolean, data?: any) => AxiosPromise<any>;
+type ReqFn = (
+  url: string,
+  isMock: boolean,
+  data?: any,
+  headers?: AxiosRequestHeaders | Record<string, any>,
+  noAuth?: boolean
+) => AxiosPromise<any>;
 interface ReqExecute {
   get: ReqFn;
   post: ReqFn;
@@ -46,11 +54,20 @@ class AxiosUtil {
   // 1.请求开始之前的请求拦截器
   beforeReqIntercpt() {
     this.axiosInstance.interceptors.request.use(
-      (request: InternalAxiosRequestConfig<any>) => {
-        const token = localStorage.getItem("access_token");
-        const headers = request.headers;
-        if (!headers.authorization && token)
-          headers.authorization = `Bearer ${token}`;
+      (request: any) => {
+        // 检查是否需要跳过token
+        if (request?.noAuth) {
+          // 清除配置避免影响后续请求
+          return request; // 直接返回不添加token
+        }
+        const userInfo = localStorage.getItem("userInfo");
+        if (userInfo) {
+          const token = JSON.parse(userInfo).access_token;
+          const headers = request.headers;
+          if (!headers.authorization && token)
+            headers.authorization = `Bearer ${token}`;
+        }
+
         return request;
       }
     );
@@ -65,7 +82,7 @@ class AxiosUtil {
           ElMessage.error(`发生了错误${msg}`);
           return;
         } else if (code === 401) {
-          localStorage.setItem("token", "");
+          localStorage.setItem("userInfo", "");
           ElMessage.error(`请重新登录！${msg}`);
           router.push({ name: "login" });
           throw new Error(msg);
@@ -95,8 +112,15 @@ class AxiosUtil {
   // 4. 深入灵活应用ts完成请求method类型自动提示
   reqPrepare() {
     return methods.forEach((method) => {
-      this.request[method] = (url, isMock, data) => {
-        return this.sendRequest({ url, isMock, method, data });
+      this.request[method] = (url, isMock, data, headers,noAuth) => {
+        return this.sendRequest({
+          url,
+          isMock,
+          method,
+          data,
+          headers: headers || {},
+          noAuth: noAuth || false,
+        });
       };
     });
   }

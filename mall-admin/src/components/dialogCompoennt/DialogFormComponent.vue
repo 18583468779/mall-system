@@ -13,7 +13,7 @@
             <el-upload
               v-model:file-list="modelValue[field.prop]"
               v-bind="field.attrs"
-              :http-request="customUpload"
+              :http-request="(opt: any) => customUpload(opt, field)"
               v-on="field.listeners || {}"
               class="w-full"
             >
@@ -21,7 +21,9 @@
                 <el-button type="primary" v-if="!field.attrs?.listType"
                   >选择文件</el-button
                 >
-                <el-icon v-else><Plus /></el-icon>
+                <el-icon v-else>
+                  <Plus />
+                </el-icon>
               </template>
               <template #tip>
                 <div class="text-gray-400 text-xs mt-1">
@@ -37,8 +39,8 @@
             v-model="modelValue[field.prop]"
             v-bind="field.attrs"
             v-on="field.listeners || {}"
+            :type="field.type === 'textarea' ? 'textarea' : 'text'"
           >
-            <!-- 下拉选项 -->
             <template v-if="field.type === 'select'">
               <el-option
                 v-for="opt in field.options"
@@ -51,9 +53,7 @@
         </el-form-item>
       </div>
       <div class="flex justify-end">
-        <el-button type="primary" color="#626aef" @click="onOk">
-          确认
-        </el-button>
+        <el-button type="primary" color="#626aef" @click="onOk">确认</el-button>
       </div>
     </el-form>
   </div>
@@ -63,6 +63,7 @@
 import { ElMessage, type FormInstance, type FormRules } from "element-plus";
 import { ref } from "vue";
 import request from "../../utils/axiosUtil";
+import type { UploadRequestOptions } from "element-plus/es/components/upload/src/upload";
 
 type FormFieldType =
   | "input"
@@ -71,22 +72,23 @@ type FormFieldType =
   | "radio"
   | "checkbox"
   | "treeSelect"
-  | "upload";
+  | "upload"
+  | "textarea"
 
 export interface FormField {
-  type: FormFieldType; // 表单类型
-  prop: string; // 表单属性
-  label: string; // 表单标签
-  attrs?: Record<string, any>; // 表单属性
-  options?: Record<string, any>[]; // 表单选项
-  listeners?: Record<string, any>; // 表单事件
+  type: FormFieldType;
+  prop: string;
+  label: string;
+  attrs?: Record<string, any>;
+  options?: Record<string, any>[];
+  listeners?: Record<string, any>;
 }
 
 withDefaults(
   defineProps<{
-    fields: FormField[]; // 表单字段
-    rules?: FormRules; // 表单验证规则
-    labelWidth?: string; // label 宽度
+    fields: FormField[];
+    rules?: FormRules;
+    labelWidth?: string;
   }>(),
   {
     labelWidth: "120px",
@@ -95,14 +97,15 @@ withDefaults(
 );
 
 const emit = defineEmits(["ok"]);
-const onOk = () => {
-  emit("ok", modelValue);
-};
 const formRef = ref<FormInstance>();
-const modelValue: Record<string, any> = defineModel();
+const modelValue = defineModel<Record<string, any>>({ required: true });
 
-const customUpload = async (options: any) => {
-  // 自定义上传逻辑
+const onOk = () => emit("ok", modelValue.value);
+
+const customUpload = async (
+  options: UploadRequestOptions,
+  field: FormField
+) => {
   try {
     // 1. 获取预签名URL
     const presignedRes: any = await request.post(
@@ -113,24 +116,41 @@ const customUpload = async (options: any) => {
         fileType: options.file.type,
       }
     );
-    console.log("presignedRes", presignedRes);
+    const url = presignedRes.data.presignedUrl;
+
     if (presignedRes.code === 200) {
-      // 2. 上传文件到存储服务minio
-      const uploadRes = await request.put(
-        presignedRes.data.presignedUrl,
-        false,
-        options.file
-      );
-      // 3. 更新表单数据
-      modelValue.value[options.field.prop] = {
-        url: presignedRes.data.publicUrl,
+      // 2. 上传到MinIO
+      await request.put(url, false, options.file, {
+        headers: { "Content-Type": options.file.type}
+      },true);
+      const urlObj = new URL(url);
+      const baseUrlObj = `${urlObj.origin}${urlObj.pathname}`;
+      // 3. 构建文件项
+      const fileItem = {
+        uid: options.file.uid, // 必须包含uid
         name: options.file.name,
-        status: "success",
+        url: baseUrlObj,
+        type:options.file.type,
+        status: "success" as const,
       };
-      // 4. 触发成功回调
-      options.onSuccess(uploadRes);
+
+      // 4. 更新文件列表（处理多文件）
+      const currentFiles = Array.isArray(modelValue.value[field.prop])
+        ? [...modelValue.value[field.prop]]
+        : [];
+
+      modelValue.value[field.prop] = [
+        ...currentFiles.filter((f) => f.uid !== fileItem.uid), // 去重
+        fileItem,
+      ];
+
+      // 5. 触发成功回调
+      options.onSuccess({
+        code: 200,
+        data: { url: fileItem.url, name: fileItem.name },
+      });
     }
-  } catch (error) {
+  } catch (error: any) {
     options.onError(error);
     ElMessage.error("文件上传失败");
   }
@@ -144,23 +164,19 @@ const componentMap: Record<FormFieldType, any> = {
   radio: "el-radio-group",
   treeSelect: "el-tree-select",
   upload: "el-upload",
-};
-const getComponent = (type: FormFieldType) => {
-  return componentMap[type] || "el-input";
+  textarea: "el-input",
 };
 
-// 暴露表单验证方法
+const getComponent = (type: FormFieldType) => componentMap[type] || "el-input";
+
 defineExpose({
   value: modelValue,
-  validate: () => {
-    return new Promise((resolve, reject) => {
-      formRef.value?.validate((valid: boolean) => {
-        valid ? resolve(true) : reject(new Error("表单验证失败"));
-      });
-    });
-  },
+  validate: () =>
+    new Promise((resolve, reject) => {
+      formRef.value?.validate((valid) =>
+        valid ? resolve(true) : reject(new Error("表单验证失败"))
+      );
+    }),
   resetFields: () => formRef.value?.resetFields(),
 });
 </script>
-
-<style scoped></style>
