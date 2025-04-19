@@ -1,5 +1,5 @@
 <template>
-  <div class="flex items-center justify-end mt-2">
+  <div class="flex items-center justify-end">
     <!-- 添加购物车按钮 -->
     <el-button
       v-if="bookItem?.purcharsenum === 0"

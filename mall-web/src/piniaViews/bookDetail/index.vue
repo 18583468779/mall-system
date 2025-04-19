@@ -11,17 +11,50 @@
 
         <!-- 图片展示 -->
         <div class="bg-white p-4 rounded-xl shadow-sm mb-6">
-          <img
-            :src="ImgUtil.getImg(bookData.bookpicname)"
-            class="w-full h-96 object-contain"
-          />
-          <!-- 缩略图轮播（假数据示例） -->
+          <el-carousel
+            :interval="5000"
+            height="500px"
+            arrow="always"
+            v-model="activeImageIndex"
+          >
+            <el-carousel-item
+              v-for="(image, index) in bookData.images"
+              :key="index"
+            >
+              <img
+                :src="image.url"
+                class="w-full h-full object-contain"
+                :alt="image.filename"
+                @error="handleImageError"
+              />
+            </el-carousel-item>
+          </el-carousel>
+
+          <!-- 缩略图导航 -->
           <div class="grid grid-cols-4 gap-3 mt-4">
             <div
-              v-for="i in 4"
-              :key="i"
-              class="h-20 bg-gray-100 rounded-lg cursor-pointer"
-            />
+              v-for="(image, index) in bookData.images"
+              :key="index"
+              class="cursor-pointer relative group"
+              @click="activeImageIndex = index"
+            >
+              <img
+                :src="image.url"
+                class="h-20 w-full object-cover rounded-lg border-2 transition-all"
+                :class="{
+                  'border-red-500': activeImageIndex === index,
+                  'border-gray-200': activeImageIndex !== index,
+                }"
+              />
+              <div
+                class="absolute inset-0 bg-black/30 rounded-lg transition-opacity"
+                :class="
+                  activeImageIndex === index
+                    ? 'opacity-0'
+                    : 'group-hover:opacity-0'
+                "
+              />
+            </div>
           </div>
         </div>
 
@@ -29,79 +62,43 @@
         <el-tabs v-model="activeTab" class="bg-white rounded-xl shadow-sm">
           <el-tab-pane label="商品详情" name="detail">
             <div class="p-4">
-              <h2 class="text-2xl font-bold mb-4">
-                {{ bookData.bookname }}
-              </h2>
-              <div class="text-gray-600 leading-relaxed">
-                {{ bookData || "暂无商品描述" }}
+              <h2 class="text-2xl font-bold mb-4">{{ bookData.bookname }}</h2>
+              <div class="text-gray-600 leading-relaxed whitespace-pre-line">
+                {{ bookData.description || "暂无商品描述" }}
+              </div>
+
+              <!-- 技术栈展示 -->
+              <div class="mt-6 p-4 bg-gray-50 rounded-lg">
+                <h3 class="font-bold mb-3">实现技术</h3>
+                <div class="flex gap-2">
+                  <el-tag type="info">HTML5</el-tag>
+                  <el-tag type="info">CSS3</el-tag>
+                  <el-tag type="info">JavaScript</el-tag>
+                </div>
               </div>
             </div>
           </el-tab-pane>
 
-          <el-tab-pane label="商品评价" name="review">
+          <el-tab-pane label="资源下载" name="download">
             <div class="p-4">
-              <!-- 评价筛选 -->
-              <div class="mb-6">
-                <el-radio-group v-model="filterType">
-                  <el-radio-button label="all"
-                    >全部（{{ totalReviews }}）</el-radio-button
-                  >
-                  <el-radio-button label="good"
-                    >好评（{{ goodEvalNum }}）</el-radio-button
-                  >
-                  <el-radio-button label="medium"
-                    >中评（{{ mediumEvalNum }}）</el-radio-button
-                  >
-                  <el-radio-button label="bad"
-                    >差评（{{ negativeEvalNum }}）</el-radio-button
-                  >
-                </el-radio-group>
-              </div>
-
-              <!-- 评价列表 -->
-              <div class="space-y-6">
-                <div
-                  v-for="item in evalRplLst"
-                  :key="item.evaluateid"
-                  class="border-b pb-6"
-                >
-                  <!-- 评价头部 -->
-                  <div class="flex items-center gap-3 mb-3">
-                    <img
-                      :src="ImgUtil.getImg(item.headportrait)"
-                      class="w-10 h-10 rounded-full"
-                    />
-                    <div>
-                      <h3 class="font-medium">
-                        {{ item.isanonymous ? "匿名用户" : item.evaluator }}
-                      </h3>
-                      <div class="text-sm text-gray-500">
-                        {{ dayjs(item.pubdate).format("YYYY-MM-DD") }}
-                      </div>
-                    </div>
-                  </div>
-
-                  <!-- 评价内容 -->
-                  <div class="text-gray-800 leading-relaxed">
-                    {{ item.content }}
-                  </div>
-
-                  <!-- 互动操作 -->
-                  <div class="flex items-center gap-4 mt-3 text-sm">
-                    <button
-                      class="text-gray-500 hover:text-black transition-colors"
-                    >
-                      <el-icon :size="16"><ChatDotRound /></el-icon>
-                      <span class="ml-1">回复</span>
-                    </button>
-                    <button
-                      class="text-gray-500 hover:text-black transition-colors"
-                    >
-                      <el-icon :size="16"><Thumb /></el-icon>
-                      <span class="ml-1">{{ item.isbn || 0 }}</span>
-                    </button>
-                  </div>
+              <div
+                v-for="(file, index) in bookData.attachments"
+                :key="index"
+                class="flex items-center justify-between p-3 bg-gray-50 rounded-lg mb-2 hover:bg-gray-100 transition-colors"
+              >
+                <div class="flex items-center gap-2">
+                  <el-icon :size="20" class="text-blue-500"
+                    ><Document
+                  /></el-icon>
+                  <span class="text-gray-800">{{ file.filename }}</span>
                 </div>
+                <el-button
+                  type="primary"
+                  size="small"
+                  @click="downloadFile(file.url)"
+                >
+                  立即下载
+                </el-button>
               </div>
             </div>
           </el-tab-pane>
@@ -116,11 +113,17 @@
           <!-- 商品标题 -->
           <h1 class="text-2xl font-bold mb-4">{{ bookData.bookname }}</h1>
 
+          <!-- 分类信息 -->
+          <div class="flex items-center gap-2 mb-4 text-sm text-gray-600">
+            <el-icon><CollectionTag /></el-icon>
+            <span>{{ bookData.thirdCtgy?.thirdctgyname }}</span>
+          </div>
+
           <!-- 价格信息 -->
           <div class="space-y-3 mb-6">
             <div class="flex items-baseline gap-2">
               <span class="text-3xl font-bold text-red-600">
-                ¥{{ bookData.discountprice }}
+                ¥{{ (bookData.originalprice * bookData.discount) / 10 }}
               </span>
               <span class="text-gray-500 line-through">
                 定价¥{{ bookData.originalprice }}
@@ -150,12 +153,18 @@
           <div class="mt-6 pt-6 border-t">
             <div class="space-y-3 text-sm">
               <div class="flex items-center gap-2">
-                <span class="text-gray-500">促销：</span>
-                <span class="text-red-600">每满1000减50</span>
+                <span class="text-gray-500">服务：</span>
+                <span class="text-gray-800"
+                  >源码包下载 · 技术支持 · 持续更新</span
+                >
               </div>
               <div class="flex items-center gap-2">
-                <span class="text-gray-500">服务：</span>
-                <span class="text-gray-800">正品保证 · 极速退款</span>
+                <span class="text-gray-500">文档：</span>
+                <span class="text-gray-800">一份</span>
+              </div>
+              <div class="flex items-center gap-2">
+                <span class="text-gray-500">版本：</span>
+                <span class="text-gray-800">v1.0.0（2025-04-19 更新）</span>
               </div>
             </div>
           </div>
@@ -167,26 +176,37 @@
 
 <script setup lang="ts">
 import { ref } from "vue";
-import { ArrowLeft, ChatDotRound } from "@element-plus/icons-vue";
-import dayjs from "dayjs";
-import { EvaluateClass } from "../bookDetail/service";
-// import shopCart from "../books/service/shopCart";
-import { ImgUtil } from "../../utils/imgUtil";
+import {
+  ArrowLeft,
+  Document,
+  CollectionTag,
+  Star,
+} from "@element-plus/icons-vue";
 import { useRoute } from "vue-router";
 import addSubtrsc from "../books/components/addSubtrsc.vue";
-const { evalRplLst } = EvaluateClass.storeRef;
+
 const route = useRoute();
+const activeTab = ref("detail");
+const activeImageIndex = ref(0);
 
 const bookData = JSON.parse(
   decodeURIComponent(route.params.bookData as string)
 );
-// 假数据
-const activeTab = ref("detail");
-const filterType = ref("all");
-const totalReviews = ref(132);
-const goodEvalNum = ref(120);
-const mediumEvalNum = ref(8);
-const negativeEvalNum = ref(4);
+
+const downloadFile = (url: string) => {
+  const link = document.createElement("a");
+  link.href = url;
+  link.target = "_blank";
+  link.download = url.split("/").pop() || "download";
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+};
+
+const handleImageError = (e: Event) => {
+  const img = e.target as HTMLImageElement;
+  img.src = "https://via.placeholder.com/500x300?text=Image+Not+Available";
+};
 </script>
 
 <style scoped>
@@ -198,7 +218,15 @@ const negativeEvalNum = ref(4);
   @apply !text-lg !font-medium;
 }
 
-:deep(.el-button.is-active) {
-  @apply !bg-black !text-white;
+:deep(.el-carousel__arrow) {
+  @apply !w-10 !h-10 bg-white/80 hover:bg-white !text-gray-600 shadow-md;
+}
+
+:deep(.el-carousel__indicator button) {
+  @apply !bg-gray-400;
+}
+
+:deep(.el-carousel__indicator.is-active button) {
+  @apply !bg-red-500;
 }
 </style>
