@@ -91,7 +91,6 @@ export default class Books {
       }
     }
     Books.store.allBookList = bookList; //设置图书的数量，渲染页面
-    Books.store.setAllBookList(bookList); //设置图书的数量，缓存
   }
   static uptBookNumWithSCLstNum() {
     // 首次更新购物车图书数量

@@ -119,6 +119,7 @@ export default defineStore("bookstore", {
       const bookDetail: AxiosResponse<BookInfo> = await bookApi.findBooksByISBN(
         this.getISBN
       );
+
       this.bookDetail = bookDetail.data;
       calDisCount([this.bookDetail] as BookInfo[]);
       storage.set("bookDetail", bookDetail.data);

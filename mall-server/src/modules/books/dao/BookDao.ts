@@ -45,10 +45,10 @@ class BookDao {
       },
       {
         model: ThirdCtgyModel,
-        as: "thirdCtgy",            // 与@BelongsTo定义的别名一致
+        as: "thirdCtgy", // 与@BelongsTo定义的别名一致
         attributes: ["thirdctgyname"],
-        required: true              // 使用INNER JOIN
-      }
+        required: true, // 使用INNER JOIN
+      },
     ];
 
     return PaginationService.paginate({
@@ -139,12 +139,35 @@ class BookDao {
   }
 
   async findBooksByISBN(ISBN: string) {
-    return await BooksModel.findOne({
-      raw: true,
-      where: {
-        ISBN,
+    const include = [
+      {
+        model: BookImageModel,
+        as: "images",
+        attributes: ["url", "filename"],
+        separate: true, // 确保返回数组
       },
+      {
+        model: BookAttachment,
+        as: "attachments",
+        attributes: ["url", "filename", "fileType"],
+        separate: true, // 确保返回数组
+      },
+      {
+        model: ThirdCtgyModel,
+        as: "thirdCtgy",
+        attributes: ["thirdctgyname"],
+        required: false, // 改为LEFT JOIN
+      },
+    ];
+
+    const result = await BooksModel.findOne({
+      where: { ISBN },
+      include,
+      nest: true, // 嵌套关联数据
+      raw: false, // 禁用原始模式
     });
+
+    return result?.toJSON(); // 转换模型实例为纯对象
   }
 
   async saveBooks(bookData: any) {

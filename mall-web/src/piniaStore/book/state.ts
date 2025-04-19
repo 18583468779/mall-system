@@ -3,6 +3,10 @@ export interface BookInfo {
   bookname: string;
   author: string;
   publishid: number;
+  images: any[];
+  description: string;
+  attachments: any[];
+  thirdCtgy: any;
   publishername: string;
   monthsalecount: number; //月销量
   purcharsenum: number;
