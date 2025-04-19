@@ -1,28 +1,11 @@
 <template>
   <!-- 内容区域 -->
   <main class="pt-16">
-    <!-- 搜索栏 -->
-    <div class="container mx-auto px-4 py-6">
-      <el-input
-        v-model="searchQuery"
-        placeholder="搜索商品..."
-        class="rounded-full shadow-sm"
-        size="large"
-      >
-        <template #prefix>
-          <el-icon><Search /></el-icon>
-        </template>
-      </el-input>
-    </div>
-
     <!-- 轮播图 -->
     <div class="container mx-auto px-4 py-6">
       <el-carousel height="400px" :interval="5000" arrow="always">
-        <el-carousel-item v-for="i in 3" :key="i">
-          <img
-            src="https://via.placeholder.com/1200x400"
-            class="w-full h-full object-cover rounded-xl shadow-lg"
-          />
+        <el-carousel-item v-for="i in imgList" :key="i" class="text-center">
+          <img :src="i" class="h-full object-cover rounded-xl shadow-lg" />
         </el-carousel-item>
       </el-carousel>
     </div>
@@ -88,23 +71,20 @@
 </template>
 
 <script setup lang="ts">
-import {
-  ElIcon,
-  ElInput,
-  ElButton,
-  ElCarousel,
-  ElCarouselItem,
-} from "element-plus";
+import { ElIcon, ElButton, ElCarousel, ElCarouselItem } from "element-plus";
 import { ImgUtil } from "../../../utils/imgUtil";
-import { Search, Loading } from "@element-plus/icons-vue";
+import { Loading } from "@element-plus/icons-vue";
 import Books from "../../books/service";
+import lun1 from "../../../assets/image/lun1.png";
+import lun2 from "../../../assets/image/lun2.png";
+import lun3 from "../../../assets/image/lun3.png";
+
 const { handleToPage } = Books;
 import HomeClass from "../service";
 import { ref } from "vue";
 const { storeRef } = HomeClass;
 const { getAllBookList, isLoading, hasMore } = storeRef;
-
-const searchQuery = ref("");
+const imgList = [lun1, lun2, lun3];
 // 购物车功能
 const cartCount = ref(0);
 const addToCart = (product: any) => {

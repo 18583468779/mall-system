@@ -14,7 +14,7 @@ export default defineConfig((mode: ConfigEnv) => {
   if (mode.mode === envMap.VITE_username) {
     server = {
       // 配置代理
-      host: "project.test",
+      host: "127.0.0.1",
       port: envMap.VITE_port,
       proxy: {
         [envMap.VITE_base_url]: {

@@ -1,21 +1,21 @@
 import * as MinIO from "minio";
 
-// export const minioConfig = {
-//   endPoint: "localhost",
-//   port: 9090,
-//   useSSL: false,
-//   accessKey: "admin",
-//   secretKey: "admin888",
-//   bucket: "daimaxiaokubucket",
-// };
 export const minioConfig = {
-  endPoint: "project.test",
+  endPoint: "localhost",
   port: 9005,
   useSSL: false,
-  accessKey: "minioadmin",
-  secretKey: "minioadmin",
+  accessKey: "admin",
+  secretKey: "admin888",
   bucket: "daimaxiaokubucket",
 };
+// export const minioConfig = {
+//   endPoint: "project.test",
+//   port: 9005,
+//   useSSL: false,
+//   accessKey: "minioadmin",
+//   secretKey: "minioadmin",
+//   bucket: "daimaxiaokubucket",
+// };
 
 const minioClient = new MinIO.Client(minioConfig);
 // 确保存储桶存在
@@ -43,10 +43,10 @@ const minioClient = new MinIO.Client(minioConfig);
 
     statements.forEach((statement: any) => {
       if (statement.Effect === "Allow") {
-        const actions = Array.isArray(statement.Action) 
-          ? statement.Action 
+        const actions = Array.isArray(statement.Action)
+          ? statement.Action
           : [statement.Action];
-        
+
         if (actions.includes("s3:PutObject")) canWrite = true;
         if (actions.includes("s3:GetObject")) canRead = true;
       }
@@ -55,7 +55,7 @@ const minioClient = new MinIO.Client(minioConfig);
     console.log("--- 权限检查结果 ---");
     console.log("写入权限（PutObject）:", canWrite ? "✅ 允许" : "❌ 拒绝");
     console.log("读取权限（GetObject）:", canRead ? "✅ 允许" : "❌ 拒绝");
-    
+
     // 4. 如果没有权限，建议设置新策略（可选）
     if (!canWrite || !canRead) {
       console.log("\n建议设置以下策略:");
@@ -84,6 +84,5 @@ const minioClient = new MinIO.Client(minioConfig);
     }
   }
 })().catch(console.error);
-
 
 export default minioClient;

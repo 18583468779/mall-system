@@ -32,20 +32,20 @@ class BaseDao {
     const modelPath = path.join(process.cwd(), "/src/modules/decormodel");
     this.sequelize.addModels([modelPath]);
   }
-    /**
+  /**
    * 同步数据库表结构（创建缺失的表）
    */
-    async syncDatabase() {
-      try {
-        await this.sequelize.sync({
-          // alter: true, // 如果需要修改现有表结构（谨慎使用）
-          // force: true  // 如果需要强制删除并重新创建表（慎用！会丢失数据）
-        });
-        console.log("Database tables synchronized.");
-      } catch (error) {
-        console.error("Error syncing database tables:", error);
-      }
+  async syncDatabase() {
+    try {
+      await this.sequelize.sync({
+        // alter: true, // 如果需要修改现有表结构（谨慎使用）
+        // force: true, // 如果需要强制删除并重新创建表（慎用！会丢失数据）
+      });
+      console.log("Database tables synchronized.");
+    } catch (error) {
+      console.error("Error syncing database tables:", error);
     }
+  }
 }
 const baseDao = BaseDao.baseDao;
 baseDao.addModels();
