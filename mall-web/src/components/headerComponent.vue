@@ -9,7 +9,10 @@
         <Menu />
       </el-icon>
 
-      <h1 class="text-xl font-bold text-red-500 mx-4">代码小库</h1>
+      <h1 class="text-xl font-bold text-red-500 mx-4 flex items-center gap-2">
+        <img :src="logo" alt="" class="w-10" />
+        <p>代码小库</p>
+      </h1>
 
       <nav class="hidden lg:flex space-x-8 flex-1 justify-center">
         <template v-for="navItem in navItems" :key="navItem.name">
@@ -59,6 +62,7 @@ import { Menu, Search, ShoppingCart, User } from "@element-plus/icons-vue";
 import CategoryDropdown from "../piniaViews/ctgy/components/Ctgy.vue";
 import SearchComponent from "../piniaViews/search/index.vue";
 import ShopCart from "../piniaViews/books/service/shopCart";
+import logo from "../assets/image/logo.png";
 const { handleToCart } = ShopCart;
 const { totalCount } = ShopCart.refreshShopCartList();
 import { ref } from "vue";
@@ -88,6 +92,11 @@ const navItems = [
     name: "热卖",
     type: "link",
     path: "/hot",
+  },
+  {
+    name: "联系我们",
+    type: "link",
+    path: "/contactUs",
   },
 ];
 </script>

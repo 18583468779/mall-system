@@ -14,7 +14,7 @@ const login = () => import("../piniaViews/userInfo/login.vue");
 
 const BookDetail = () => import("../piniaViews/bookDetail/index.vue");
 const payPage = () => import("../piniaViews/order/payPage.vue");
-
+const contactUs = () => import("../piniaViews/contactUs/index.vue");
 const routes: RouteRecordRaw[] = [
   {
     path: "/",
@@ -60,6 +60,11 @@ const routes: RouteRecordRaw[] = [
         name: "search",
         path: "/search",
         component: search,
+      },
+      {
+        name: "contactUs",
+        path: "/contactUs",
+        component: contactUs,
       },
       {
         name: "bookdetail",
