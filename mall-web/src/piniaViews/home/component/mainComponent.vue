@@ -58,7 +58,15 @@
         </div>
       </div>
     </div>
-
+    <div class="container mt-5">
+      <el-pagination
+        class="float-right"
+        size="large"
+        background
+        layout="prev, pager, next"
+        :total="totalPages"
+      />
+    </div>
     <!-- 加载状态 -->
     <div v-if="isLoading" class="py-8 text-center text-gray-500">
       <el-icon class="animate-spin"><Loading /></el-icon>
@@ -83,7 +91,7 @@ const { handleToPage } = Books;
 import HomeClass from "../service";
 import { ref } from "vue";
 const { storeRef } = HomeClass;
-const { getAllBookList, isLoading, hasMore } = storeRef;
+const { getAllBookList, isLoading, hasMore, totalPages } = storeRef;
 const imgList = [lun1, lun2, lun3];
 // 购物车功能
 const cartCount = ref(0);
