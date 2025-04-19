@@ -80,7 +80,8 @@ export default class Books {
 
   static updateBookNum(bookNum: number, curbookisbn?: string) {
     // 点击新增更新购物车图书数量
-    const bookList: BookInfo[] = Books.store.getBookList;
+    // const bookList: BookInfo[] = Books.store.getBookList;
+    const bookList: BookInfo[] = Books.store.getAllBookList;
     let book: BookInfo;
     for (let i = 0; i < bookList.length; i++) {
       book = bookList[i];
@@ -89,7 +90,8 @@ export default class Books {
         break;
       }
     }
-    Books.store.bookList = bookList; //设置图书的数量，渲染页面
+    Books.store.allBookList = bookList; //设置图书的数量，渲染页面
+    Books.store.setAllBookList(bookList); //设置图书的数量，缓存
   }
   static uptBookNumWithSCLstNum() {
     // 首次更新购物车图书数量

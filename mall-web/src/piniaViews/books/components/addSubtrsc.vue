@@ -46,6 +46,7 @@
 
       <!-- 增加数量 -->
       <el-button
+        v-if="false"
         type="primary"
         circle
         size="small"
