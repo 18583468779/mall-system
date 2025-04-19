@@ -93,7 +93,6 @@ export default defineStore("bookstore", {
         } else {
           this.allBookList = [...this.allBookList, ...response.data.data];
         }
-        console.log("response", response);
 
         // 更新分页信息（假设接口返回总页数）
         this.currentPage = page;

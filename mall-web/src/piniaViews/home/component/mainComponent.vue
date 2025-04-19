@@ -22,39 +22,7 @@
           class="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-shadow cursor-pointer"
           @click="handleToPage(product)"
         >
-          <div class="aspect-square relative">
-            <img
-              :src="ImgUtil.getImg(product.bookpicname)"
-              class="w-full h-full object-cover"
-            />
-            <div
-              v-if="product.discount"
-              class="absolute top-2 right-2 bg-red-500 text-white px-2 py-1 rounded-full text-xs"
-            >
-              {{ product.discount }}折
-            </div>
-          </div>
-          <div class="p-4">
-            <h3 class="font-medium truncate mb-2">{{ product.BOOKNAME }}</h3>
-            <div class="flex justify-between items-center">
-              <div>
-                <span class="text-red-500 font-bold text-lg"
-                  >¥{{ product.monthsalecount }}</span
-                >
-                <span class="text-gray-400 text-sm line-through ml-2"
-                  >¥{{ product.originalprice }}</span
-                >
-              </div>
-              <el-button
-                type="danger"
-                size="small"
-                class="!rounded-full !px-4"
-                @click.stop="addToCart(product)"
-              >
-                加入购物车
-              </el-button>
-            </div>
-          </div>
+          <product-item :product="product" />
         </div>
       </div>
     </div>
@@ -79,9 +47,9 @@
 </template>
 
 <script setup lang="ts">
-import { ElIcon, ElButton, ElCarousel, ElCarouselItem } from "element-plus";
-import { ImgUtil } from "../../../utils/imgUtil";
+import { ElIcon, ElCarousel, ElCarouselItem } from "element-plus";
 import { Loading } from "@element-plus/icons-vue";
+import productItem from "./productItem.vue";
 import Books from "../../books/service";
 import lun1 from "../../../assets/image/lun1.png";
 import lun2 from "../../../assets/image/lun2.png";
@@ -93,12 +61,6 @@ const { storeRef, getBookListByPage } = HomeClass;
 const { getAllBookList, isLoading, hasMore, totalPages, currentPage } =
   storeRef;
 const imgList = [lun1, lun2, lun3];
-// 购物车功能
-const cartCount = ref(0);
-const addToCart = (product: any) => {
-  cartCount.value++;
-  console.log("Added to cart:", product);
-};
 
 // 原始滚动加载逻辑
 const debounce = (fn: Function, delay: number) => {

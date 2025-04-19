@@ -111,4 +111,8 @@ const navItems = [
 .v-leave-to {
   opacity: 0;
 }
+.nav-item {
+  @apply px-3 py-2 text-gray-600 hover:text-red-500 transition-colors 
+   flex items-center text-[15px] font-medium;
+}
 </style>
