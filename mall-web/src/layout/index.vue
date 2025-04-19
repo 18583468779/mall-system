@@ -13,4 +13,10 @@
   </div>
 </template>
 
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import rightComponent from "../components/rightComponent.vue";
+import FooterNav from "../components/footer.vue";
+import headerComponent from "../components/headerComponent.vue";
+</script>
+
+<style></style>
