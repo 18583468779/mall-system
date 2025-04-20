@@ -2,6 +2,7 @@ import { storeToRefs } from "pinia";
 import shopCart from "../../../piniaStore/shopcart";
 import { BookInfo } from "../../../piniaStore/book/state";
 import { ShopCartType } from "../../../piniaStore/shopcart/state";
+import userInfo from "../../../piniaStore/userInfo";
 import Books from ".";
 import storage from "../../../utils/goodStorageUtil";
 import { ElMessageBox } from "element-plus";
@@ -51,11 +52,11 @@ export default class ShopCart {
   static async addBookToShopCart(bookitem: BookInfo) {
     // 添加图书到购物车
     const shopcart: ShopCartType = {
-      userid: 1,
-      checked: false,
+      userid: userInfo().storeLoginUser.userid,
+      checked: true,
       bookisbn: bookitem.ISBN,
       bookname: bookitem.bookname,
-      bookpicname: bookitem.bookpicname,
+      bookpicname: "",
       bookprice: bookitem.originalprice * bookitem.discount,
       purcharsenum: 1,
     };
@@ -140,6 +141,10 @@ export default class ShopCart {
   }
   static refreshShopCartList() {
     // 计算购物车的数量和价格
+    console.log(
+      "ShopCart.store.getShopCartList",
+      ShopCart.store.getShopCartList
+    );
     const totalCount = computed(() => {
       let total = 0; //数量
       const shopCartList = ShopCart.store.getShopCartList as ShopCartType[];

@@ -118,8 +118,8 @@ export default class Books {
   }
   static getCurrentBookItem(bookisbn: string, purcharsenum: number) {
     // 根据图书id获取图书
-    const bookInfo = Books.store.getBookList as BookInfo[];
-    const bookItem = bookInfo.filter((item) => item.ISBN === bookisbn)[0];
+    const bookInfo = Books.store.getAllBookList as BookInfo[];
+    const bookItem = bookInfo.filter((item) => item.ISBN == bookisbn)[0];
     bookItem["purcharsenum"] = purcharsenum;
     return bookItem;
   }

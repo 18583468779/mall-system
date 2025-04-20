@@ -47,8 +47,29 @@ export default defineStore("shopCart", {
       // 获取购物车列表
       const res: AxiosResponse<ShopCartType[]> =
         await shopCartApi.getShopCartList(userid);
-      this.shopCartList = res.data;
-      storage.set("shopCartList", res.data);
+      const shopCartList = this.getShopCartList; // 获取现有购物车列表;
+      if (shopCartList && shopCartList.length > 0) {
+        // 如果购物车列表不为空，则合并购物车列表
+
+        const newShopCartList = res.data.map((item) => {
+          const shopCart = shopCartList.find(
+            (shopCart) =>
+              shopCart.shopcartid == item.shopcartid &&
+              shopCart.userid == item.userid
+          );
+          if (shopCart) {
+            // 如果购物车列表中存在该商品，则更新购物车列表中的商品数量
+            item.checked = shopCart.checked;
+            return shopCart;
+          }
+          return item;
+        });
+        this.shopCartList = newShopCartList; // 更新购物车列表
+        storage.set("shopCartList", newShopCartList); // 保存购物车列表到本地存储
+        return;
+      }
+      this.shopCartList = res.data; // 更新购物车列表
+      storage.set("shopCartList", res.data); // 保存购物车列表到本地存储
     },
     async addBookToShopCart(shopCart: ShopCartType) {
       // 新增商品到购物车
@@ -66,6 +87,7 @@ export default defineStore("shopCart", {
     async setShopCart(dbShopCart: ShopCartType) {
       // 设置购物车列表
       dbShopCart.checked = true; // 默认为选中
+
       storage.set(
         "shopCartList",
         dbShopCart,
