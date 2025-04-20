@@ -5,10 +5,7 @@
     >
       <!-- 左侧图片 -->
       <div class="lg:block lg:w-1/2 bg-cover">
-        <img
-          :src="ImgUtil.getImg('loginbg.png')"
-          class="w-full h-full object-cover"
-        />
+        <img :src="loginBg" class="w-full h-full object-contain" />
       </div>
 
       <!-- 右侧表单 -->
@@ -155,10 +152,10 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import { User, Lock, Iphone, Message } from "@element-plus/icons-vue";
-import { ImgUtil } from "../../utils/imgUtil";
 import userStore from "../../piniaStore/userInfo/index";
 import storage from "../../utils/goodStorageUtil";
 import { useRouter } from "vue-router";
+import loginBg from "../../assets/image/loginBg.svg";
 import VueQrcode from "vue-qrcode";
 import { ElMessage } from "element-plus";
 const qrCodeValue = ref("https://example.com");
