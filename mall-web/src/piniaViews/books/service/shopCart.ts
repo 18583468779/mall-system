@@ -97,7 +97,7 @@ export default class ShopCart {
     //根据图书id获取购物车
     const shopCartList = ShopCart.store.getShopCartList as ShopCartType[];
     const currentShopCart = shopCartList.filter(
-      (item) => item.bookisbn === bookitem.ISBN
+      (item) => item.bookisbn == bookitem.ISBN
     )[0];
     return currentShopCart;
   }
@@ -117,13 +117,19 @@ export default class ShopCart {
         );
         if (res !== 1) return; // 如果成功删除购物车
         const newList = shopCartList.filter(
-          (item) => item.bookisbn !== bookitem.ISBN
+          (item) => item.bookisbn != bookitem.ISBN
         );
         storage.set("shopCartList", newList);
         ShopCart.store.shopCartList = newList;
-        const bookList = Books.store.getBookList as BookInfo[];
-        bookList.forEach((item) => {
-          if (item.ISBN === bookitem.ISBN) {
+        const bookList = Books.store.getAllBookList;
+        const bookDetail = Books.store.bookDetail;
+        if (bookDetail && bookDetail.ISBN == bookitem.ISBN) {
+          // 如果删除的是当前图书
+          bookDetail.purcharsenum = 0; // 清空图书的数量
+          Books.store.bookDetail = bookDetail;
+        }
+        bookList.forEach((item: any) => {
+          if (item.ISBN == bookitem.ISBN) {
             item.purcharsenum = 0; // 清空图书的数量
           }
           return item;

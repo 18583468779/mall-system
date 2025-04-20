@@ -207,9 +207,9 @@ const downloadFile = (url: string) => {
   document.body.removeChild(link);
 };
 
-const handleImageError = (e: Event) => {
-  const img = e.target as HTMLImageElement;
-  img.src = "https://via.placeholder.com/500x300?text=Image+Not+Available";
+const handleImageError = () => {
+  // const img = e.target as HTMLImageElement;
+  // img.src = "https://via.placeholder.com/500x300?text=Image+Not+Available";
 };
 </script>
 
