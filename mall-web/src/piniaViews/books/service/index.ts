@@ -90,6 +90,7 @@ export default class Books {
         break;
       }
     }
+    Books.store.bookDetail["purcharsenum"] = bookNum;
     Books.store.allBookList = bookList; //设置图书的数量，渲染页面
   }
   static uptBookNumWithSCLstNum() {

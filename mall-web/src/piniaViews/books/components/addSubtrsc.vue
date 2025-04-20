@@ -40,9 +40,22 @@
       </el-button>
 
       <!-- 当前数量 -->
-      <span class="min-w-[30px] text-center font-medium text-gray-700">
+      <span
+        v-if="bookItem.purcharsenum !== 1"
+        class="min-w-[30px] text-center font-medium text-gray-700"
+      >
         {{ bookItem.purcharsenum }}
       </span>
+      <el-button
+        v-else
+        type="primary"
+        class="!px-4 !py-4 !bg-red-100 hover:!bg-red-200 !text-red-600 !rounded-lg transition-colors border-none"
+      >
+        <el-icon :size="16" class="mr-1">
+          <ShoppingCartFull />
+        </el-icon>
+        已添加至购物车
+      </el-button>
 
       <!-- 增加数量 -->
       <el-button

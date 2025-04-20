@@ -18,8 +18,8 @@
             v-model="activeImageIndex"
           >
             <el-carousel-item
-              v-for="(image, index) in getBookDetail.images"
-              :key="index"
+              v-for="image in store.bookDetail.images"
+              :key="image.url"
             >
               <img
                 :src="image.url"
@@ -33,7 +33,7 @@
           <!-- 缩略图导航 -->
           <div class="grid grid-cols-4 gap-3 mt-4">
             <div
-              v-for="(image, index) in getBookDetail.images"
+              v-for="(image, index) in store.bookDetail.images"
               :key="index"
               class="cursor-pointer relative group"
               @click="activeImageIndex = index"
@@ -63,10 +63,10 @@
           <el-tab-pane label="商品详情" name="detail">
             <div class="p-4">
               <h2 class="text-2xl font-bold mb-4">
-                {{ getBookDetail.bookname }}
+                {{ store.bookDetail.bookname }}
               </h2>
               <div class="text-gray-600 leading-relaxed whitespace-pre-line">
-                {{ getBookDetail.description || "暂无商品描述" }}
+                {{ store.bookDetail.description || "暂无商品描述" }}
               </div>
 
               <!-- 技术栈展示 -->
@@ -84,7 +84,7 @@
           <el-tab-pane label="资源下载" name="download">
             <div class="p-4">
               <div
-                v-for="(file, index) in getBookDetail.attachments"
+                v-for="(file, index) in store.bookDetail.attachments"
                 :key="index"
                 class="flex items-center justify-between p-3 bg-gray-50 rounded-lg mb-2 hover:bg-gray-100 transition-colors"
               >
@@ -113,12 +113,14 @@
       >
         <div class="bg-white p-6 pt-10 rounded-xl shadow-sm lg:mt-8">
           <!-- 商品标题 -->
-          <h1 class="text-2xl font-bold mb-4">{{ getBookDetail.bookname }}</h1>
+          <h1 class="text-2xl font-bold mb-4">
+            {{ store.bookDetail.bookname }}
+          </h1>
 
           <!-- 分类信息 -->
           <div class="flex items-center gap-2 mb-4 text-sm text-gray-600">
             <el-icon><CollectionTag /></el-icon>
-            <span>{{ getBookDetail.thirdCtgy?.thirdctgyname }}</span>
+            <span>{{ store.bookDetail.thirdCtgy?.thirdctgyname }}</span>
           </div>
 
           <!-- 价格信息 -->
@@ -126,21 +128,22 @@
             <div class="flex items-baseline gap-2">
               <span class="text-3xl font-bold text-red-600">
                 ¥{{
-                  (getBookDetail.originalprice * getBookDetail.discount) / 10
+                  (store.bookDetail.originalprice * store.bookDetail.discount) /
+                  10
                 }}
               </span>
               <span class="text-gray-500 line-through">
-                定价¥{{ getBookDetail.originalprice }}
+                定价¥{{ store.bookDetail.originalprice }}
               </span>
               <span class="text-sm bg-red-100 text-red-600 px-2 py-1 rounded">
-                {{ getBookDetail.discount }}折
+                {{ store.bookDetail.discount }}折
               </span>
             </div>
           </div>
 
           <!-- 操作按钮 -->
           <div class="flex justify-start items-center gap-3">
-            <add-subtrsc :book-item="getBookDetail" class="mt-0" />
+            <add-subtrsc :book-item="store.bookDetail" class="mt-0" />
             <div>
               <el-button
                 class="!px-4 !py-4 hover:!bg-red-200 hover:!text-red-600 hover:border-transparent !rounded-lg"
@@ -188,16 +191,11 @@ import {
 } from "@element-plus/icons-vue";
 import addSubtrsc from "../books/components/addSubtrsc.vue";
 import Books from "../books/service";
-import { onMounted } from "vue";
 const { store } = Books;
-const { findBooksByISBN, getBookDetail } = store;
-
+const { findBooksByISBN } = store;
 const activeTab = ref("detail");
 const activeImageIndex = ref(0);
-
-onMounted(() => {
-  findBooksByISBN();
-});
+findBooksByISBN();
 
 const downloadFile = (url: string) => {
   const link = document.createElement("a");

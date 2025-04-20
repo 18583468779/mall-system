@@ -5,7 +5,7 @@ import bookApi from "../../api/BookApi";
 import { AxiosResponse } from "axios";
 import storage from "../../utils/goodStorageUtil";
 import searchStore from "../search";
-
+import shopCartStore from "../shopcart";
 function hasProps(data: any) {
   if (Array.isArray(data)) {
     return Boolean(data.length);
@@ -27,7 +27,7 @@ type InitStateType = {
   bookList: BookInfo[];
   allBookList: BookInfo[];
   publisherList: Publisher[];
-  bookDetail: BookInfo | {};
+  bookDetail: any;
   operate: Operate;
   isbn: string;
   // 新增分页状态
@@ -70,12 +70,7 @@ export default defineStore("bookstore", {
       return searchStore().getStoreAutoCompKeyword;
     },
     getBookDetail(state) {
-      if (hasProps(state.bookDetail)) {
-        return state.bookDetail as BookInfo;
-      } else {
-        state.bookDetail = goodStorage.get("bookDetail");
-        return state.bookDetail as BookInfo;
-      }
+      return state.bookDetail || storage.get("bookDetail");
     },
     getISBN(state) {
       return state.isbn.length > 0 ? state.isbn : storage.get("isbn");
@@ -116,13 +111,18 @@ export default defineStore("bookstore", {
       storage.set("isbn", this.isbn);
     },
     async findBooksByISBN() {
+      const scStore = shopCartStore(); // 获取购物车 store 实例
+      // 获取图书详情
       const bookDetail: AxiosResponse<BookInfo> = await bookApi.findBooksByISBN(
         this.getISBN
       );
+      // 初始化购物车数量（从购物车列表查找当前书籍的数量）
+      const cartItem = scStore.getShopCartList.find(
+        (item) => item.bookisbn == bookDetail.data.ISBN
+      );
+      bookDetail.data["purcharsenum"] = cartItem?.purcharsenum || 0;
 
       this.bookDetail = bookDetail.data;
-      calDisCount([this.bookDetail] as BookInfo[]);
-      storage.set("bookDetail", bookDetail.data);
     },
     async findBksByPublishIds(publishids: number[]) {
       const bookList: AxiosResponse<BookInfo[]> =
