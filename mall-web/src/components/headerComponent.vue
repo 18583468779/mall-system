@@ -47,7 +47,25 @@
             {{ totalCount }}
           </span>
         </div>
-        <el-icon class="hidden lg:inline-block text-2xl"><User /></el-icon>
+        <el-dropdown :hide-on-click="false" class="cursor-pointer text-lg">
+          <span class="el-dropdown-link flex items-center">
+            {{ store?.storeLoginUser?.username || "游客"
+            }}<el-icon class="el-icon--right"><User /></el-icon>
+          </span>
+          <template #dropdown>
+            <el-dropdown-menu>
+              <el-dropdown-item>个人中心</el-dropdown-item>
+              <el-dropdown-item>
+                <el-popconfirm
+                  title="确认要退出登录吗?"
+                  @confirm="handleLogout"
+                >
+                  <template #reference> 退出登录 </template>
+                </el-popconfirm>
+              </el-dropdown-item>
+            </el-dropdown-menu>
+          </template>
+        </el-dropdown>
       </div>
     </div>
     <Transition>
@@ -63,14 +81,21 @@ import { Menu, Search, ShoppingCart, User } from "@element-plus/icons-vue";
 import CategoryDropdown from "../piniaViews/ctgy/components/Ctgy.vue";
 import SearchComponent from "../piniaViews/search/index.vue";
 import ShopCart from "../piniaViews/books/service/shopCart";
+import userInfo from "../piniaStore/userInfo";
 import logo from "../assets/image/logo.png";
 const { handleToCart } = ShopCart;
+const store = userInfo();
+const { logout } = store;
 const { totalCount } = ShopCart.refreshShopCartList();
 import { ref } from "vue";
 const showSearch = ref(false);
 
 const handleShowSearch = () => {
   showSearch.value = !showSearch.value;
+};
+
+const handleLogout = () => {
+  logout();
 };
 
 // 导航项数据结构

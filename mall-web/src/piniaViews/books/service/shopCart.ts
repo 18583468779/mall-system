@@ -141,10 +141,6 @@ export default class ShopCart {
   }
   static refreshShopCartList() {
     // 计算购物车的数量和价格
-    console.log(
-      "ShopCart.store.getShopCartList",
-      ShopCart.store.getShopCartList
-    );
     const totalCount = computed(() => {
       let total = 0; //数量
       const shopCartList = ShopCart.store.getShopCartList as ShopCartType[];

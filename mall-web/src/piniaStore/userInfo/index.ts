@@ -2,6 +2,7 @@ import { defineStore } from "pinia";
 import { AxiosResponse } from "axios";
 import storage from "../../utils/goodStorageUtil";
 import userApi, { UserInfo } from "../../api/UserApi";
+import router from "../../router";
 
 export default defineStore("userStore", {
   state: () => {
@@ -34,6 +35,12 @@ export default defineStore("userStore", {
       this.userinfo = userInfo.data;
       storage.set("loginUser", userInfo.data);
       storage.set("token", userInfo.data.token);
+    },
+    logout() {
+      router.push("/login");
+      this.userinfo = {} as UserInfo;
+      localStorage.removeItem("loginUser");
+      localStorage.removeItem("token");
     },
     async sendCode(email: string) {
       const code: AxiosResponse<string> = await userApi.getEmailCode(email);
