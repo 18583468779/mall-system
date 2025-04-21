@@ -54,7 +54,7 @@
           </span>
           <template #dropdown>
             <el-dropdown-menu>
-              <el-dropdown-item>个人中心</el-dropdown-item>
+              <el-dropdown-item @click="handleToCenter">个人中心</el-dropdown-item>
               <el-dropdown-item>
                 <el-popconfirm
                   title="确认要退出登录吗?"
@@ -85,9 +85,11 @@ import userInfo from "../piniaStore/userInfo";
 import logo from "../assets/image/logo.png";
 const { handleToCart } = ShopCart;
 const store = userInfo();
+const router = useRouter();
 const { logout } = store;
 const { totalCount } = ShopCart.refreshShopCartList();
 import { ref } from "vue";
+import { useRouter } from "vue-router";
 const showSearch = ref(false);
 
 const handleShowSearch = () => {
@@ -97,7 +99,9 @@ const handleShowSearch = () => {
 const handleLogout = () => {
   logout();
 };
-
+const handleToCenter = () => {
+  router.push({ path: "/userCenter" });
+}
 // 导航项数据结构
 const navItems = [
   {

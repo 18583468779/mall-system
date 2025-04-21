@@ -15,6 +15,7 @@ const login = () => import("../piniaViews/userInfo/login.vue");
 const BookDetail = () => import("../piniaViews/bookDetail/index.vue");
 const payPage = () => import("../piniaViews/order/payPage.vue");
 const contactUs = () => import("../piniaViews/contactUs/index.vue");
+const userCenter = () => import("../piniaViews/userInfo/userCenter.vue");
 const routes: RouteRecordRaw[] = [
   {
     path: "/",
@@ -70,19 +71,12 @@ const routes: RouteRecordRaw[] = [
         name: "bookdetail",
         path: "/bookdetail/:bookData",
         component: BookDetail,
-        // children: [
-        //   {
-        //     name: "goods",
-        //     path: "goods",
-        //     component: Goods,
-        //   },
-        //   {
-        //     name: "evaluate",
-        //     path: "evaluate",
-        //     component: Evaluate,
-        //   },
-        // ],
       },
+      {
+        name: "userCenter",
+        path: "/userCenter",
+        component: userCenter, 
+      }
     ],
   },
 
