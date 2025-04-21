@@ -1,6 +1,6 @@
 import { sequelize } from "../../BaseDao";
 import { DataTypes } from "sequelize";
-
+import RoleModel from "../../decormodel/role";
 class Userinfo {
   /**
    * 创建用户信息模型
@@ -35,6 +35,16 @@ class Userinfo {
           allowNull: true, // 允许为空
           unique: true, // 唯一约束，确保 phone 不重复
         },
+        roleId: {
+          type: DataTypes.INTEGER,
+          allowNull: false,
+          defaultValue: 1, // 默认角色为普通用户（假设普通用户roleId=1）
+          references: {
+            model: "role", // 关联角色表
+            key: "roleId",
+          },
+          comment: "角色ID",
+        },
         weixin_openid: {
           type: DataTypes.STRING(100), // weixin_openid 字段，字符串类型，最大长度 100
           allowNull: true, // 允许为空
@@ -55,7 +65,10 @@ class Userinfo {
         ],
       }
     );
+    model.belongsTo(RoleModel, { foreignKey: "roleId" });
+    RoleModel.hasMany(model, { foreignKey: "roleId" });
     model.sync({ force: false }); // 设置 force: true 会删除现有表并重新创建
+    
     return model; // 返回定义好的模型
   }
 }
