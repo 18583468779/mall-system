@@ -10,8 +10,11 @@
 
       <!-- 右侧表单 -->
       <div class="w-full p-8 lg:w-1/2">
+        <div class="py-4">
+          <h3 class="text-center">用户登录</h3>
+        </div>
         <!-- Tabs切换 -->
-        <el-tabs v-model="activeTab" class="mb-8">
+        <el-tabs v-model="activeTab" class="mb-8"  @tab-click="handleTabClick">
           <el-tab-pane label="账号登录" name="account"></el-tab-pane>
           <el-tab-pane label="邮箱登录" name="email"></el-tab-pane>
           <el-tab-pane label="手机登录" name="phone"></el-tab-pane>
@@ -34,10 +37,15 @@
 
         <!-- 账号登录 -->
         <div v-if="activeTab === 'account'" class="space-y-8">
-          <el-form class="space-y-6 flex flex-col gap-2">
-            <el-form-item>
+          <el-form 
+            ref="accountFormRef"
+            :model="accountForm"
+            :rules="accountRules"
+            class="space-y-6 flex flex-col gap-2"
+          >
+            <el-form-item prop="username">
               <el-input
-                v-model="username"
+                v-model="accountForm.username"
                 placeholder="请输入用户名"
                 size="large"
                 class="!rounded-lg"
@@ -48,9 +56,9 @@
               </el-input>
             </el-form-item>
 
-            <el-form-item>
+            <el-form-item prop="password">
               <el-input
-                v-model="password"
+                v-model="accountForm.password"
                 placeholder="请输入密码"
                 size="large"
                 class="!rounded-lg"
@@ -61,32 +69,35 @@
                 </template>
               </el-input>
             </el-form-item>
-          </el-form>
 
-          <!-- 登录按钮 -->
-          <div class="pt-8">
-            <el-button
-              type="primary"
-              size="large"
-              class="w-full !rounded-lg !py-4 !text-base"
-              color="rgb(239 68 68)"
-              @click="login"
-            >
-              立即登录
-            </el-button>
-          </div>
+            <!-- 登录按钮 -->
+            <div class="pt-8">
+              <el-button
+                type="primary"
+                size="large"
+                class="w-full !rounded-lg !py-4 !text-base"
+                color="rgb(239 68 68)"
+                @click="login"
+              >
+                立即登录
+              </el-button>
+            </div>
+          </el-form>
         </div>
 
         <!-- 表单登录 -->
         <template v-else-if="activeTab !== 'wechat'">
           <!-- 邮箱/手机表单 -->
-          <el-form class="space-y-6 flex flex-col gap-2">
-            <el-form-item>
+          <el-form 
+            ref="smsFormRef"
+            :model="smsForm"
+            :rules="smsRules"
+            class="space-y-6 flex flex-col gap-2"
+          >
+            <el-form-item prop="account">
               <el-input
-                v-model="username"
-                :placeholder="
-                  activeTab === 'email' ? '请输入邮箱' : '请输入手机号'
-                "
+                v-model="smsForm.account"
+                :placeholder="activeTab === 'email' ? '请输入邮箱' : '请输入手机号'"
                 size="large"
                 class="!rounded-lg"
               >
@@ -99,10 +110,10 @@
               </el-input>
             </el-form-item>
 
-            <el-form-item>
+            <el-form-item prop="code">
               <div class="flex gap-2">
                 <el-input
-                  v-model="smsCode"
+                  v-model="smsForm.code"
                   placeholder="请输入验证码"
                   size="large"
                   class="!rounded-lg flex-1"
@@ -116,12 +127,14 @@
                   bg
                   size="large"
                   class="!rounded-lg"
+                  :disabled="!isValidAccount || isCounting"
                   @click="sendSmsCode"
                 >
-                  获取验证码
+                  {{ countdown > 0 ? `${countdown}秒后重试` : '获取验证码' }}
                 </el-button>
               </div>
             </el-form-item>
+
             <!-- 登录按钮 -->
             <div class="pt-8">
               <el-button
@@ -150,7 +163,8 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
+import { ref, reactive, computed } from "vue";
+import type { FormInstance, FormRules } from 'element-plus';
 import { User, Lock, Iphone, Message } from "@element-plus/icons-vue";
 import userStore from "../../piniaStore/userInfo/index";
 import storage from "../../utils/goodStorageUtil";
@@ -158,48 +172,140 @@ import { useRouter } from "vue-router";
 import loginBg from "../../assets/image/loginBg.svg";
 import VueQrcode from "vue-qrcode";
 import { ElMessage } from "element-plus";
+
+const router = useRouter();
+const store = userStore();
+
+// 二维码相关
 const qrCodeValue = ref("https://example.com");
 const qrCodeSize = ref(150);
-// 定义二维码的前景色和背景色
 const qrCodeDarkColor = ref("#000");
 const qrCodeLightColor = ref("#FFF");
-const router = useRouter();
-const activeTab = ref("email");
-const username = ref("");
-const password = ref("");
-const smsCode = ref("");
-const store = userStore();
-const login = async () => {
-  if (activeTab.value === "wechat") return;
-  await store.login(
-    activeTab.value,
-    username.value,
-    password.value,
-    smsCode.value
-  );
 
-  if (storage.get("token")) {
-    ElMessage({
-      message: "登录成功",
-      type: "success",
-    });
-    router.push({ name: "home" });
+// 表单相关
+const activeTab = ref("email");
+const accountFormRef = ref<FormInstance>();
+const smsFormRef = ref<FormInstance>();
+
+// 表单数据
+const accountForm = reactive({
+  username: '',
+  password: ''
+});
+
+const smsForm = reactive({
+  account: '',
+  code: ''
+});
+const handleTabClick = () => {
+  // 根据当前激活的 Tab 清除对应表单验证
+  if (activeTab.value === 'account') {
+    accountFormRef.value?.clearValidate();
+    Object.assign(accountForm, { username: '', password: '' })
+  } else {
+    smsFormRef.value?.clearValidate()
+    Object.assign(smsForm, { account: '', code: '' })
+  }
+}
+
+const emailPhoneMsg = computed(() =>{
+  return activeTab.value === 'email' ? '请输入邮箱' : '请输入手机号'
+});
+
+// 验证规则
+const accountRules: FormRules = {
+  username: [
+    { required: true, message: '请输入用户名', trigger: 'blur' },
+    { min: 3, max: 16, message: '长度在3到16个字符', trigger: 'blur' }
+  ],
+  password: [
+    { required: true, message: '请输入密码', trigger: 'blur' },
+    { min: 6, max: 20, message: '长度在6到20个字符', trigger: 'blur' }
+  ]
+};
+
+const smsRules: FormRules = {
+  account: [
+    { required: true, message: () => emailPhoneMsg.value, trigger: 'blur' },
+    { 
+      validator: (_, value, callback) => {
+        if (activeTab.value === 'email' && !/^\w+@[a-z0-9]+\.[a-z]{2,4}$/.test(value)) {
+          callback(new Error('请输入正确的邮箱格式'));
+        } else if (activeTab.value === 'phone' && !/^1[3-9]\d{9}$/.test(value)) {
+          callback(new Error('请输入正确的手机号格式'));
+        } else {
+          callback();
+        }
+      },
+      trigger: 'blur'
+    }
+  ],
+  code: [
+    { required: true, message: '请输入验证码', trigger: 'blur' },
+    { pattern: /^\d{6}$/, message: '验证码为6位数字', trigger: 'blur' }
+  ]
+};
+
+// 计算属性
+const isValidAccount = computed(() => {
+  if (activeTab.value === 'email') {
+    return /^\w+@[a-z0-9]+\.[a-z]{2,4}$/.test(smsForm.account);
+  }
+  return /^1[3-9]\d{9}$/.test(smsForm.account);
+});
+
+// 验证码倒计时
+const countdown = ref(0);
+const isCounting = computed(() => countdown.value > 0);
+
+// 发送验证码
+const sendSmsCode = async () => {
+  try {
+    await smsFormRef.value?.validateField('account');
+    const code = await store.sendCode(smsForm.account);
+    if (code) {
+      ElMessage.success('验证码发送成功，请查收');
+      countdown.value = 60;
+      const timer = setInterval(() => {
+        countdown.value--;
+        if (countdown.value <= 0) {
+          clearInterval(timer);
+        }
+      }, 1000);
+    }
+  } catch (error) {
+    // 验证失败自动处理
   }
 };
 
-const sendSmsCode = async () => {
-  const code = await store.sendCode(username.value);
-  if (code) {
-    ElMessage({
-      message: "验证码发送成功，请查收",
-      type: "success",
-    });
+// 登录方法
+const login = async () => {
+  try {
+    if (activeTab.value === 'account') {
+      await accountFormRef.value?.validate();
+    } else if (['email', 'phone'].includes(activeTab.value)) {
+      await smsFormRef.value?.validate();
+    }
+
+    await store.login(
+      activeTab.value,
+      activeTab.value === 'account' ? accountForm.username : smsForm.account,
+      activeTab.value === 'account' ? accountForm.password : "",
+      activeTab.value !== 'account' ? smsForm.code : ""
+    );
+
+    if (storage.get("token")) {
+      ElMessage.success("登录成功");
+      router.push({ name: "home" });
+    }
+  } catch (error) {
+    // 验证失败自动处理
   }
 };
 </script>
 
 <style scoped>
-/* 自定义Tabs样式 */
+/* 原有样式保持不变 */
 :deep(.el-tabs__nav-wrap::after) {
   background-color: transparent;
 }
@@ -216,7 +322,6 @@ const sendSmsCode = async () => {
   @apply text-red-500 font-medium;
 }
 
-/* 美化输入框 */
 :deep(.el-input__wrapper) {
   @apply !rounded-lg shadow-sm;
 }
@@ -225,12 +330,10 @@ const sendSmsCode = async () => {
   @apply text-gray-400;
 }
 
-/* 表单容器固定高度 */
 .el-tabs + * {
   min-height: 300px;
 }
 
-/* 响应式设计 */
 @media (max-width: 768px) {
   .el-button {
     @apply py-3;
