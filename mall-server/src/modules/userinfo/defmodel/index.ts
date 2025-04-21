@@ -65,8 +65,8 @@ class Userinfo {
         ],
       }
     );
-    model.belongsTo(RoleModel, { foreignKey: "roleId" });
-    RoleModel.hasMany(model, { foreignKey: "roleId" });
+    model.belongsTo(RoleModel, { foreignKey: "roleId" ,as: "role" });
+    RoleModel.hasMany(model, { foreignKey: "roleId",as: "Users"  });
     model.sync({ force: false }); // 设置 force: true 会删除现有表并重新创建
     
     return model; // 返回定义好的模型

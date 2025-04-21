@@ -9,13 +9,13 @@
       <router-view />
     </div>
     <!-- 底部导航 -->
-    <!-- <footer-nav /> -->
+    <footer-nav />
   </div>
 </template>
 
 <script setup lang="ts">
 import rightComponent from "../components/rightComponent.vue";
-// import FooterNav from "../components/footer.vue";
+import FooterNav from "../components/footer.vue";
 import headerComponent from "../components/headerComponent.vue";
 </script>
 

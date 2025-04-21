@@ -113,15 +113,20 @@ const navItems = [
     name: "分类",
     type: "dropdown",
   },
+  // {
+  //   name: "新品",
+  //   type: "link",
+  //   path: "/new",
+  // },
+  // {
+  //   name: "热卖",
+  //   type: "link",
+  //   path: "/hot",
+  // },
   {
-    name: "新品",
+    name: "升级VIP",
     type: "link",
-    path: "/new",
-  },
-  {
-    name: "热卖",
-    type: "link",
-    path: "/hot",
+    path: "/vip",
   },
   {
     name: "联系我们",

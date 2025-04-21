@@ -3,9 +3,14 @@ export type UserInfo = {
   userid: number;
   username?: string;
   password: string;
+  phone?: string;
   address: string;
   valid: number;
   code?: string;
+  role?:{
+    roleName:string,
+    permissions:number
+  }
   email?: string;
   token?: string;
 };

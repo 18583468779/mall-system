@@ -1,103 +1,109 @@
 <template>
-  <nav
-    class="fixed bottom-0 left-0 right-0 bg-white z-50 h-[0.7rem] border-t border-gray-200 custom-shadow"
-  >
-    <div class="mx-auto px-[0.2rem] h-full flex items-center justify-around">
-      <a
-        v-for="item in navItems"
-        :key="item.path"
-        @click="navigateTo(item.path)"
-        class="flex flex-col items-center gap-[0.05rem]"
-        :class="item.isActive ? 'active' : ''"
-      >
-        <div class="relative">
-          <i
-            class="text-[0.22rem]"
-            :class="[
-              item.isActive ? 'text-red-500' : 'text-gray-600',
-              item.icon,
-            ]"
-          ></i>
-          <!-- 购物车徽标 -->
-          <span
-            v-if="item.path === '/shopCartList' && totalCount > 0"
-            class="absolute top-[-0.05rem] right-[-0.14rem] bg-red-500 text-white rounded-full text-[0.15rem] px-[0.05rem]"
-          >
-            {{ totalCount }}
-          </span>
+  <footer class="bg-white border-t border-gray-200">
+    <!-- 主要Footer内容 -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-8 mb-12">
+        <!-- 关于我们 -->
+        <div>
+          <h3 class="text-gray-900 font-semibold mb-4">关于我们</h3>
+          <ul class="space-y-3">
+            <li><a href="#" class="text-gray-600 hover:text-red-600 transition-colors">品牌故事</a></li>
+            <li><a href="#" class="text-gray-600 hover:text-red-600 transition-colors">加入团队</a></li>
+            <li><a href="#" class="text-gray-600 hover:text-red-600 transition-colors">技术博客</a></li>
+          </ul>
         </div>
-        <span
-          class="text-[0.2rem]"
-          :class="item.isActive ? 'text-red-500 font-bold' : 'text-gray-600'"
-          >{{ item.label }}</span
-        >
-      </a>
+
+        <!-- 客户支持 -->
+        <div>
+          <h3 class="text-gray-900 font-semibold mb-4">客户支持</h3>
+          <ul class="space-y-3">
+            <li><a href="#" class="text-gray-600 hover:text-red-600 transition-colors">技术支持</a></li>
+            <li><a href="#" class="text-gray-600 hover:text-red-600 transition-colors">退款政策</a></li>
+            <li><a href="#" class="text-gray-600 hover:text-red-600 transition-colors">使用指南</a></li>
+          </ul>
+        </div>
+
+        <!-- 法律声明 -->
+        <div>
+          <h3 class="text-gray-900 font-semibold mb-4">法律声明</h3>
+          <ul class="space-y-3">
+            <li><a href="/privacy" class="text-gray-600 hover:text-red-600 transition-colors">隐私政策</a></li>
+            <li><a href="/disclaimer" class="text-gray-600 hover:text-red-600 transition-colors">免责声明</a></li>
+            <li><a href="/terms" class="text-gray-600 hover:text-red-600 transition-colors">服务条款</a></li>
+          </ul>
+        </div>
+
+        <!-- 订阅和社交 -->
+        <div class="col-span-2 md:col-span-1">
+          <h3 class="text-gray-900 font-semibold mb-4">保持联系</h3>
+          <div class="flex space-x-4 mb-6">
+            <a href="#" class="text-gray-500 hover:text-red-600">
+              <el-icon :size="24">
+                <Message />
+              </el-icon>
+            </a>
+            <a href="#" class="text-gray-500 hover:text-red-600">
+              <el-icon :size="24">
+                <ChatLineRound />
+              </el-icon>
+            </a>
+            <a href="#" class="text-gray-500 hover:text-red-600">
+              <el-icon :size="24">
+                <Monitor />
+              </el-icon>
+            </a>
+          </div>
+
+
+        </div>
+      </div>
+
+      <!-- 底部版权信息 -->
+      <div class="border-t border-gray-200 pt-8">
+        <div class="flex flex-col md:flex-row justify-between items-center">
+          <div class="flex space-x-4 mb-4 md:mb-0">
+            <span class="text-sm text-gray-500">© 2023 代码小库 版权所有</span>
+            <a href="https://beian.miit.gov.cn" target="_blank"
+              class="text-sm text-gray-500 hover:text-red-600 transition-colors">
+              沪ICP备2023012345号
+            </a>
+          </div>
+
+          <div class="flex space-x-6">
+            <router-link to="/agreement" class="text-sm text-gray-500 hover:text-red-600 transition-colors">用户协议</router-link>
+            <router-link to="/privacy" class="text-sm text-gray-500 hover:text-red-600 transition-colors">隐私政策</router-link>
+            <router-link to="/disclaimer" class="text-sm text-gray-500 hover:text-red-600 transition-colors">免责声明</router-link>
+            <router-link to="/copyrightPolicy" class="text-sm text-gray-500 hover:text-red-600 transition-colors">版权声明</router-link>
+
+          </div>
+        </div>
+      </div>
+      <div class="mt-4 text-center md:text-left">
+        <p class="text-xs text-gray-400">
+          本站所有内容（包括代码、文档、图片）均受著作权法保护，
+          任何未经授权的复制、传播、反向工程等行为均构成侵权
+        </p>
+      </div>
     </div>
-  </nav>
+  </footer>
 </template>
 
 <script setup lang="ts">
-import { useRouter, useRoute } from "vue-router";
-import ShopCart from "../piniaViews/books/service/shopCart";
-const { totalCount } = ShopCart.refreshShopCartList();
-// 定义导航项
-const navItems = [
-  {
-    path: "/home",
-    label: "主页",
-    icon: "iconfont icon-shouye",
-    isActive: false,
-  },
-  {
-    path: "/ctgy",
-    label: "分类",
-    icon: "iconfont icon-fenlei",
-    isActive: false,
-  },
-  {
-    path: "/shopCartList",
-    label: "购物车",
-    icon: "iconfont icon-gouwuche",
-    isActive: false,
-  },
-  {
-    path: "/profile",
-    label: "我的",
-    icon: "iconfont icon-gerenzhongxin",
-    isActive: false,
-  },
-];
-
-// 获取 Vue Router 和当前路由
-const router = useRouter();
-const route = useRoute();
-
-// 初始化时设置当前路由的高亮状态
-const setCurrentActive = () => {
-  navItems.forEach((item) => {
-    item.isActive = item.path === route.path;
-  });
-};
-
-setCurrentActive();
-
-// 导航方法
-const navigateTo = (path: string) => {
-  // 更新所有导航项的isActive状态
-  navItems.forEach((item) => {
-    item.isActive = item.path === path;
-  });
-  router.push(path);
-};
+import {
+  Message,
+  ChatLineRound,
+  Monitor
+} from '@element-plus/icons-vue'
 </script>
 
 <style scoped>
-.active {
-  color: red;
-}
+/* 移动端优化 */
+@media (max-width: 768px) {
+  .footer-links {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 
-/* 添加阴影样式 */
-.custom-shadow {
-  box-shadow: 1rem 0.05rem 1rem rgba(0, 0, 0, 0.1);
-}
-</style>
+  .social-section {
+    grid-column: span 2;
+  }
+}</style>

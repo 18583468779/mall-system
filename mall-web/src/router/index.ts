@@ -68,6 +68,31 @@ const routes: RouteRecordRaw[] = [
         component: contactUs,
       },
       {
+        name: "vip",
+        path: "/vip",
+        component: () => import("../piniaViews/vip/index.vue"),
+      },
+      {
+        name: "agreement",
+        path: "/agreement",
+        component: () => import("../piniaViews/privacy/agreement.vue"),
+      },
+      {
+        name: "copyrightPolicy",
+        path: "/copyrightPolicy",
+        component: () => import("../piniaViews/privacy/copyrightPolicy.vue"),
+      },
+      {
+        name: "disclaimer",
+        path: "/disclaimer",
+        component: () => import("../piniaViews/privacy/disclaimer.vue"),
+      },
+      {
+        name: "privacy",
+        path: "/privacy",
+        component: () => import("../piniaViews/privacy/privacy.vue"),
+      },
+      {
         name: "bookdetail",
         path: "/bookdetail/:bookData",
         component: BookDetail,
@@ -75,8 +100,8 @@ const routes: RouteRecordRaw[] = [
       {
         name: "userCenter",
         path: "/userCenter",
-        component: userCenter, 
-      }
+        component: userCenter,
+      },
     ],
   },
 
@@ -92,6 +117,11 @@ const routes: RouteRecordRaw[] = [
         next();
       }
     },
+  },
+
+  {
+    path: "/:pathMatch(.*)*",
+    component: () => import("../piniaViews/notFound/index.vue"),
   },
 ];
 const router = createRouter({

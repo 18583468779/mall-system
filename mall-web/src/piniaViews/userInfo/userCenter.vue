@@ -47,27 +47,35 @@
                                     <UserFilled />
                                 </el-icon>
                                 <span class="text-sm text-gray-600 font-medium">账户身份</span>
-                                <el-tag :type="userLevelMap[userLevel].type" effect="dark"
+                                <el-tag :type="userLevelMap[storeLoginUser?.role?.permissions || userLevel].type"
+                                    effect="dark"
                                     class="!font-semibold !text-sm !px-3 !py-1.5 !rounded-full shadow-sm transition-all">
                                     <span class="flex items-center">
                                         <el-icon class="mr-1">
-                                            <component :is="userLevelMap[userLevel].icon" />
+                                            <component
+                                                :is="userLevelMap[storeLoginUser?.role?.permissions || userLevel].icon" />
                                         </el-icon>
-                                        {{ userLevelMap[userLevel].label }}
+                                        {{ userLevelMap[storeLoginUser?.role?.permissions || userLevel].label }}
                                     </span>
                                 </el-tag>
+                                <el-tooltip v-if="storeLoginUser?.role?.permissions === userLevel" class="box-item"
+                                    effect="dark" content="升级VIP可享受更多权益" placement="top-start">
+                                    <el-button type="primary" color="rgb(239 68 68)" size="small" @click="upgradeVip">
+                                        升级VIP
+                                    </el-button>
+                                </el-tooltip>
                             </div>
                         </div>
 
                         <el-form :model="profileForm" label-width="100px" class="max-w-2xl">
-                            <el-form-item label="用户名">
-                                <el-input v-model="profileForm.username" />
+                            <el-form-item label="设置用户名">
+                                <el-input v-model="profileForm.username" placeholder="请输入用户名" />
                             </el-form-item>
-                            <el-form-item label="电子邮箱">
-                                <el-input v-model="profileForm.email" />
+                            <el-form-item label="设置电子邮箱">
+                                <el-input v-model="profileForm.email" placeholder="请输入电子邮箱" />
                             </el-form-item>
-                            <el-form-item label="手机号码">
-                                <el-input v-model="profileForm.phone" />
+                            <el-form-item label="设置手机号码">
+                                <el-input v-model="profileForm.phone" placeholder="请输入手机号码" />
                             </el-form-item>
                             <el-form-item>
                                 <el-button type="primary" @click="updateProfile">更新信息</el-button>
@@ -145,13 +153,16 @@
 </template>
   
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref, computed } from 'vue';
+import userInfo from '../../piniaStore/userInfo';
 import {
     User,
     ShoppingCart,
     Star,
     Tickets,
 } from '@element-plus/icons-vue'
+import { useRouter } from 'vue-router';
+
 
 interface Order {
     id: string
@@ -172,28 +183,31 @@ const activeTab = ref('profile')
 const cartCount = computed(() => cartItems.value.length)
 const totalAmount = computed(() => cartItems.value.reduce((sum, item) => sum + item.price, 0))
 const userLevel = ref(1) // 0:普通 1:VIP 2:SVIP
+const userInfoStore = userInfo();
+const router = useRouter()
+const { storeLoginUser } = userInfoStore;
 
-const userLevelMap:any = {
+const userLevelMap: any = {
     0: {
+        type: 'warning',
+        icon: 'User StarFilled',
+        label: '超级管理员'
+    },
+    1: {
         type: 'info',
         icon: 'User',
         label: '普通会员'
     },
-    1: {
-        type: 'warning',
-        icon: 'StarFilled',
-        label: 'VIP会员'
-    },
     2: {
         type: 'danger',
         icon: 'Crown',
-        label: '超级会员'
+        label: 'VIP会员'
     }
 }
 const profileForm = ref({
-    username: '代码狂人',
-    email: 'coder@codemarket.com',
-    phone: '13800138000'
+    username: storeLoginUser.username,
+    email: storeLoginUser.email,
+    phone: storeLoginUser.phone
 })
 
 const orders = ref<Order[]>([
@@ -228,6 +242,9 @@ const orderStatusType = (status: string) => {
     return map[status] || 'info'
 }
 
+const upgradeVip = () => {
+    router.push('/vip')
+}
 const updateProfile = () => {
     // 更新个人信息的逻辑
 }
