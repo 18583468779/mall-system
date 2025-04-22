@@ -47,7 +47,7 @@
         {{ bookItem.purcharsenum }}
       </span>
       <el-button
-        v-else
+        v-else-if="!isShowBtn"
         type="primary"
         class="!px-4 !py-4 !bg-red-100 hover:!bg-red-200 !text-red-600 !rounded-lg transition-colors border-none"
       >
@@ -76,13 +76,18 @@
 import { Delete } from "@element-plus/icons-vue";
 import type { BookInfo } from "../../../piniaStore/book/state";
 import shopCart from "../../books/service/shopCart";
-
+import { useRoute } from "vue-router";
+import { computed } from "vue";
+const route = useRoute();
 const { addBkToShopCartWrapper, addOrSubtrBookToShopCart, delBookFrmSc } =
   shopCart;
 
 type Props = {
   bookItem: BookInfo;
 };
+const isShowBtn = computed(() => {
+  return route.path === "/shopCartList";
+});
 
 defineProps<Props>();
 </script>

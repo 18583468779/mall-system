@@ -6,9 +6,9 @@ class OrderAPI {
   async submitOrder(orderDetail: Orderinfo) {
     return await request.post("/ordermodule/submitOrder", false, orderDetail);
   }
-  async getOrderInfoByCustomerid(customerid: number) {
+  async getOrderInfoByCustomerid(customerid: number,status?:0 | 1 | 2 | 4 ) {
     return await request.get(
-      `/ordermodule/getOrderInfoByCustomerid/${customerid}`,
+      `/ordermodule/getOrderInfoByCustomerid/${customerid}/${status}`,
       false
     );
   }

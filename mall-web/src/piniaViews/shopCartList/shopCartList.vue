@@ -10,6 +10,7 @@
       <el-button
         type="primary"
         class="!rounded-full px-8"
+        color="rgb(239 68 68)"
         @click="handelToHome"
       >
         立即选购
@@ -47,7 +48,7 @@
               class="mr-4 mt-2"
             ></el-checkbox>
             <img
-              :src="getImg(item.bookpicname)"
+              :src="item.bookpicname"
               class="w-24 h-24 object-cover rounded-lg"
             />
             <div class="ml-4 flex-1">
@@ -57,6 +58,7 @@
               <div class="flex items-center justify-between">
                 <p class="text-red-500 font-bold text-lg">
                   ¥{{ item.bookprice }}
+                  
                 </p>
                 <add-subtrsc
                   :book-item="
@@ -105,7 +107,6 @@
 
 <script setup lang="ts">
 // 保持原有脚本逻辑不变，仅添加样式相关响应式处理
-import { ImgUtil } from "../../utils/imgUtil";
 import ShopCart from "../books/service/shopCart";
 import addSubtrsc from "../books/components/addSubtrsc.vue";
 import Books from "../books/service";
@@ -114,7 +115,6 @@ import { ElCheckbox, ElButton, ElIcon } from "element-plus";
 import { ShoppingCart } from "@element-plus/icons-vue";
 import { ElMessage } from "element-plus";
 
-const { getImg } = ImgUtil;
 const { isSelectAll, selectAll, checkEveryCheckBox } = ShopCart;
 const { getShopCartList } = ShopCart.storeRefs;
 const { getCurrentBookItem } = Books;

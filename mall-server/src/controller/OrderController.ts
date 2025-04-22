@@ -10,11 +10,16 @@ class OrderController {
     const res = ctx.request.body;
     ctx.body = success(await orderInfoDetailService.submitOrder(res));
   }
-  @get("/getOrderInfoByCustomerId/:customerid")
+  @get("/getOrderInfoByCustomerId/:customerid/:status")
   async getOrderInfoByCustomerId(ctx: Context) {
-    const { customerid } = ctx.params;
+    const { customerid, status } = ctx.params;
+    if (status === 4) {
+      ctx.body = success(
+        await orderInfoDetailService.getOrderInfoByCustomerid(customerid)
+      );
+    }
     ctx.body = success(
-      await orderInfoDetailService.getOrderInfoByCustomerid(customerid)
+      await orderInfoDetailService.getOrderInfoByCustomerid(customerid, status)
     );
   }
 }

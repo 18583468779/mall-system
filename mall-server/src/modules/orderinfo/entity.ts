@@ -2,7 +2,7 @@ export type Orderinfo = {
   orderid?: number; //订单id
   ordertime: string; //订单时间
   customerid: number; //顾客id,就是当前登录开
-  orderstatus: number; //订单状态
+  orderstatus: number; //订单状态 0未支付 1待支付  2已完成 
   orderDetailList?: OrderDetail[];
 };
 

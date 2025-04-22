@@ -12,10 +12,41 @@ class OrdAndOrDetailDao {
     const ordDetailSql = `insert into orderdetail(bookname,bookprice,bookpicname,purcharsenum,orderid) values('${orddetail.bookname}',${orddetail.bookprice},'${orddetail.bookpicname}',${orddetail.purcharsenum},${orddetail.orderid})`;
     return await sequelize.query(ordDetailSql);
   }
-  async getOrderInfoByCustomerId(customerid: number): Promise<[any, any]> {
-    const ordSql = `select oi.orderid,oi.ordertime,oi.customerid,oi.orderstatus, odi.bookname, odi.bookprice,odi.bookpicname,odi.orderdetailid,odi.purcharsenum from orderinfo oi inner join orderdetail odi where customerid=${customerid}`;
-    return await sequelize.query(ordSql);
+  async getOrderInfoByCustomerId(
+    customerid: number,
+    status?: 0 | 1 | 2 | 4   // 改为可选参数
+  ): Promise<any[]> {
+    // 动态构建WHERE条件
+    let whereClause = "oi.customerid = :customerid";
+    const replacements: any = { customerid };
+      console.log('**************************status************************************', status)
+    if (status != 4) {
+      whereClause += " AND oi.orderstatus = :status";
+      replacements.status = status;
+    }
+  
+    const ordSql = `
+      SELECT 
+        oi.orderid,
+        oi.ordertime,
+        oi.customerid,
+        oi.orderstatus,
+        odi.bookname,
+        odi.bookprice,
+        odi.bookpicname,
+        odi.orderdetailid,
+        odi.purcharsenum
+      FROM orderinfo oi
+      INNER JOIN orderdetail odi 
+        ON oi.orderid = odi.orderid
+      WHERE ${whereClause}
+      ORDER BY oi.ordertime DESC`;
+  
+    return await sequelize.query(ordSql, {
+      replacements,
+    });
   }
+  
 }
 
 export default OrdAndOrDetailDao.ordAndOrDetailDao;

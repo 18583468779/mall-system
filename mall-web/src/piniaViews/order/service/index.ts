@@ -70,9 +70,9 @@ class OrderService {
     }
   }
   // 获取订单信息
-  static async getOrderInfoByCustomerid() {
+  static async getOrderInfoByCustomerid(status?:0 | 1 | 2 | 4 ) {
     const customerid = OrderService.userStore.storeLoginUser.userid; //顾客id,就是当前登录开
-    await OrderService.store.getOrderInfoByCustomerId(customerid);
+    await OrderService.store.getOrderInfoByCustomerId(customerid, status);
   }
   static init() {
     onMounted(() => {

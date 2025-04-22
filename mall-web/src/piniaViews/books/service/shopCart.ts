@@ -17,7 +17,7 @@ type BallType = {
 export default class ShopCart {
   static store = shopCart();
   static storeRefs = storeToRefs(ShopCart.store);
-  static isSelectAll = ref(false); // 是否全选购物车
+  static isSelectAll = ref(true); // 是否全选购物车
   static ball: Ref<BallType> = ref({ showOrHidden: false });
 
   static clearShopCartList(isSelected: boolean) {
@@ -56,7 +56,7 @@ export default class ShopCart {
       checked: true,
       bookisbn: bookitem.ISBN,
       bookname: bookitem.bookname,
-      bookpicname: "",
+      bookpicname: bookitem?.images[0]?.url,
       bookprice: bookitem.originalprice * bookitem.discount,
       purcharsenum: 1,
     };

@@ -9,7 +9,7 @@ export type Orderinfo = {
 export type OrderDetail = {
   orderdetailid?: number;
   bookname: string;
-  bookprice: number;
+  bookprice: string;
   bookpicname: string;
   purcharsenum: number;
   orderid?: number;

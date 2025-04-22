@@ -18,8 +18,8 @@ export default defineStore("order", {
       const res = await orderApi.submitOrder(orderDetail);
       return res;
     },
-    async getOrderInfoByCustomerId(customerid: number) {
-      const res: any = await orderApi.getOrderInfoByCustomerid(customerid);
+    async getOrderInfoByCustomerId(customerid: number,status?:0 | 1 | 2 | 4 ) {
+      const res: any = await orderApi.getOrderInfoByCustomerid(customerid, status);
       if (res.code === 200) {
         this.initState = res.data;
         storage.set("orderInfo", res.data);

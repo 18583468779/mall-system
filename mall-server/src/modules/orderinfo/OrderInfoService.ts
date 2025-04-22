@@ -37,9 +37,10 @@ class OrderInfoDetailService {
     orderInfoDetail.orderDetailList = lastOrderDetailList;
     return orderInfoDetail;
   }
-  async getOrderInfoByCustomerid(customerid: number) {
+  async getOrderInfoByCustomerid(customerid: number, status?: 0 | 1 | 2 | 4 ) {
     const [orderInfoList] = await ordAndOrDetailDao.getOrderInfoByCustomerId(
-      customerid
+      customerid,
+      status
     );
     return transformOrders(orderInfoList);
   }

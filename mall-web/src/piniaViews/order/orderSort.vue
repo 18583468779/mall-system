@@ -6,61 +6,36 @@
       <div class="px-4 py-3 bg-white mt-3 shadow-sm md:px-6">
         <div class="px-4 py-3 bg-white shadow-sm flex items-center md:px-6">
           <div class="z-10 px-2 pt-1 text-sm">
-            <el-icon @click="goBack"><ArrowLeftBold /></el-icon>
+            <el-icon @click="goBack">
+              <ArrowLeftBold />
+            </el-icon>
           </div>
-          <el-input
-            v-model="searchQuery"
-            placeholder="搜索我的订单"
-            class="w-full md:px-4 md:py-2 text-sm rounded-full"
-            size="small"
-            clearable
-            :suffix-icon="Search"
-            @keyup.enter="handleSearch"
-            @suffix-click="handleSearch"
-          >
+          <el-input v-model="searchQuery" placeholder="搜索我的订单" class="w-full md:px-4 md:py-2 text-sm rounded-full"
+            size="small" clearable :suffix-icon="Search" @keyup.enter="handleSearch" @suffix-click="handleSearch">
           </el-input>
         </div>
-        <el-tabs v-model="activeTab" class="w-full">
+        <el-tabs v-model="activeTab" class="w-full" @tab-click="handleGetOrder">
           <el-tab-pane label="全部订单" name="all"></el-tab-pane>
           <el-tab-pane label="待付款" name="pending"></el-tab-pane>
-          <el-tab-pane label="待发货" name="shipping"></el-tab-pane>
-          <el-tab-pane label="待收货" name="receiving"></el-tab-pane>
-          <el-tab-pane label="待评价" name="reviewing"></el-tab-pane>
-          <el-tab-pane label="退款/售后" name="refund"></el-tab-pane>
+          <el-tab-pane label="已付款" name="reviewing"></el-tab-pane>
         </el-tabs>
         <!-- 订单列表 -->
         <div class="mx-auto py-3 space-y-4">
           <!-- 订单项 -->
-          <el-card
-            v-for="order in getOrderList"
-            :key="order.orderid"
-            class="bg-white rounded-lg shadow-sm"
-          >
+          <el-card v-for="order in getOrderList" :key="order.orderid" class="bg-white rounded-lg shadow-sm">
             <div class="flex justify-between items-center mb-3">
               <div class="text-sm text-gray-600">
                 <span class="font-medium">订单号: </span>{{ order.orderid }}
               </div>
-              <el-tag
-                :type="getTagType(order.orderstatus)"
-                size="small"
-                effect="dark"
-              >
+              <el-tag :type="getTagType(order.orderstatus)" size="small" effect="dark">
                 {{ getStatusText(order.orderstatus) }}
               </el-tag>
             </div>
 
             <div class="space-y-4">
-              <div
-                v-for="item in order.orderDetailList"
-                :key="item.orderdetailid"
-                class="flex items-start space-x-4"
-              >
+              <div v-for="item in order.orderDetailList" :key="item.orderdetailid" class="flex items-start space-x-4">
                 <div class="w-16 h-16">
-                  <img
-                    :src="ImgUtil.getImg(item.bookpicname)"
-                    alt="商品图片"
-                    class="w-full h-full object-cover rounded"
-                  />
+                  <img :src="item.bookpicname" alt="商品图片" class="w-full h-full object-cover rounded" />
                 </div>
                 <div class="flex-1 space-y-2">
                   <div class="text-sm font-medium text-gray-800 line-clamp-2">
@@ -90,35 +65,13 @@
               </div>
 
               <!-- 倒计时（仅在待付款订单中显示） -->
-              <div
-                v-if="order.orderstatus === 1"
-                class="flex items-center justify-between mt-4"
-              >
+              <div v-if="order.orderstatus === 1" class="flex items-center justify-between mt-4">
                 <div class="text-sm text-red-500">
                   剩余支付时间:
                   {{ formatCountdown(orderCountdowns[order.orderid!]) }}
                 </div>
-                <el-button
-                  type="primary"
-                  size="small"
-                  @click="payOrder(order.orderid!)"
-                >
+                <el-button type="primary" size="small" @click="payOrder(order.orderid!)">
                   立即付款
-                </el-button>
-              </div>
-
-              <div class="flex justify-end mt-4 space-x-4">
-                <el-button
-                  class="px-3 py-1.5 text-xs text-blue-600 bg-blue-50 rounded hover:bg-blue-100"
-                  size="small"
-                >
-                  查看详情
-                </el-button>
-                <el-button
-                  class="px-3 py-1.5 text-xs text-gray-600 bg-gray-50 rounded hover:bg-gray-100"
-                  size="small"
-                >
-                  再次购买
                 </el-button>
               </div>
             </div>
@@ -143,11 +96,10 @@ import {
 import { Search, ArrowLeftBold } from "@element-plus/icons-vue";
 import router from "../../router";
 import OrderService from "./service";
-import { ImgUtil } from "../../utils/imgUtil";
 import { OrderDetail } from "../../piniaStore/order/state";
 const { getOrderInfoByCustomerid, storeRef } = OrderService;
 const { getOrderList } = storeRef;
-getOrderInfoByCustomerid();
+getOrderInfoByCustomerid(4);
 
 // 为每个待付款订单添加倒计时逻辑
 const orderCountdowns = ref<Record<number, number>>({});
@@ -157,8 +109,11 @@ function sumPurcharsenum(orders: OrderDetail[]) {
   return orders.reduce((total, order) => total + order.purcharsenum, 0);
 }
 
-function totalPrice(orders: OrderDetail[]) {
-  return orders.reduce((total, order) => total + order.bookprice, 0);
+function totalPrice(orders: OrderDetail[]): string {
+  const total = orders.reduce((acc, order) => 
+    acc + parseFloat(order.bookprice) * order.purcharsenum
+  , 0);
+  return total.toFixed(2);
 }
 
 // 返回上一页
@@ -171,6 +126,20 @@ const searchQuery = ref("");
 const handleSearch = () => {
   console.log("搜索订单: ", searchQuery.value);
 };
+
+const handleGetOrder = () =>{
+  // 查询订单
+  if (activeTab.value === 'all') {
+    getOrderInfoByCustomerid(4); 
+  }
+  else if (activeTab.value === 'pending') {
+    getOrderInfoByCustomerid(1); 
+  }
+  else if (activeTab.value === 'reviewing') {
+    getOrderInfoByCustomerid(2); 
+  }
+}
+
 
 const formatCountdown = (seconds: number) => {
   const minutes = Math.floor(seconds / 60);

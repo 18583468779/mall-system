@@ -1,7 +1,29 @@
 <template>
   <div class="min-h-screen bg-gray-50 pb-24 lg:pb-0">
     <!-- 头部 -->
+    <el-alert title="虚拟商品购买须知" type="warning" :closable="false" class="mb-4 !border !border-orange-200 !bg-orange-50">
+      <template #icon>
+        <el-icon class="!text-orange-600">
+          <WarningFilled />
+        </el-icon>
+      </template>
 
+      <div class="text-sm leading-6 text-orange-700">
+        <p class="mb-2">
+          您购买的是<strong class="font-semibold">网络虚拟物品</strong>，
+          支付成功后系统将自动发放，不支持<strong class="font-semibold">退换货</strong>服务
+        </p>
+        <p class="flex items-center">
+          <el-icon class="mr-1">
+            <QuestionFilled />
+          </el-icon>
+          如有疑问请联系：
+          <a href="mailto:1123654054@qq.com" class="ml-2 text-orange-600 hover:underline">
+            1123654054@qq.com
+          </a>
+        </p>
+      </div>
+    </el-alert>
     <!-- 主体内容 - 双栏布局 -->
     <main class="container mx-auto px-4 py-6 lg:grid lg:grid-cols-12 lg:gap-8">
       <!-- 左侧商品区 -->
@@ -12,15 +34,9 @@
             商品信息（共{{ totalCount }}件）
           </h2>
           <div class="space-y-4">
-            <div
-              v-for="item in getShopCartListIsSelected"
-              :key="item.bookisbn"
-              class="flex items-start p-4 bg-gray-50 rounded-lg"
-            >
-              <img
-                :src="getImg(item.bookpicname)"
-                class="w-20 h-20 object-cover rounded-lg"
-              />
+            <div v-for="item in getShopCartListIsSelected" :key="item.bookisbn"
+              class="flex items-start p-4 bg-gray-50 rounded-lg">
+              <img :src="item.bookpicname" class="w-20 h-20 object-cover rounded-lg" />
               <div class="ml-4 flex-1">
                 <h3 class="font-medium text-gray-900 line-clamp-2">
                   {{ item.bookname }}
@@ -28,9 +44,7 @@
                 <div class="flex items-center justify-between mt-2">
                   <p class="text-red-500 font-bold">¥{{ item.bookprice }}</p>
                   <div class="text-gray-600 text-sm">
-                    小计：<span class="font-medium"
-                      >¥{{ item.bookprice * item.purcharsenum }}</span
-                    >
+                    小计：<span class="font-medium">¥{{ item.bookprice * item.purcharsenum }}</span>
                   </div>
                 </div>
                 <div class="mt-2 text-gray-500 text-sm">
@@ -45,49 +59,18 @@
       <!-- 右侧操作区 -->
       <div class="lg:col-span-4 lg:sticky lg:top-16 lg:h-[calc(100vh-4rem)]">
         <div class="space-y-6 mt-6 lg:mt-0">
-          <!-- 收货地址 -->
-          <div class="bg-white rounded-xl shadow-sm p-6">
-            <div class="flex items-center justify-between mb-4">
-              <h2 class="text-lg font-medium text-gray-900">收货地址</h2>
-              <el-button type="default" @click="goToAddressList">
-                修改地址
-                <el-icon :size="16" class="ml-1"><ArrowRight /></el-icon>
-              </el-button>
-            </div>
-            <div class="flex items-start">
-              <el-icon :size="24" class="text-gray-500 mr-3"
-                ><Location
-              /></el-icon>
-              <div>
-                <p class="font-medium text-gray-900">张三 138****1234</p>
-                <p class="text-gray-600 mt-1">
-                  北京市朝阳区望京街道阜荣街10号方恒时代中心A座1201室
-                </p>
-              </div>
-            </div>
-          </div>
-
           <!-- 支付方式 -->
           <div class="bg-white rounded-xl shadow-sm p-6">
             <h2 class="text-lg font-medium text-gray-900 mb-4">支付方式</h2>
             <div class="space-y-3">
-              <div
-                v-for="method in paymentMethods"
-                :key="method.id"
-                @click="changePaymentMethod(method.id)"
+              <div v-for="method in paymentMethods" :key="method.id" @click="changePaymentMethod(method.id)"
                 class="flex items-center py-4 border rounded-lg cursor-pointer transition-all"
-                :class="{ 'border-blue-500': paymentMethod === method.id }"
-              >
+                :class="{ 'border-blue-500': paymentMethod === method.id }">
                 <component :is="method.icon" class="text-2xl mr-3" />
                 <div class="flex-1 flex items-center gap-2">
-                  <i
-                    v-if="method.id === 'wechat'"
-                    class="iconfont icon-zhifu-_weixinzhifu text-[30px] text-green-500"
-                  ></i>
-                  <i
-                    v-else
-                    class="iconfont icon-alipay-active text-[30px] text-blue-500"
-                  ></i>
+                  <i v-if="method.id === 'wechat'"
+                    class="iconfont icon-zhifu-_weixinzhifu text-[30px] text-green-500"></i>
+                  <i v-else class="iconfont icon-alipay-active text-[30px] text-blue-500"></i>
                   <div>
                     <p class="font-medium text-gray-900">{{ method.name }}</p>
                     <p class="text-gray-500 text-sm mt-1">
@@ -95,10 +78,7 @@
                     </p>
                   </div>
                 </div>
-                <el-icon
-                  v-if="paymentMethod === method.id"
-                  class="text-red-500 text-xl"
-                >
+                <el-icon v-if="paymentMethod === method.id" class="text-red-500 text-xl">
                   <CircleCheck />
                 </el-icon>
               </div>
@@ -106,9 +86,7 @@
           </div>
 
           <!-- 订单总计 -->
-          <div
-            class="bg-white rounded-xl shadow-sm p-6 sticky bottom-6 lg:bottom-0"
-          >
+          <div class="bg-white rounded-xl shadow-sm p-6 sticky bottom-6 lg:bottom-0">
             <div class="space-y-3">
               <div class="flex justify-between">
                 <span class="text-gray-600">商品金额：</span>
@@ -127,12 +105,8 @@
                 <span>应付总额：</span>
                 <span class="text-red-500">¥{{ totalPrice }}</span>
               </div>
-              <el-button
-                type="primary"
-                class="w-full !rounded-lg !py-4 !text-base"
-                color="rgb(239 68 68)"
-                @click="submitOrder"
-              >
+              <el-button type="primary" class="w-full !rounded-lg !py-4 !text-base" color="rgb(239 68 68)"
+                @click="submitOrder">
                 提交订单
               </el-button>
             </div>
@@ -146,8 +120,6 @@
 <script lang="ts" setup>
 import ShopCart from "../books/service/shopCart";
 import OrderService from "./service";
-import { ImgUtil } from "../../utils/imgUtil";
-const { getImg } = ImgUtil;
 const { getShopCartListIsSelected } = ShopCart.storeRefs;
 const { totalCount, totalPrice } = ShopCart.refreshShopCartList();
 const {
@@ -155,7 +127,6 @@ const {
   changePaymentMethod,
   submitOrder,
   init,
-  goToAddressList,
 } = OrderService;
 
 init();
@@ -193,6 +164,7 @@ const paymentMethods: any = [
   border-radius: 10px;
   background: rgba(0, 0, 0, 0.1);
 }
+
 .custom-scrollbar {
   scroll-behavior: smooth;
   -webkit-overflow-scrolling: touch;
@@ -209,6 +181,7 @@ const paymentMethods: any = [
 .custom-scrollbar::-webkit-scrollbar-track {
   @apply bg-gray-100 rounded-full;
 }
+
 /* 移动端优化 */
 @media (max-width: 1024px) {
   .lg\:sticky {
