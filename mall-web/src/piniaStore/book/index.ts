@@ -33,6 +33,7 @@ type InitStateType = {
   // 新增分页状态
   currentPage: number;
   totalPages: number;
+  total: number;
   isLoading: boolean;
   hasMore: boolean;
 };
@@ -45,6 +46,7 @@ const initState: InitStateType = {
   isbn: "",
   currentPage: 1,
   totalPages: 1,
+  total: 1,
   isLoading: false,
   hasMore: true,
 };
@@ -77,21 +79,26 @@ export default defineStore("bookstore", {
     },
   },
   actions: {
-    async getBookListByPage(page = 1, pageSize = 4) {
+    async getBookListByPage(page = 1, pageSize = 4, isMobile = false) {
       try {
         this.isLoading = true;
         const response = await bookApi.getBookListByPage(page, pageSize);
 
         // 如果是第一页则重置数据，否则追加数据
-        if (page === 1) {
-          this.allBookList = response.data.data;
+        if (isMobile) {
+          if (page === 1) {
+            this.allBookList = response.data.data;
+          } else {
+            this.allBookList = [...this.allBookList, ...response.data.data];
+          }
         } else {
-          this.allBookList = [...this.allBookList, ...response.data.data];
+          this.allBookList = response.data.data;
         }
 
         // 更新分页信息（假设接口返回总页数）
         this.currentPage = page;
         this.totalPages = response.data.totalPages;
+        this.total = response.data.total;
         this.hasMore = page < response.data.totalPages;
 
         storage.set("allBookList", this.allBookList);
