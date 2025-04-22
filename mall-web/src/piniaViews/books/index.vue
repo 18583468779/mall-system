@@ -33,7 +33,7 @@
           <!-- 商品列表 -->
           <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
             <div
-              v-for="product in bookList"
+              v-for="product in getAllBookList"
               :key="product.ISBN"
               class="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-shadow"
             >
@@ -75,9 +75,9 @@ const totalItems = ref(0);
 const currentPage = ref(1);
 
 // 获取数据
-const { searchBooks, storeRefs } = Books;
+const { searchBooks, store } = Books;
 const { getThirdCtgyList } = FstToThrdCtgy.storeRefs;
-const { bookList } = storeRefs;
+const { getAllBookList } = store;
 
 const handlePageChange = (page: number) => {
   currentPage.value = page;
