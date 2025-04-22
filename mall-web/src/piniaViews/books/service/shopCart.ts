@@ -57,7 +57,7 @@ export default class ShopCart {
       bookisbn: bookitem.ISBN,
       bookname: bookitem.bookname,
       bookpicname: bookitem?.images[0]?.url,
-      bookprice: bookitem.originalprice * bookitem.discount,
+      bookprice: (bookitem.originalprice * bookitem.discount) / 10,
       purcharsenum: 1,
     };
     ShopCart.store.addBookToShopCart(shopcart);
