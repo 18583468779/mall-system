@@ -55,7 +55,6 @@ class Service {
     }
   }
   static handleCtgys = (val: string): { type: CtgyType; id: string } => {
-    console.log(111,val);
     let valArr = val.split("-");
     if (valArr.length === 1) {
       return { type: CtgyType.first, id: val };

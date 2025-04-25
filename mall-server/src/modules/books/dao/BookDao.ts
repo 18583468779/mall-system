@@ -6,6 +6,32 @@ import BookImageModel from "../../../modules/decormodel/bookImage";
 import BookAttachment from "../../../modules/decormodel/bookAttachment";
 import { ThirdCtgyModel } from "../../decormodel/ThirdCtgyModel";
 
+
+function filterIncludeFields( ctx: any) {
+  const { needHideUrls } = ctx.state.permission; // 从上下文获取权限信息 
+  return [
+    {
+      model: BookImageModel,
+      as: "images",
+      attributes: ["url", "filename"],
+      separate: true, // 确保返回数组
+    },
+    {
+      model: BookAttachment,
+      as: "attachments",
+      attributes:  needHideUrls ? [ "filename", "fileType"] : ["url", "filename", "fileType"],
+      separate: true, // 确保返回数组
+    },
+    {
+      model: ThirdCtgyModel,
+      as: "thirdCtgy",
+      attributes: ["thirdctgyname"],
+      required: false, // 改为LEFT JOIN
+    },
+  ];
+  
+}
+
 class BookDao {
   static bookDao: BookDao = new BookDao();
 
@@ -22,7 +48,8 @@ class BookDao {
     pageSize: number = 4,
     sortField: string = "originalprice",
     ascOrDesc: "asc" | "desc" = "asc",
-    keyword: string = ""
+    keyword: string = "",
+    ctx?: any // Koa上下文对象
   ) {
     const whereCondition: any = {};
     if (keyword) {
@@ -31,35 +58,19 @@ class BookDao {
       };
     }
 
-    // ✅ 新增关联配置
-    const include = [
-      {
-        model: BookImageModel,
-        as: "images",
-        attributes: ["url", "filename"],
-      },
-      {
-        model: BookAttachment,
-        as: "attachments",
-        attributes: ["url", "filename", "fileType"],
-      },
-      {
-        model: ThirdCtgyModel,
-        as: "thirdCtgy", // 与@BelongsTo定义的别名一致
-        attributes: ["thirdctgyname"],
-        required: true, // 使用INNER JOIN
-      },
-    ];
-
-    return PaginationService.paginate({
+    const rawResult = await PaginationService.paginate({
       page,
       pageSize,
       sortField,
       ascOrDesc,
       where: whereCondition,
       model: BooksModel,
-      include, // 传递关联配置
+      include:filterIncludeFields(ctx), // 传递关联配置
     });
+     // 动态过滤字段
+  return ctx?.state.permission.needHideUrls 
+  ? rawResult
+  : rawResult;
   }
   /**
    * @description 根据三级分类id查询图书
@@ -71,14 +82,18 @@ class BookDao {
     thirdctgyid: number,
     sortField: string = "originalprice",
     ascOrDesc: string = "asc"
+    ,ctx?: any
   ) {
+
     if (sortField === "price") {
       sortField = "originalprice";
     }
     return await BooksModel.findAll({
       order: [[sortField, ascOrDesc]],
-      raw: true,
+      raw: false,
       where: { thirdctgyid },
+      include:filterIncludeFields(ctx),
+      nest: true, // 嵌套关联数据
     });
   }
   /**
@@ -138,31 +153,10 @@ class BookDao {
     });
   }
 
-  async findBooksByISBN(ISBN: string) {
-    const include = [
-      {
-        model: BookImageModel,
-        as: "images",
-        attributes: ["url", "filename"],
-        separate: true, // 确保返回数组
-      },
-      {
-        model: BookAttachment,
-        as: "attachments",
-        attributes: ["url", "filename", "fileType"],
-        separate: true, // 确保返回数组
-      },
-      {
-        model: ThirdCtgyModel,
-        as: "thirdCtgy",
-        attributes: ["thirdctgyname"],
-        required: false, // 改为LEFT JOIN
-      },
-    ];
-
+  async findBooksByISBN(ISBN: string,ctx?: any) {
     const result = await BooksModel.findOne({
       where: { ISBN },
-      include,
+      include:filterIncludeFields(ctx),
       nest: true, // 嵌套关联数据
       raw: false, // 禁用原始模式
     });
@@ -202,6 +196,9 @@ class BookDao {
 
       return book;
     });
+  }
+  async deleteBooks(ISBN: string) {
+    return await BooksModel.destroy({ where: { ISBN } });
   }
 }
 export default BookDao.bookDao;

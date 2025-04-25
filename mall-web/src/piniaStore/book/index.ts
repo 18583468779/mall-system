@@ -124,7 +124,7 @@ export default defineStore("bookstore", {
         this.getISBN
       );
       // 初始化购物车数量（从购物车列表查找当前书籍的数量）
-      const cartItem = scStore.getShopCartList.find(
+      const cartItem = scStore.getShopCartList?.find(
         (item) => item.bookisbn == bookDetail.data.ISBN
       );
       bookDetail.data["purcharsenum"] = cartItem?.purcharsenum || 0;
@@ -155,8 +155,8 @@ export default defineStore("bookstore", {
         ascOrdesc
       );
       calDisCount(bookList.data);
-      this.bookList = bookList.data;
-      goodStorage.set("bookList", this.bookList);
+      this.allBookList = bookList.data;
+      goodStorage.set("allBookList", this.allBookList);
     },
     async findBooksBySecondCtgyId(secondCtgyId: number) {
       //根据二级分类获取图书

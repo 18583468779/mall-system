@@ -50,7 +50,6 @@ type Props = {
   product: BookInfo;
 };
 const { product } = defineProps<Props>();
-
 const productPrice = computed(() => {
   if (product.discount) {
     return (product.originalprice * product.discount) / 10;

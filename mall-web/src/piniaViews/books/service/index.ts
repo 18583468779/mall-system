@@ -54,7 +54,6 @@ export default class Books {
   }
   static async findBooksByAutoCompKeyword() {
     const autoCompKeyword = Books.store.getAutoCompKeyword;
-    console.log("autoCompKeyword:", autoCompKeyword);
     await Books.store.findBooksByAutocompKeyword(autoCompKeyword);
     Books.shopCartAndUptBkNum();
   }
@@ -80,7 +79,6 @@ export default class Books {
 
   static updateBookNum(bookNum: number, curbookisbn?: string) {
     // 点击新增更新购物车图书数量
-    // const bookList: BookInfo[] = Books.store.getBookList;
     const bookList: BookInfo[] = Books.store.getAllBookList;
     let book: BookInfo;
     for (let i = 0; i < bookList.length; i++) {
@@ -95,7 +93,7 @@ export default class Books {
   }
   static uptBookNumWithSCLstNum() {
     // 首次更新购物车图书数量
-    const bookList: BookInfo[] = Books.store.getBookList;
+    const bookList: BookInfo[] = Books.store.getAllBookList;
     bookList.forEach((book) => {
       book.purcharsenum = 0;
     });

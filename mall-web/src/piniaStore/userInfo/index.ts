@@ -14,6 +14,13 @@ export default defineStore("userStore", {
         ? state.userinfo
         : storage.get("loginUser");
     },
+    getRoleInfo: (state) => {
+      return (
+        (state.userinfo.role || storage.get("loginUser")?.role)?.permissions ===
+          2 ||
+        (state.userinfo.role || storage.get("loginUser")?.role)?.permissions === 0
+      );
+    },
   },
   actions: {
     async login(

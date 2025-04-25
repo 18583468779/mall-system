@@ -1,68 +1,72 @@
 <template>
-  <!-- 右侧悬浮购物车 -->
+  <!-- 右侧悬浮购物车（紧凑版） -->
   <div class="fixed right-0 top-1/2 transform -translate-y-1/2 z-50">
     <div
-      class="flex flex-col bg-white shadow-xl rounded-l-lg transition-all duration-300 hover:shadow-2xl"
-      :class="{ 'w-80': expanded, 'w-20': !expanded }"
+      class="flex flex-col bg-white shadow-md rounded-l-lg transition-all duration-300 hover:shadow-lg border"
+      :class="{ 'w-48': expanded, 'w-12': !expanded }"
     >
-      <!-- 购物车头部 -->
+      <!-- 折叠状态 -->
       <div
-        class="p-4 bg-gray-100 rounded-tl-lg cursor-pointer flex items-center"
+        class="p-2 bg-gray-50 rounded-tl-lg cursor-pointer flex items-center justify-center"
         @click="expanded = !expanded"
       >
-        <el-badge :value="totalCount" :hidden="totalCount === 0" class="mr-2">
-          <el-icon :size="28" class="text-gray-700">
+        <el-badge 
+          :value="totalCount" 
+          :hidden="totalCount === 0" 
+          :max="99"
+          class="!absolute !-right-1 !-top-1"
+        >
+          <el-icon :size="20" class="text-gray-600">
             <ShoppingCart />
           </el-icon>
         </el-badge>
-        <transition name="fade">
-          <span v-if="expanded" class="ml-2 font-medium">购物车</span>
-        </transition>
       </div>
 
-      <!-- 购物车内容区域 -->
+      <!-- 展开状态 -->
       <transition name="slide-fade">
-        <div v-if="expanded" class="flex-1 overflow-y-auto p-4">
-          <!-- 商品列表（需要补充实际商品数据） -->
-          <div
-            v-for="item in cartItems"
-            :key="item.id"
-            class="flex items-center py-3 border-b last:border-0"
-          >
-            <img :src="item.image" class="w-16 h-16 object-cover rounded" />
-            <div class="ml-3 flex-1">
-              <h4 class="text-sm line-clamp-2">{{ item.name }}</h4>
-              <div class="flex items-center justify-between mt-1">
-                <span class="text-red-500 font-bold">¥{{ item.price }}</span>
-                <el-input-number
-                  :model-value="item.quantity"
-                  :min="1"
-                  size="small"
-                  controls-position="right"
-                  class="w-24"
-                />
+        <div v-if="expanded" class="flex flex-col flex-1">
+          <!-- 商品列表 -->
+          <div class="overflow-y-auto flex-1 p-2 max-h-[60vh]">
+            <div
+              v-for="item in cartItems"
+              :key="item.id"
+              class="flex items-center py-2 border-b last:border-0"
+            >
+              <img 
+                :src="item.image" 
+                class="w-12 h-12 object-cover rounded border"
+              />
+              <div class="ml-2 flex-1 min-w-0">
+                <h4 class="text-xs line-clamp-2 leading-tight">{{ item.name }}</h4>
+                <div class="flex items-center justify-between mt-1">
+                  <span class="text-red-500 text-sm font-bold">¥{{ item.price }}</span>
+                  <el-input-number
+                    :model-value="item.quantity"
+                    :min="1"
+                    size="small"
+                    controls-position="right"
+                    class="w-20"
+                  />
+                </div>
               </div>
             </div>
           </div>
-        </div>
-      </transition>
 
-      <!-- 底部结账区域 -->
-      <transition name="fade">
-        <div v-if="expanded" class="border-t p-4 bg-white">
-          <div class="flex justify-between items-center mb-4">
-            <span class="text-gray-600">总价：</span>
-            <span class="text-xl font-bold text-red-500"
-              >¥{{ totalPrice }}</span
+          <!-- 底部结算 -->
+          <div class="border-t p-2 bg-gray-50">
+            <div class="flex justify-between items-center mb-2">
+              <span class="text-gray-500 text-sm">总价：</span>
+              <span class="text-base font-bold text-red-500">¥{{ totalPrice }}</span>
+            </div>
+            <el-button
+              type="danger"
+              size="small"
+              class="w-full !px-2 !py-1.5 !text-sm"
+              @click="handleToPage('shopCartList')"
             >
+              结算 ({{ totalCount }})
+            </el-button>
           </div>
-          <el-button
-            type="danger"
-            class="w-full"
-            @click="handleToPage('shopCartList')"
-          >
-            去结算（{{ totalCount }}）
-          </el-button>
         </div>
       </transition>
 
@@ -91,8 +95,8 @@ import ShopCart from "../service/shopCart";
 const { totalCount, totalPrice } = ShopCart.refreshShopCartList();
 const { beforeDrop, afterDrop, dropping, ball } = ShopCart;
 
-const expanded = ref(true); // 默认展开状态
-const cartItems = ref<any>([]); // 需要接入实际购物车数据
+const expanded = ref(false); // 默认折叠状态
+const cartItems = ref<any>([]); // 接入实际数据时替换
 
 const handleToPage = (name: string) => {
   router.push({ name });
@@ -100,37 +104,36 @@ const handleToPage = (name: string) => {
 </script>
 
 <style scoped>
-/* 动画样式 */
-.fade-enter-active,
-.fade-leave-active {
-  transition: opacity 0.2s;
-}
-.fade-enter-from,
-.fade-leave-to {
-  opacity: 0;
-}
-
+/* 精简动画 */
 .slide-fade-enter-active {
-  transition: all 0.3s ease-out;
+  transition: all 0.2s ease-out;
 }
 .slide-fade-leave-active {
-  transition: all 0.3s cubic-bezier(1, 0.5, 0.8, 1);
+  transition: all 0.15s cubic-bezier(0.4, 0, 1, 1);
 }
 .slide-fade-enter-from,
 .slide-fade-leave-to {
-  transform: translateX(20px);
   opacity: 0;
+  transform: translateX(10px);
 }
 
-/* 小球动画 */
+/* 迷你小球动画 */
 .ball-container {
   .ball {
-    @apply w-4 h-4 fixed left-12 bottom-20;
-    transition: transform 0.4s cubic-bezier(0.46, -0.35, 0.78, 0.45);
+    @apply w-3 h-3 fixed left-8 bottom-16;
+    transition: transform 0.35s cubic-bezier(0.42, -0.3, 0.78, 0.45);
     .inner {
-      @apply w-full h-full rounded-full bg-blue-500;
-      transition: transform 0.4s linear;
+      @apply w-full h-full rounded-full bg-blue-400;
+      transition: transform 0.35s linear;
     }
   }
+}
+
+/* 优化滚动条 */
+.overflow-y-auto::-webkit-scrollbar {
+  width: 4px;
+}
+.overflow-y-auto::-webkit-scrollbar-thumb {
+  @apply bg-gray-300 rounded-full;
 }
 </style>

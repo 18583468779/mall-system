@@ -33,7 +33,7 @@
           <!-- 商品列表 -->
           <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
             <div
-              v-for="product in getAllBookList"
+              v-for="product in store.getAllBookList"
               :key="product.ISBN"
               class="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-shadow"
             >
@@ -56,35 +56,43 @@
     </div>
 
     <!-- 购物车 -->
-    <shop-cart class="fixed bottom-4 right-4 lg:bottom-8 lg:right-8" />
+    <!-- <shop-cart class="fixed bottom-4 right-4 lg:bottom-8 lg:right-8" /> -->
   </div>
 </template>
 
 <script setup lang="ts">
 import breadcrumbs from "./components/breadcrumbs.vue";
 import bookSort from "./components/bookSort.vue";
-import shopCart from "./components/shopCart.vue";
+// import shopCart from "./components/shopCart.vue";
 import bookItem from "./components/bookItem.vue";
 const { handleSelectThird } = FstToThrdCtgy;
 import Books from "./service";
-import { ref } from "vue";
+import { ref, watchEffect } from "vue";
 import { FstToThrdCtgy } from "../ctgy/service";
+import { useRoute } from "vue-router";
+const route = useRoute();
 // 分页参数
 const pageSize = ref(12);
 const totalItems = ref(0);
-const currentPage = ref(1);
 
 // 获取数据
 const { searchBooks, store } = Books;
 const { getThirdCtgyList } = FstToThrdCtgy.storeRefs;
-const { getAllBookList } = store;
+
+watchEffect(()=>{
+  if(JSON.stringify(route.query) !== '{}'){
+    let query =  JSON.parse(decodeURIComponent(route.query.data as any));
+    delete query['isSelected']
+    searchBooks();
+  }
+})
 
 const handlePageChange = (page: number) => {
-  currentPage.value = page;
-  searchBooks();
+  // currentPage.value = page;
+  // searchBooks();
 };
-// 初始化加载
-searchBooks();
+
+
 </script>
 
 <style>

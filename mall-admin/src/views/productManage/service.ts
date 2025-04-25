@@ -21,6 +21,10 @@ class Service {
       };
     }
   }
+  static async deleteBooks(data: any) {
+    let res: any = await BookApi.deleteBooks(data);
+    return res; 
+  }
 
   static async saveBooks(data: any) {
     let res: any = await BookApi.saveBooks(data);

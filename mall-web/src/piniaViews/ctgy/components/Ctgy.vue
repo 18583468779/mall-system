@@ -34,7 +34,7 @@
             <div
               v-for="(item, index) in firstCtgyList"
               :key="item.firstctgyId"
-              @mouseenter="handleFirstCtgyHover(index)"
+              @mouseenter="handleFirstCtgyHover(item.firstctgyId,index)"
               class="p-3 rounded-lg cursor-pointer transition-colors"
               :class="{
                 'bg-blue-50 text-blue-600': activeFirstIndex === index,
@@ -69,9 +69,9 @@ const { firstCtgyList } = storeRefs;
 getFirstCtgys();
 getSecondCtgys();
 
-const handleFirstCtgyHover = (index: number) => {
+const handleFirstCtgyHover = (firstctgyId:number,index: number) => {
   activeFirstIndex.value = index;
-  changeTab(index);
+  changeTab(firstctgyId);
 };
 </script>
 

@@ -23,7 +23,7 @@
       <li>
         <div class="flex items-center">
           <span class="ml-1 font-medium text-gray-500 md:ml-2">
-            {{ getFirstCtgy.firstctgyname }}
+            {{ getFirstCtgy?.firstctgyname }}
           </span>
         </div>
       </li>

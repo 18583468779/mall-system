@@ -1,7 +1,7 @@
 import { sequelize } from "../../../modules/BaseDao";
 import { convertToTree } from "../commonTypes";
 import FirstCtgy from "../defmodel/FirstCtgy";
-import { secondCtgyModel } from "../defmodel/SecCtgyModel";
+import {secondCtgyModel} from "../defmodel/SecCtgyModel";
 import { ThirdCtgyModel } from "../../decormodel/ThirdCtgyModel";
 import convert from "../moduletypes";
 
@@ -19,6 +19,8 @@ class CtgyDao {
     let res: Array<any> = (await sequelize.query(sql))[0];
     return convert(res);
   }
+
+
   async findAllCtgys() {
     // 使用LEFT JOIN保留所有层级
     const sql = `

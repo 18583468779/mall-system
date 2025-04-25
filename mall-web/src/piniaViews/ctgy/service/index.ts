@@ -15,6 +15,8 @@ export class FstToThrdCtgy {
 
   static async getFirstCtgys() {
     await FstToThrdCtgy.store.findFirstCtgyList();
+    FstToThrdCtgy.firstCtgyActiveIndex.value =
+      FstToThrdCtgy.store.getFirstCtgyList?.[0]?.firstctgyId;
     FstToThrdCtgy.storeFirstCtgy(0);
   }
   static storeFirstCtgy(index: number) {
@@ -27,7 +29,7 @@ export class FstToThrdCtgy {
   static getSecondCtgys() {
     watchEffect(async () => {
       await FstToThrdCtgy.store.findSecThrdCtgy(
-        FstToThrdCtgy.firstCtgyActiveIndex.value + 1
+        FstToThrdCtgy.firstCtgyActiveIndex.value
       );
     });
   }
@@ -56,7 +58,7 @@ export class FstToThrdCtgy {
     FstToThrdCtgy.store.storeSubThirdCtgyList(secondctgy.subThirdctgys);
     FstToThrdCtgy.store.storeIsReadyOpen(secondctgy.isReadyOpen);
     FstToThrdCtgy.bkStore.storeOperate(Operate.THRDCTGYID);
-    router.push({ name: "books" });
+    router.push({ name: "books", query: { data: encodeURIComponent(JSON.stringify(item)) } });
   };
   static opOrCollapseInBook = (isOpen: boolean) => {
     FstToThrdCtgy.store.storeIsReadyOpen(isOpen);

@@ -1,20 +1,41 @@
 <template>
-  <div class="min-h-screen bg-gray-200 flex items-center justify-center">
-    <div
-      class="bg-white rounded-xl shadow-lg overflow-hidden mx-auto max-w-sm lg:max-w-4xl w-full flex flex-col lg:flex-row"
-    >
+  <div class="min-h-screen bg-gray-100 flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl shadow-xl overflow-hidden mx-auto max-w-sm lg:max-w-4xl w-full flex flex-col lg:flex-row relative">
       <!-- 左侧图片 -->
-      <div class="lg:block lg:w-1/2 bg-cover">
-        <img :src="loginBg" class="w-full h-full object-contain" />
+      <div class="lg:block lg:w-1/2 bg-gray-50 relative">
+        <router-link 
+          to="/"
+          class="absolute top-4 left-4 z-10 flex items-center space-x-1 group transition-all"
+        >
+          <div class="p-2 rounded-full bg-white/80 backdrop-blur-sm shadow-md group-hover:bg-red-50 transition-colors flex items-center">
+            <svg 
+              class="w-5 h-5 text-gray-600 group-hover:text-red-500 transition-colors" 
+              fill="none" 
+              stroke="currentColor" 
+              viewBox="0 0 24 24"
+            >
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+            </svg>
+          </div>
+          <span class="text-sm font-medium ml-2 text-gray-600 group-hover:text-red-500 hidden lg:inline-block transition-colors">
+            返回主页
+          </span>
+        </router-link>
+        <img 
+          :src="loginBg" 
+          class="w-full h-48 lg:h-full object-center opacity-95" 
+          alt="登录背景图"
+        />
       </div>
 
       <!-- 右侧表单 -->
       <div class="w-full p-8 lg:w-1/2">
         <div class="py-4">
-          <h3 class="text-center">用户登录</h3>
+          <h3 class="text-center text-2xl font-bold text-gray-800">用户登录</h3>
         </div>
+        
         <!-- Tabs切换 -->
-        <el-tabs v-model="activeTab" class="mb-8"  @tab-click="handleTabClick">
+        <el-tabs v-model="activeTab" class="mb-8" @tab-click="handleTabClick">
           <el-tab-pane label="账号登录" name="account"></el-tab-pane>
           <el-tab-pane label="邮箱登录" name="email"></el-tab-pane>
           <el-tab-pane label="手机登录" name="phone"></el-tab-pane>
@@ -23,8 +44,8 @@
 
         <!-- 微信登录 -->
         <div v-if="activeTab === 'wechat'" class="text-center space-y-8">
-          <div class="text-gray-600">微信扫码登录</div>
-          <div class="inline-block p-4 bg-gray-100 rounded-xl">
+          <div class="text-gray-600 text-lg">微信扫码登录</div>
+          <div class="inline-block p-4 bg-gray-100 rounded-xl transition-all hover:shadow-md">
             <vue-qrcode
               :value="qrCodeValue"
               :width="qrCodeSize"
@@ -70,13 +91,11 @@
               </el-input>
             </el-form-item>
 
-            <!-- 登录按钮 -->
             <div class="pt-8">
               <el-button
                 type="primary"
                 size="large"
-                class="w-full !rounded-lg !py-4 !text-base"
-                color="rgb(239 68 68)"
+                class="w-full !rounded-lg !py-4 !text-base login-btn"
                 @click="login"
               >
                 立即登录
@@ -87,7 +106,6 @@
 
         <!-- 表单登录 -->
         <template v-else-if="activeTab !== 'wechat'">
-          <!-- 邮箱/手机表单 -->
           <el-form 
             ref="smsFormRef"
             :model="smsForm"
@@ -126,7 +144,7 @@
                   text
                   bg
                   size="large"
-                  class="!rounded-lg"
+                  class="!rounded-lg code-btn"
                   :disabled="!isValidAccount || isCounting"
                   @click="sendSmsCode"
                 >
@@ -135,13 +153,11 @@
               </div>
             </el-form-item>
 
-            <!-- 登录按钮 -->
             <div class="pt-8">
               <el-button
                 type="primary"
                 size="large"
-                class="w-full !rounded-lg !py-4 !text-base"
-                color="rgb(239 68 68)"
+                class="w-full !rounded-lg !py-4 !text-base login-btn"
                 @click="login"
               >
                 立即登录
@@ -153,9 +169,13 @@
         <!-- 底部链接 -->
         <div class="mt-8 text-center text-sm text-gray-500">
           <span>没有账号？</span>
-          <el-link type="primary" :underline="false" class="!font-medium"
-            >立即注册</el-link
+          <el-link 
+            type="primary" 
+            :underline="false" 
+            class="!font-medium hover:!text-red-600 transition-colors"
           >
+            立即注册
+          </el-link>
         </div>
       </div>
     </div>
@@ -176,7 +196,7 @@ import { ElMessage } from "element-plus";
 const router = useRouter();
 const store = userStore();
 
-// 二维码相关
+// 二维码配置
 const qrCodeValue = ref("https://example.com");
 const qrCodeSize = ref(150);
 const qrCodeDarkColor = ref("#000");
@@ -197,8 +217,8 @@ const smsForm = reactive({
   account: '',
   code: ''
 });
+
 const handleTabClick = () => {
-  // 根据当前激活的 Tab 清除对应表单验证
   if (activeTab.value === 'account') {
     accountFormRef.value?.clearValidate();
     Object.assign(accountForm, { username: '', password: '' })
@@ -246,7 +266,6 @@ const smsRules: FormRules = {
   ]
 };
 
-// 计算属性
 const isValidAccount = computed(() => {
   if (activeTab.value === 'email') {
     return /^\w+@[a-z0-9]+\.[a-z]{2,4}$/.test(smsForm.account);
@@ -258,7 +277,6 @@ const isValidAccount = computed(() => {
 const countdown = ref(0);
 const isCounting = computed(() => countdown.value > 0);
 
-// 发送验证码
 const sendSmsCode = async () => {
   try {
     await smsFormRef.value?.validateField('account');
@@ -278,7 +296,6 @@ const sendSmsCode = async () => {
   }
 };
 
-// 登录方法
 const login = async () => {
   try {
     if (activeTab.value === 'account') {
@@ -305,29 +322,52 @@ const login = async () => {
 </script>
 
 <style scoped>
-/* 原有样式保持不变 */
 :deep(.el-tabs__nav-wrap::after) {
   background-color: transparent;
 }
 
 :deep(.el-tabs__active-bar) {
-  @apply bg-red-500;
+  background-color: rgb(239 68 68);
 }
 
 :deep(.el-tabs__item) {
-  @apply px-4 text-gray-500 hover:text-red-500;
+  @apply px-4 text-gray-500 transition-colors;
+  &:hover {
+    color: rgb(239 68 68);
+  }
 }
 
 :deep(.el-tabs__item.is-active) {
-  @apply text-red-500 font-medium;
+  color: rgb(239 68 68);
+  font-weight: 500;
 }
 
 :deep(.el-input__wrapper) {
-  @apply !rounded-lg shadow-sm;
+  @apply !rounded-lg shadow-sm transition-all;
+  &:focus-within {
+    box-shadow: 0 0 0 3px rgb(239 68 68 / 10%);
+    outline: 2px solid transparent;
+    outline-offset: 2px;
+  }
 }
 
-:deep(.el-input__inner::placeholder) {
-  @apply text-gray-400;
+.login-btn {
+  background-color: rgb(239 68 68);
+  &:hover {
+    background-color: rgb(220 38 38);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 6px -1px rgb(239 68 68 / 20%);
+  }
+  &:active {
+    transform: translateY(0);
+  }
+}
+
+.code-btn {
+  &:hover {
+    color: rgb(239 68 68);
+    background-color: rgb(254 226 226);
+  }
 }
 
 .el-tabs + * {
@@ -335,8 +375,18 @@ const login = async () => {
 }
 
 @media (max-width: 768px) {
-  .el-button {
-    @apply py-3;
+  .min-h-screen {
+    padding-top: 2rem;
+    align-items: flex-start;
+  }
+  
+  .bg-white {
+    border-radius: 1rem;
+  }
+  
+  :deep(.el-tabs__item) {
+    padding: 0 0.5rem;
+    font-size: 0.875rem;
   }
 }
 </style>

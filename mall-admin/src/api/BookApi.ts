@@ -9,6 +9,9 @@ class BookAPI {
   saveBooks(data:any) {
     return request.post("/booksmodule/saveBooks", false,data);
   }
+  deleteBooks(ISBN:any) {
+    return request.post("/booksmodule/deleteBooks", false,{ISBN}); 
+  }
 
 }
 export default BookAPI.api;

@@ -113,16 +113,6 @@ const navItems = [
     name: "分类",
     type: "dropdown",
   },
-  // {
-  //   name: "新品",
-  //   type: "link",
-  //   path: "/new",
-  // },
-  // {
-  //   name: "热卖",
-  //   type: "link",
-  //   path: "/hot",
-  // },
   {
     name: "升级VIP",
     type: "link",
@@ -133,6 +123,11 @@ const navItems = [
     type: "link",
     path: "/contactUs",
   },
+  {
+    name: "个人网站托管服务",
+    type: "link",
+    path: "/webService",
+  }
 ];
 </script>
 

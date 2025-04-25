@@ -62,10 +62,9 @@ const userStore = useUserStore();
 const {
   init,
   allCtgys,
-  deleteCtgys,
   handleCtgys,
 } = ctgyService;
-const { saveBooks,getTableData,tableData,tablePageData } = service;
+const { saveBooks,getTableData,tableData,tablePageData ,deleteBooks} = service;
 const { dialogFormVisible, onOk, onOpen, formRef } = useVisiblehooks();
 onMounted(() => {
   init();
@@ -202,6 +201,7 @@ const handleOk = async () => {
     await saveBooks(params);
 
     ElMessage.success("提交成功");
+    getTableData();
     formData.name = "";
     formData.category = "";
     formData.bookpicname = []; // 清空数组
@@ -354,9 +354,9 @@ const handleSearch = (form: any) => {
 };
 
 const handleDelete = async (row: any) => {
-  const { type, id } = handleCtgys(row.id);
-  let res: any = await deleteCtgys(type, Number(id));
-  if (res.code === 200) {
+  let res: any = await deleteBooks(row.ISBN);
+  if (res.code === 200 && res.data) {
+    getTableData();
     ElMessage.success("删除成功");
   }
 };
