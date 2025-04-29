@@ -6,7 +6,7 @@ import Router from "koa-router";
 import globalException from "./GlobalExce";
 import path from "path";
 import koajwt from "koa-jwt";
-import {model as UserinfoModel} from "../modules/userinfo/defmodel/index";
+import { model as UserinfoModel } from "../modules/userinfo/defmodel/index";
 import RoleModel from "../modules/decormodel/role";
 
 class AllCtrlRouterLoader {
@@ -24,10 +24,10 @@ class AllCtrlRouterLoader {
     this.app.use(body());
     this.app.use(globalException);
     this.app.use(
-      koajwt({ 
+      koajwt({
         secret: "aiaiai123456X",
-        key:"jwtData" // jwtData 是在登录成功之后设置的 这里是从请求头中获取的jwtData 然后再把jwtData 放到ctx 里面 方便使用
-    }).unless({
+        key: "jwtData", // jwtData 是在登录成功之后设置的 这里是从请求头中获取的jwtData 然后再把jwtData 放到ctx 里面 方便使用
+      }).unless({
         path: [
           /^\/dang\/userinfomodule\/login/,
           /^\/dang\/userinfomodule\/register/,
@@ -37,18 +37,24 @@ class AllCtrlRouterLoader {
           /^\/dang\/booksmodule\/findBooksByPage/,
           /^\/dang\/booksmodule\/findBooksByISBN/,
           /^\/dang\/searchmodule/,
+          /^\/dang\/ordersmodule/,
         ],
       })
     );
     this.app.use(async (ctx, next) => {
       if (ctx.state.jwtData) {
-          ctx.state.user = await UserinfoModel.findByPk(ctx.state.jwtData.data.userid,{
-            attributes: { exclude: ['password'] },
-            include: [{
-              model: RoleModel,
-              as: "role" // 必须与关联定义中的别名一致
-            }]
-          });
+        ctx.state.user = await UserinfoModel.findByPk(
+          ctx.state.jwtData.data.userid,
+          {
+            attributes: { exclude: ["password"] },
+            include: [
+              {
+                model: RoleModel,
+                as: "role", // 必须与关联定义中的别名一致
+              },
+            ],
+          }
+        );
       }
       await next();
     });
