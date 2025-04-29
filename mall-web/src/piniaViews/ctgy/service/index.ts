@@ -13,16 +13,19 @@ export class FstToThrdCtgy {
   static firstCtgyList: Ref<FirstCtgy[]> = ref([]);
   static secondCtgyList: Ref<SecondCtgy[]> = ref([]);
 
+  static async findAllCtgys() {
+    return await FstToThrdCtgy.store.findAllCtgys();
+  }
   static async getFirstCtgys() {
     await FstToThrdCtgy.store.findFirstCtgyList();
     FstToThrdCtgy.firstCtgyActiveIndex.value =
-      FstToThrdCtgy.store.getFirstCtgyList?.[0]?.firstctgyId;
-    FstToThrdCtgy.storeFirstCtgy(0);
+      FstToThrdCtgy.store.getFirstCtgy.firstctgyId;
+    // FstToThrdCtgy.storeFirstCtgy(FstToThrdCtgy.store.getFirstCtgy.firstctgyId);
   }
   static storeFirstCtgy(index: number) {
     // 保存一级分类
     const firstCtgy = FstToThrdCtgy.store.firstCtgyList.find((f) => {
-      return f.firstctgyId === index + 1;
+      return f.firstctgyId === index;
     })!;
     FstToThrdCtgy.store.storeFirstCtgy(firstCtgy);
   }
@@ -58,7 +61,10 @@ export class FstToThrdCtgy {
     FstToThrdCtgy.store.storeSubThirdCtgyList(secondctgy.subThirdctgys);
     FstToThrdCtgy.store.storeIsReadyOpen(secondctgy.isReadyOpen);
     FstToThrdCtgy.bkStore.storeOperate(Operate.THRDCTGYID);
-    router.push({ name: "books", query: { data: encodeURIComponent(JSON.stringify(item)) } });
+    router.push({
+      name: "books",
+      query: { data: encodeURIComponent(JSON.stringify(item)) },
+    });
   };
   static opOrCollapseInBook = (isOpen: boolean) => {
     FstToThrdCtgy.store.storeIsReadyOpen(isOpen);

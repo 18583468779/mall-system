@@ -63,7 +63,14 @@ const routes: RouteRecordRaw[] = [
         name: "marked",
         path: "/marked",
         component: marked,
-        meta: { requiresAuth: false }
+        meta: { requiresAuth: false },
+      },
+      {
+        name: "marked.detail",
+        path: "markedDetail/:id", // 推荐使用参数化路径
+        component: () => import('../piniaViews/marked/markedDetail.vue'),
+        meta: { requiresAuth: false },
+        props: true // 启用props接收路由参数
       },
       // 需要登录的路由
       {

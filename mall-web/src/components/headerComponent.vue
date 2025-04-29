@@ -26,9 +26,9 @@
           </router-link>
 
           <!-- 分类下拉项 -->
-          <div v-else>
+          <!-- <div v-else>
             <CategoryDropdown />
-          </div>
+          </div> -->
         </template>
       </nav>
 
@@ -78,7 +78,6 @@
 
 <script setup lang="ts">
 import { Menu, Search, ShoppingCart, User } from "@element-plus/icons-vue";
-import CategoryDropdown from "../piniaViews/ctgy/components/Ctgy.vue";
 import SearchComponent from "../piniaViews/search/index.vue";
 import ShopCart from "../piniaViews/books/service/shopCart";
 import userInfo from "../piniaStore/userInfo";
@@ -110,8 +109,14 @@ const navItems = [
     path: "/",
   },
   {
-    name: "分类",
-    type: "dropdown",
+    name: "源码下载",
+    type: "link",
+    path: "/books",
+  },
+  {
+    name: "项目实战",
+    type: "link",
+    path: "/marked",
   },
   {
     name: "升级VIP",
@@ -119,15 +124,16 @@ const navItems = [
     path: "/vip",
   },
   {
+    name: "个人网站托管服务",
+    type: "link",
+    path: "/webService",
+  },
+  {
     name: "联系我们",
     type: "link",
     path: "/contactUs",
   },
-  {
-    name: "个人网站托管服务",
-    type: "link",
-    path: "/webService",
-  }
+
 ];
 </script>
 

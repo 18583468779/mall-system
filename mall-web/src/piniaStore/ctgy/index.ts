@@ -73,6 +73,9 @@ export const ctgyStore = defineStore("ctgyStore", {
     },
   },
   actions: {
+    findAllCtgys() {
+      return ctgyApi.getfindAllCtgys(); 
+    },
     storeFirstCtgy(firstCtgy: FirstCtgy) {
       // 保存选中一级分类
       this.firstCtgy = firstCtgy;

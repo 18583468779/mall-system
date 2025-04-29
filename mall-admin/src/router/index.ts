@@ -52,6 +52,12 @@ const routes = [
         meta: { title: "商品管理", icon: "Goods" },
       },
       {
+        path: "/bookletManage",
+        name: "bookletManage",
+        component: () => import("../views/bookletManage/bookletManage.vue"),
+        meta: { title: "小册管理", icon: "Document" },
+      },
+      {
         path: "/ordersManage",
         name: "ordersManage",
         component: () => import("../views/ordersManage/ordersManage.vue"),

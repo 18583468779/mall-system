@@ -41,10 +41,15 @@ export default class Books {
     await Books.store.findBksByPublishIds(publisherids);
     this.publisherPanelRef.value!.className = "publisher-panel";
   }
-  static searchBooks() {
+  static searchBooks(
+    thirdctgyid?: number,
+    sortField: string = "originalprice",
+    ascOrdesc: string = "asc"
+  ) {
     // 搜索图书
     const operate = Books.store.getOperate;
-    if (operate === Operate.THRDCTGYID) Books.findBooksByThirdCtgyId();
+    if (operate === Operate.THRDCTGYID)
+      Books.findBooksByThirdCtgyId(thirdctgyid, sortField, ascOrdesc);
     else if (operate === Operate.AUTOCOMPKEYWORD)
       Books.findBooksByAutoCompKeyword();
   }
@@ -59,11 +64,13 @@ export default class Books {
   }
 
   static async findBooksByThirdCtgyId(
+    thirdctgyid?: number,
     sortField: string = "originalprice",
     ascOrdesc: string = "asc"
   ) {
     // 根据三级分类查找图书
-    const thirdCtgyId = FstToThrdCtgy.store.thirdCtgy.thirdctgyid;
+    const thirdCtgyId =
+      FstToThrdCtgy.store.thirdCtgy.thirdctgyid ?? thirdctgyid;
     await Books.store.findBooksByThirdCtgyId(thirdCtgyId, sortField, ascOrdesc);
     Books.shopCartAndUptBkNum();
   }
@@ -112,7 +119,7 @@ export default class Books {
     }
     Books.sortField.value = sortField;
     Books.ascOrDesc.value = Books.ascOrDesc.value === "desc" ? "asc" : "desc";
-    Books.findBooksByThirdCtgyId(sortField, Books.ascOrDesc.value);
+    Books.findBooksByThirdCtgyId( undefined ,sortField, Books.ascOrDesc.value);
   }
   static getCurrentBookItem(bookisbn: string, purcharsenum: number) {
     // 根据图书id获取图书

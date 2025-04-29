@@ -1,281 +1,217 @@
 <template>
-    <div class="h-screen flex">
-      <!-- 左侧目录导航 -->
-      <el-aside 
-        width="280px" 
-        class="h-full border-r bg-gray-50 overflow-y-auto"
+  <div class="min-h-screen bg-gradient-to-br from-blue-50 to-purple-50 p-6 md:p-10">
+    <!-- 头部 -->
+    <header class="mb-12 text-center space-y-4">
+      <h1 class="text-5xl font-bold bg-gradient-to-r text-black bg-clip-text text-transparent">
+        项目工坊
+      </h1>
+      <p class="text-lg text-gray-600">探索实战项目，提升开发技能， 在线文档的形式，方便练习</p>
+
+    </header>
+
+    <!-- 搜索栏 -->
+    <div class="max-w-3xl mx-auto mb-12">
+      <el-input
+        v-model="searchKeyword"
+        placeholder="搜索项目名称、技术栈或描述..."
+        size="large"
+        clearable
+        class="rounded-2xl shadow-lg"
       >
-        <div class="p-4">
-          <h2 class="text-xl font-bold mb-4">目录</h2>
-          <el-menu
-            :default-active="activeChapter"
-            @select="handleSelectChapter"
-          >
-            <template v-for="(chapter, index) in chapters" :key="chapter.id">
-              <!-- 章节标题 -->
-              <el-menu-item 
-                :index="chapter.id.toString()"
-                :class="{ 'is-free': chapter.isFree }"
-              >
-                <span class="mr-2">第{{ index + 1 }}章</span>
-                {{ chapter.title }}
-                <el-tag 
-                  v-if="chapter.isFree" 
-                  size="mini" 
-                  class="ml-2"
-                >免费</el-tag>
-              </el-menu-item>
-  
-              <!-- 子章节 -->
-              <template v-for="sub in chapter.children" :key="sub.id">
-                <el-menu-item 
-                  :index="sub.id.toString()"
-                  class="pl-8!"
-                  :class="{ 
-                    'is-locked': !sub.isFree && !hasPurchased,
-                    'is-free': sub.isFree
-                  }"
-                >
-                  <span class="text-sm">{{ sub.title }}</span>
-                  <el-icon v-if="!sub.isFree && !hasPurchased" class="ml-2">
-                    <Lock />
-                  </el-icon>
-                </el-menu-item>
-              </template>
-            </template>
-          </el-menu>
+        <template #prefix>
+          <el-icon class="text-xl"><search /></el-icon>
+        </template>
+      </el-input>
+    </div>
+
+    <!-- 项目网格 -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 mb-12">
+      <div 
+        v-for="project in paginatedProjects"
+        :key="project.id"
+        class="bg-white rounded-3xl shadow-xl hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 overflow-hidden"
+        @click="handleProjectClick(project.id)"
+      >
+        <!-- 项目封面图 -->
+        <div class="relative aspect-video overflow-hidden">
+          <img 
+            :src="project.cover" 
+            :alt="project.name"
+            class="w-full h-full object-cover transition-transform duration-500 hover:scale-105"
+          />
+          <div class="absolute top-3 right-3 flex space-x-2">
+            <el-tag 
+              :type="techTypeMap[project.tech]" 
+              effect="dark" 
+              class="rounded-full shadow-sm"
+            >
+              {{ project.tech.toUpperCase() }}
+            </el-tag>
+          </div>
+        </div>
+
+        <!-- 项目内容 -->
+        <div class="p-6">
+          <div class="flex items-center mb-4">
+            <el-icon :size="28" class="mr-3" :class="iconColor[project.tech]">
+              <component :is="project.icon" />
+            </el-icon>
+            <h3 class="text-2xl font-bold text-gray-800">{{ project.name }}</h3>
+          </div>
+          <p class="text-gray-600 mb-5 leading-relaxed">{{ project.description }}</p>
           
-          <!-- 购买提示 -->
-          <div 
-            v-if="!hasPurchased"
-            class="mt-6 p-4 bg-yellow-50 border border-yellow-200 rounded-lg"
-          >
-            <h3 class="font-medium text-yellow-800 mb-2">付费小册</h3>
-            <p class="text-sm text-yellow-700 mb-4">
-              {{ previewChaptersCount }}章免费试读，购买后解锁全部{{ totalChapters }}章节
-            </p>
+          <!-- 技术栈标签 -->
+          <div class="flex flex-wrap gap-2 mb-6">
+            <el-tag
+              v-for="(tag, index) in project.tags"
+              :key="index"
+              :type="tagType(tag)"
+              effect="plain"
+              class="rounded-full px-3 shadow-sm"
+            >
+              {{ tag }}
+            </el-tag>
+          </div>
+
+          <!-- 行动按钮 -->
+          <div class="flex gap-3">
             <el-button 
               type="primary" 
-              class="w-full"
-              @click="showPurchaseDialog = true"
+              class="flex-1 rounded-xl h-12 shadow-md hover:shadow-lg"
+              color="black"
             >
-              立即购买 ￥{{ price }}
+              立即体验
             </el-button>
           </div>
         </div>
-      </el-aside>
-  
-      <!-- 右侧内容区域 -->
-      <el-main class="h-full overflow-y-auto bg-white">
-        <div class="max-w-3xl mx-auto p-6">
-          <!-- 付费提示 -->
-          <div 
-            v-if="currentChapter?.needPay"
-            class="mb-8 p-6 border rounded-lg bg-gray-50"
-          >
-            <div class="blur-sm pointer-events-none">
-              <h1 class="text-2xl font-bold mb-4">{{ currentChapter.title }}</h1>
-              <div class="prose" v-html="currentChapter.previewContent" />
-            </div>
-            <div class="text-center mt-6">
-              <el-button 
-                type="primary" 
-                size="large"
-                @click="showPurchaseDialog = true"
-              >
-                解锁完整内容
-              </el-button>
-              <p class="mt-2 text-sm text-gray-500">
-                已试读{{ previewChaptersCount }}个章节，剩余{{ lockedChaptersCount }}章待解锁
-              </p>
-            </div>
-          </div>
-  
-          <!-- 正常内容 -->
-          <template v-else>
-            <h1 class="text-2xl font-bold mb-6">{{ currentChapter.title }}</h1>
-            <div class="prose" v-html="currentChapter.content" />
-          </template>
-        </div>
-      </el-main>
-  
-      <!-- 购买对话框 -->
-      <el-dialog 
-        v-model="showPurchaseDialog" 
-        title="购买小册"
-        width="500px"
-      >
-        <div class="p-4">
-          <p class="mb-4">您正在购买《{{ title }}》</p>
-          <div class="flex items-center mb-6">
-            <span class="mr-2">价格：</span>
-            <span class="text-2xl text-red-600 font-bold">￥{{ price }}</span>
-          </div>
-          <el-divider />
-          <div class="grid grid-cols-3 gap-4">
-            <el-button class="col-span-1">
-              <img 
-                src="https://img.icons8.com/color/48/000000/alipay.png" 
-                class="h-6 mr-2"
-              >
-              支付宝
-            </el-button>
-            <el-button class="col-span-1">
-              <img 
-                src="https://img.icons8.com/color/48/000000/wechat.png" 
-                class="h-6 mr-2"
-              >
-              微信支付
-            </el-button>
-          </div>
-        </div>
-      </el-dialog>
+      </div>
     </div>
-  </template>
-  
-  <script setup lang="ts">
-  import { ref, computed } from 'vue'
-  import { Lock } from '@element-plus/icons-vue'
-  import { marked } from 'marked'
-  import hljs from 'highlight.js'
-  import 'highlight.js/styles/github.css'
-  
-  // 配置Markdown解析
-  marked.setOptions({
-    highlight: (code, lang) => {
-      return hljs.highlightAuto(code).value
-    }
-  })
-  
-  // 静态数据
-  const title = ref('TypeScript 全面指南')
-  const price = ref(39.9)
-  const hasPurchased = ref(false) // 购买状态
-  const showPurchaseDialog = ref(false)
-  const activeChapter = ref('1')
-  
-  // 章节数据
-  interface Chapter {
-    id: number
-    title: string
-    content: string
-    previewContent?: string
-    isFree: boolean
-    children?: Chapter[]
-    needPay?: boolean
+
+    <!-- 分页 -->
+    <div class="flex justify-center">
+      <el-pagination
+        v-model:current-page="currentPage"
+        :page-size="pageSize"
+        :background="true"
+        layout="prev, pager, next"
+        :total="filteredProjects.length"
+      />
+    </div>
+  </div>
+</template>
+
+<script setup lang="ts">
+import { ref, computed } from 'vue'
+import {
+  MagicStick as VueIcon,
+  Opportunity as ReactIcon,
+} from '@element-plus/icons-vue'
+import { useRouter } from 'vue-router';
+
+const router = useRouter()
+// 示例图片地址（实际项目需替换为真实地址）
+const demoCovers = {
+  vue: 'https://source.unsplash.com/random/800x600?vue',
+  react: 'https://source.unsplash.com/random/800x600?react',
+  js: 'https://source.unsplash.com/random/800x600?javascript',
+  node: 'https://source.unsplash.com/random/800x600?nodejs'
+}
+
+interface Project {
+  id: number
+  name: string
+  description: string
+  tags: string[]
+  tech: 'vue' | 'react' | 'js' | 'node'
+  icon: any
+  cover: string
+}
+
+const searchKeyword = ref('')
+const currentPage = ref(1)
+const pageSize = 8
+
+const projects = ref<Project[]>([
+  {
+    id: 1,
+    name: 'Vue3 智能记账本',
+    description: '全栈式记账应用，集成数据可视化与多设备同步功能',
+    tags: ['Vue3', 'TypeScript', 'ECharts', 'Node.js'],
+    tech: 'vue',
+    icon: VueIcon,
+    cover: demoCovers.vue
+  },
+  {
+    id: 2,
+    name: 'React 极简计时器',
+    description: '基于React 18的时间管理工具，支持多任务计时',
+    tags: ['React18', 'Hooks', 'Tailwind', 'Web Workers'],
+    tech: 'react',
+    icon: ReactIcon,
+    cover: demoCovers.react
+  },
+  // 更多项目...
+])
+
+const techTypeMap = {
+  vue: 'success',
+  react: 'primary',
+  js: 'warning',
+  node: 'danger'
+}
+
+const iconColor = {
+  vue: 'text-green-500',
+  react: 'text-blue-500',
+  js: 'text-yellow-500',
+  node: 'text-red-500'
+}
+
+const tagType = (tag: string) => {
+  const typeMap: Record<string, string> = {
+    'Vue3': 'success',
+    'React18': 'primary',
+    'TypeScript': '',
+    'Node.js': 'danger',
+    'Web Workers': 'info'
   }
-  
-  const chapters = ref<Chapter[]>([
-    {
-      id: 1,
-      title: 'TypeScript 基础',
-      isFree: true,
-      content: marked(`
-  ## 基础类型
-  \`\`\`typescript
-  let isDone: boolean = false
-  let decimal: number = 6
-  let color: string = "blue"
-  \`\`\`
-      `),
-      children: [
-        {
-          id: 11,
-          title: '类型注解',
-          isFree: true,
-          content: marked('## 类型注解内容...')
-        }
-      ]
-    },
-    {
-      id: 2,
-      title: '高级类型',
-      isFree: false,
-      previewContent: marked('前200字预览内容...'),
-      content: marked('完整高级类型内容...'),
-      needPay: true,
-      children: [
-        {
-          id: 21,
-          title: '联合类型',
-          isFree: false,
-          content: marked('完整联合类型内容...')
-        }
-      ]
-    }
-  ])
-  
-  // 计算当前章节
-  const currentChapter = computed(() => {
-    return findChapter(activeChapter.value)
-  })
-  
-  // 实用函数：查找章节
-  const findChapter = (id: string): Chapter => {
-    let result: Chapter | undefined
-    const search = (items: Chapter[]) => {
-      items.forEach(item => {
-        if (item.id.toString() === id) result = item
-        if (item.children) search(item.children)
-      })
-    }
-    search(chapters.value)
-    return result || {
-      id: 0,
-      title: '未找到',
-      content: '',
-      isFree: false
-    }
-  }
-  
-  // 章节统计
-  const previewChaptersCount = computed(() => {
-    return chapters.value.filter(c => c.isFree).length
-  })
-  
-  const totalChapters = computed(() => {
-    return chapters.value.length
-  })
-  
-  const lockedChaptersCount = computed(() => {
-    return totalChapters.value - previewChaptersCount.value
-  })
-  
-  // 切换章节
-  const handleSelectChapter = (id: string) => {
-    const chapter = findChapter(id)
-    if (!chapter.isFree && !hasPurchased.value) {
-      chapter.needPay = true
-    }
-    activeChapter.value = id
-  }
-  </script>
-  
-  <style scoped>
-  /* 自定义菜单项样式 */
-  .el-menu-item.is-free {
-    @apply bg-blue-50 hover:bg-blue-100;
-  }
-  
-  .el-menu-item.is-locked {
-    @apply text-gray-400 cursor-not-allowed;
-  }
-  
-  /* Markdown 内容样式 */
-  .prose {
-    @apply text-gray-800 leading-relaxed;
-  }
-  
-  .prose :deep(h2) {
-    @apply text-xl font-bold mt-8 mb-4;
-  }
-  
-  .prose :deep(pre) {
-    @apply bg-gray-800 text-gray-100 p-4 rounded-lg overflow-x-auto;
-  }
-  
-  .prose :deep(code) {
-    @apply bg-gray-100 text-red-600 px-1 py-0.5 rounded;
-  }
-  </style>
-  
+  return typeMap[tag] || 'info'
+}
+
+const filteredProjects = computed(() => {
+  const keyword = searchKeyword.value.toLowerCase()
+  return projects.value.filter(proj =>
+    proj.name.toLowerCase().includes(keyword) ||
+    proj.description.toLowerCase().includes(keyword) ||
+    proj.tags.some(tag => tag.toLowerCase().includes(keyword))
+  )
+})
+
+const paginatedProjects = computed(() => {
+  const start = (currentPage.value - 1) * pageSize
+  const end = start + pageSize
+  return filteredProjects.value.slice(start, end)
+});
+
+const handleProjectClick = (id: number) => {
+  router.push({ name: 'marked.detail', params: { id: id.toString() } });
+}
+</script>
+
+<style scoped>
+.el-pagination.is-background .el-pager li:not(.is-disabled).is-active {
+  background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+}
+
+.el-pagination.is-background .el-pager li:not(.is-disabled):hover {
+  color: #3b82f6;
+}
+
+.el-tag {
+  @apply transition-transform duration-200 hover:scale-105;
+}
+
+.el-button {
+  @apply transition-all duration-300 hover:opacity-90;
+}
+</style>

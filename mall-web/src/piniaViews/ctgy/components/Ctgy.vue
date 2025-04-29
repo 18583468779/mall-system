@@ -1,101 +1,84 @@
 <template>
-  <div
-    class="group"
-    @mouseenter="showCategory = true"
-    @mouseleave="showCategory = false"
-  >
-    <!-- 导航项 -->
-    <div class="nav-item">
-      分类
-      <el-icon
-        :class="['transition-transform', { 'rotate-180': showCategory }]"
-      >
-        <ArrowDown />
-      </el-icon>
+  <div class="bg-white rounded-lg shadow-sm p-4">
+    <div class="flex flex-wrap gap-1.5 mb-4">
+      <div v-for="(item) in firstCtgyComptuted" :key="item.firstctgyId" @click="handleFirstCtgyHover(item.firstctgyId)"
+        class="px-3 py-1.5 rounded-md cursor-pointer transition-colors flex items-center text-sm" :class="{
+          'bg-blue-100 text-blue-700': activeFirstIndex === item.firstctgyId,
+          'hover:bg-gray-100 text-gray-600': activeFirstIndex !== item.firstctgyId,
+        }">
+        <el-icon class="mr-1 text-[0.9em]">
+          <FolderOpened />
+        </el-icon>
+        {{ item.firstctgyname }}
+      </div>
     </div>
+    <!-- 二三级分类 - 紧凑布局 -->
+    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
+      <div v-for="second in secondCtgyList" :key="second.secondctgyid" class="border-l-2 border-blue-200 pl-2">
+        <!-- 二级分类标题 -->
+        <div class="mb-2 flex items-center group cursor-pointer">
+          <h3 class="text-base font-medium text-gray-800 flex items-center">
+            <el-icon class="mr-1 text-blue-400 text-[0.9em]">
+              <Collection />
+            </el-icon>
+            {{ second.secctgyname }}
+          </h3>
+        </div>
 
-    <!-- 分类下拉层 -->
-    <transition
-      enter-active-class="transition-all duration-300 ease-out"
-      leave-active-class="transition-all duration-200 ease-in"
-      enter-from-class="opacity-0 -translate-y-2"
-      enter-to-class="opacity-100 translate-y-0"
-      leave-from-class="opacity-100 translate-y-0"
-      leave-to-class="opacity-0 -translate-y-2"
-    >
-      <div
-        v-show="showCategory"
-        class="absolute top-full left-0 w-screen bg-white shadow-2xl z-50 pt-6 pb-8"
-        :style="{ maxHeight: 'calc(100vh - 120px)' }"
-      >
-        <div class="container mx-auto px-4 grid grid-cols-4 gap-8">
-          <!-- 一级分类 -->
-          <div class="col-span-1 border-r border-gray-100 pr-6">
-            <div
-              v-for="(item, index) in firstCtgyList"
-              :key="item.firstctgyId"
-              @mouseenter="handleFirstCtgyHover(item.firstctgyId,index)"
-              class="p-3 rounded-lg cursor-pointer transition-colors"
-              :class="{
-                'bg-blue-50 text-blue-600': activeFirstIndex === index,
-                'hover:bg-gray-50': activeFirstIndex !== index,
-              }"
-            >
-              {{ item.firstctgyname }}
-            </div>
+        <!-- 三级分类标签 -->
+        <div class="flex flex-wrap gap-1.5">
+          <div v-for="third in second.thirdctgys" :key="third.thirdctgyid" @click="toBookInfo(third, second)"
+            class="px-2.5 py-1 text-xs rounded-md bg-gray-50 hover:bg-blue-50 hover:text-blue-600 transition-colors cursor-pointer border border-gray-100">
+            {{ third.thirdctgyname }}
           </div>
-
-          <!-- 二级分类 -->
-          <ThrdCtgy />
         </div>
       </div>
-    </transition>
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
-import { ArrowDown } from "@element-plus/icons-vue";
+import { computed, ref, watchEffect } from "vue";
+import { FolderOpened, Collection } from "@element-plus/icons-vue";
 import { FstToThrdCtgy } from "../service/index";
-import ThrdCtgy from "./ThirdCtgy.vue";
-const showCategory = ref(false);
+
 const activeFirstIndex = ref(0);
+const { storeRefs, getFirstCtgys, getSecondCtgys, changeTab, toBookInfo} = FstToThrdCtgy;
+const { secondCtgyList, firstCtgyList, getFirstCtgyList, getFirstCtgy } = storeRefs;
+import { onMounted } from "vue";
+onMounted(async () => {
+  // 初始化数据
+  getFirstCtgys();
+  getSecondCtgys();
+  // let res = await findAllCtgys();
+})
+const firstCtgyComptuted = computed(() => {
+  getFirstCtgyList.value.unshift({ firstctgyname: '全部', firstctgyId: 0 });
+  return firstCtgyList.value;
+})
+watchEffect(() => {
+  activeFirstIndex.value = getFirstCtgy.value.firstctgyId;
+})
 
-const { storeRefs, getFirstCtgys, getSecondCtgys, changeTab } = FstToThrdCtgy;
-
-const { firstCtgyList } = storeRefs;
-
-// 初始化获取数据
-getFirstCtgys();
-getSecondCtgys();
-
-const handleFirstCtgyHover = (firstctgyId:number,index: number) => {
-  activeFirstIndex.value = index;
-  changeTab(firstctgyId);
+const handleFirstCtgyHover = (firstctgyId: number) => {
+  activeFirstIndex.value = firstctgyId;
+  changeTab(firstctgyId); // 确保这个方法正常更新secondCtgyList
 };
 </script>
 
 <style scoped>
-.nav-item {
-  @apply px-3 py-2 text-gray-600 hover:text-red-500 transition-colors 
-    flex items-center text-[15px] font-medium cursor-pointer;
+/* 添加微交互动画 */
+.slide-fade-enter-active {
+  transition: all 0.2s ease-out;
 }
 
-/* 自定义滚动条 */
-.scroll-area {
-  scrollbar-width: thin;
-  scrollbar-color: #cbd5e1 #f1f5f9;
+.slide-fade-leave-active {
+  transition: all 0.2s cubic-bezier(1, 0.5, 0.8, 1);
 }
 
-.scroll-area::-webkit-scrollbar {
-  @apply w-2;
-}
-
-.scroll-area::-webkit-scrollbar-track {
-  @apply bg-gray-50 rounded-full;
-}
-
-.scroll-area::-webkit-scrollbar-thumb {
-  @apply bg-gray-300 rounded-full hover:bg-gray-400;
+.slide-fade-enter-from,
+.slide-fade-leave-to {
+  transform: translateY(10px);
+  opacity: 0;
 }
 </style>
