@@ -14,7 +14,8 @@ const marked = () => import("../piniaViews/marked/index.vue");
 // 需要登录的组件
 const order = () => import("../piniaViews/order/index.vue");
 const orderSort = () => import("../piniaViews/order/orderSort.vue");
-const shopCartList = () => import("../piniaViews/shopCartList/shopCartList.vue");
+const shopCartList = () =>
+  import("../piniaViews/shopCartList/shopCartList.vue");
 const payPage = () => import("../piniaViews/order/payPage.vue");
 const userCenter = () => import("../piniaViews/userInfo/userCenter.vue");
 
@@ -33,31 +34,31 @@ const routes: RouteRecordRaw[] = [
         name: "home",
         path: "/home",
         component: home,
-        meta: { requiresAuth: false }
+        meta: { requiresAuth: false },
       },
       {
         name: "books",
         path: "/books",
         component: books,
-        meta: { requiresAuth: false }
+        meta: { requiresAuth: false },
       },
       {
         name: "search",
         path: "/search",
         component: search,
-        meta: { requiresAuth: false }
+        meta: { requiresAuth: false },
       },
       {
         name: "contactUs",
         path: "/contactUs",
         component: contactUs,
-        meta: { requiresAuth: false }
+        meta: { requiresAuth: false },
       },
       {
         name: "bookdetail",
         path: "/bookdetail/:bookData",
         component: BookDetail,
-        meta: { requiresAuth: false }
+        meta: { requiresAuth: false },
       },
       {
         name: "marked",
@@ -68,40 +69,40 @@ const routes: RouteRecordRaw[] = [
       {
         name: "marked.detail",
         path: "markedDetail/:id", // 推荐使用参数化路径
-        component: () => import('../piniaViews/marked/markedDetail.vue'),
+        component: () => import("../piniaViews/marked/markedDetail.vue"),
         meta: { requiresAuth: false },
-        props: true // 启用props接收路由参数
+        props: true, // 启用props接收路由参数
       },
       // 需要登录的路由
       {
         name: "order",
         path: "/order",
         component: order,
-        meta: { requiresAuth: true }
+        meta: { requiresAuth: true },
       },
       {
         name: "payPage",
         path: "/payPage",
         component: payPage,
-        meta: { requiresAuth: true }
+        meta: { requiresAuth: true },
       },
       {
         name: "orderSort",
         path: "/orderSort",
         component: orderSort,
-        meta: { requiresAuth: true }
+        meta: { requiresAuth: true },
       },
       {
         name: "shopCartList",
         path: "/shopCartList",
         component: shopCartList,
-        meta: { requiresAuth: true }
+        meta: { requiresAuth: true },
       },
       {
         name: "userCenter",
         path: "/userCenter",
         component: userCenter,
-        meta: { requiresAuth: true }
+        meta: { requiresAuth: true },
       },
 
       // 其他信息类页面
@@ -109,39 +110,45 @@ const routes: RouteRecordRaw[] = [
         name: "vip",
         path: "/vip",
         component: () => import("../piniaViews/vip/index.vue"),
-        meta: { requiresAuth: false }
+        meta: { requiresAuth: false },
       },
       {
         name: "webService",
         path: "/webService",
         component: () => import("../piniaViews/webService/webService.vue"),
-        meta: { requiresAuth: false }
+        meta: { requiresAuth: false },
       },
       {
         name: "agreement",
         path: "/agreement",
         component: () => import("../piniaViews/privacy/agreement.vue"),
-        meta: { requiresAuth: false }
+        meta: { requiresAuth: false },
       },
       {
         name: "copyrightPolicy",
         path: "/copyrightPolicy",
         component: () => import("../piniaViews/privacy/copyrightPolicy.vue"),
-        meta: { requiresAuth: false }
+        meta: { requiresAuth: false },
       },
       {
         name: "disclaimer",
         path: "/disclaimer",
         component: () => import("../piniaViews/privacy/disclaimer.vue"),
-        meta: { requiresAuth: false }
+        meta: { requiresAuth: false },
       },
       {
         name: "privacy",
         path: "/privacy",
         component: () => import("../piniaViews/privacy/privacy.vue"),
-        meta: { requiresAuth: false }
-      }
-    ]
+        meta: { requiresAuth: false },
+      },
+      {
+        name: "wxPayment",
+        path: "/wxPayment",
+        component: () => import("../piniaViews/wxPay/WxPay.vue"),
+        meta: { requiresAuth: false },
+      },
+    ],
   },
 
   // 登录页
@@ -152,32 +159,32 @@ const routes: RouteRecordRaw[] = [
     beforeEnter(to, from, next) {
       const token = storage.get("token");
       token ? next({ name: "home" }) : next();
-    }
+    },
   },
 
   // 404处理
   {
     path: "/:pathMatch(.*)*",
     component: () => import("../piniaViews/notFound/index.vue"),
-    meta: { requiresAuth: false }
-  }
+    meta: { requiresAuth: false },
+  },
 ];
 
 const router = createRouter({
   history: createWebHashHistory(import.meta.env.BASE_URL),
-  routes
+  routes,
 });
 
 // 全局路由守卫
 router.beforeEach((to, from, next) => {
   const token = storage.get("token");
-  const requiresAuth = to.matched.some(record => record.meta.requiresAuth);
+  const requiresAuth = to.matched.some((record) => record.meta.requiresAuth);
 
   if (requiresAuth && !token) {
     // 需要认证且未登录时跳转到登录页
     next({
       name: "login",
-      query: { redirect: to.fullPath }
+      query: { redirect: to.fullPath },
     });
   } else if (to.name === "login" && token) {
     // 已登录时禁止访问登录页
