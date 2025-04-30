@@ -9,7 +9,7 @@ export enum ChannelType {
 
 class OrdersService {
   static ordersService: OrdersService = new OrdersService();
-  pay: WxPay;
+  pay: any;
   constructor() {
     // 初始化微信支付实例
     this.pay = new WxPay({
@@ -21,69 +21,77 @@ class OrdersService {
       key: WX_PAY_CONFIG.apiV3Key, // APIv3密钥
     });
   }
-  async createPayment(userId: number, productInfo: {
-    type: 'vip' | 'file' | 'bundle'
-    amount: number
-    originalAmount?: number
-    isbn?: number
-    description: string
-  }, channel: ChannelType) {
-
+  async createPayment(
+    userId: number,
+    productInfo: {
+      type: "vip" | "file" | "bundle";
+      amount: number;
+      originalAmount?: number;
+      isbn?: number;
+      description: string;
+    },
+    channel: ChannelType
+  ) {
     // 1. 基础校验
     if (productInfo.amount <= 0) {
-      throw new Error('支付金额必须大于0')
+      throw new Error("支付金额必须大于0");
     }
 
-    let params:any = {
+    let params: any = {
       userId,
       productType: productInfo.type,
       totalFee: productInfo.amount,
       originalFee: productInfo.originalAmount || productInfo.amount,
-      currency: 'CNY',
-      status: 'pending',
+      currency: "CNY",
+      status: "pending",
       paymentChannel: channel,
       description: productInfo.description,
       isbn: productInfo.isbn || null,
       paymentData: {},
-      outTradeNo: this.generateOutTradeNo()
-    }
+      outTradeNo: this.generateOutTradeNo(),
+    };
     // 2. 创建本地订单
     const order = await OrdersModel.create(params);
-    const orderData = order.get({ plain: true });  // 获取原始数据
+    const orderData = order.get({ plain: true }); // 获取原始数据
     // 3. 调用支付平台接口
     try {
-      const paymentResult:any = await this.createChannelPayment(orderData, channel)
-      
+      const paymentResult: any = await this.createChannelPayment(
+        orderData,
+        channel
+      );
+
       // 4. 更新支付信息
       await order.update({
         paymentData: paymentResult,
-        outTradeNo: paymentResult.out_trade_no
-      })
+        outTradeNo: paymentResult.out_trade_no,
+      });
 
       return {
         qrcodeUrl: paymentResult.code_url,
-        outTradeNo: orderData.outTradeNo
-      }
-
+        outTradeNo: orderData.outTradeNo,
+      };
     } catch (error) {
       // 支付失败时更新订单状态
-      await order.update({ status: 'closed' })
-      throw error
+      await order.update({ status: "closed" });
+      throw error;
     }
   }
   private generateOutTradeNo(): string {
     // 生成订单号的逻辑
-    return `ORD${Date.now()}${Math.random().toString(36).substr(2, 6).toUpperCase()}`
+    return `ORD${Date.now()}${Math.random()
+      .toString(36)
+      .substr(2, 6)
+      .toUpperCase()}`;
   }
   private async createChannelPayment(order: OrdersModel, channel: ChannelType) {
     // 根据支付渠道创建支付对象
     switch (channel) {
       case ChannelType.wechat:
-        return this.createWechatPayment(order)
+        return this.createWechatPayment(order);
       case ChannelType.alipay:
-        return this.createAlipayPayment(order)
+        return this.createAlipayPayment(order);
       default:
-        throw new Error('暂不支持的支付渠道')
+        throw new Error("暂不支持的支付渠道");
     }
   }
   private async createWechatPayment(order: any) {
@@ -109,7 +117,11 @@ class OrdersService {
       out_trade_no: params.out_trade_no,
     };
   }
-
+  wechatNotifyMiddleware() {
+    return this.pay.notifyMiddleware().on("error", (err: any) => {
+      console.error("微信回调中间件错误:", err);
+    });
+  }
   private async createAlipayPayment(order: any) {
     // 调用支付宝接口
   }
