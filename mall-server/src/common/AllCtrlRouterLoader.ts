@@ -37,7 +37,6 @@ class AllCtrlRouterLoader {
           /^\/dang\/booksmodule\/findBooksByPage/,
           /^\/dang\/booksmodule\/findBooksByISBN/,
           /^\/dang\/searchmodule/,
-          /^\/dang\/ordersmodule/,
         ],
       })
     );

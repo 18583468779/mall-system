@@ -8,8 +8,9 @@ class OrdersController {
   @post("/createNativeOrderDao")
   async createNativeOrderDao(ctx: Context) {
     const res = ctx.request.body;
+    let userId = ctx.state.user.userid;
     ctx.body = success(
-      await ordersDao.createNativeOrderDao(res.amount, res.description)
+      await ordersDao.createNativeOrderDao(userId,res)
     );
   }
 }

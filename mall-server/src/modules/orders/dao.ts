@@ -1,10 +1,9 @@
-import { createNativeOrder } from "./service";
+import OrdersService, { ChannelType } from "./service";
 
 class OrdersDao {
   static ordersDao: OrdersDao = new OrdersDao();
-  async createNativeOrderDao(amount: number, description: string) {
-    // 模拟创建订单逻辑
-    return await createNativeOrder(amount, description);
+  async createNativeOrderDao(userId: number, order: any) {
+    return await OrdersService.createPayment(userId, order, order.channel);
   }
 }
 

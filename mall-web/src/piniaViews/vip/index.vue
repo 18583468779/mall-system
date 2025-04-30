@@ -137,19 +137,31 @@
                 <el-button type="primary" @click="confirmPayment">立即支付 ¥99</el-button>
             </template>
         </el-dialog>
+        <el-dialog v-model="paymentVisible" title="会员升级支付" width="500px">
+            <PaymentQrcode :paymentMethod="paymentMethod" @success="handlePaymentSuccess"
+                @fail="handlePaymentError" @cancel="handlePaymentCancel">
+                <!-- 自定义提示插槽 -->
+                <template #header>
+                    <h3 class="vip-payment-title">VIP会员升级</h3>
+                    <p class="vip-payment-tip">支付成功后立即生效</p>
+                </template>
+            </PaymentQrcode>
+        </el-dialog>
     </div>
 </template>
   
 <script setup lang="ts">
 import { ref } from 'vue'
 import { Check, Close } from '@element-plus/icons-vue'
-import { ElButton, ElDialog, ElIcon } from 'element-plus';
+import { ElButton, ElDialog, ElIcon, ElMessage } from 'element-plus';
 import OrderService from "../order/service/index.ts";
-const { 
+import PaymentQrcode from '../../components/PaymentQrcode.vue';
+const {
     paymentMethod,
     changePaymentMethod,
 } = OrderService;
 
+const paymentVisible = ref(false)
 
 const paymentMethods: any = [
     {
@@ -168,7 +180,6 @@ const paymentMethods: any = [
 const currentPlan = ref<'free' | 'vip'>('free')
 const isPaying = ref(false)
 const showPaymentDialog = ref(false)
-const selectedPayment = ref<'wechat' | 'alipay'>('wechat')
 
 const freeFeatures = [
     '基础代码查看权限',
@@ -193,19 +204,34 @@ const compareFeatures = [
     { feature: '添加作者微信', free: false }
 ]
 
+// 支付回调处理
+const handlePaymentSuccess = (orderNo: any) => {
+    console.log('支付成功:', orderNo)
+    paymentVisible.value = false
+    // 更新用户VIP状态等操作...
+}
 
+const handlePaymentError = (error: any) => {
+    ElMessage.error(error.message)
+}
+
+const handlePaymentCancel = () => {
+    ElMessage.warning('已取消支付')
+}
 
 const handleUpgrade = () => {
     if (currentPlan.value === 'vip') return
     showPaymentDialog.value = true
 }
 
+
+
 const confirmPayment = async () => {
     isPaying.value = true
     try {
         // 这里调用支付接口
-        await new Promise(resolve => setTimeout(resolve, 1500))
         currentPlan.value = 'vip'
+        paymentVisible.value = true;
         showPaymentDialog.value = false
     } finally {
         isPaying.value = false

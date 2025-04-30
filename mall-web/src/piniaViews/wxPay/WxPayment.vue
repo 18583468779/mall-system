@@ -48,11 +48,7 @@ import QrcodeVue from "qrcode.vue";
 import axios from "axios";
 import request from "../../utils/axiosUtil";
 
-// 类型定义
-interface PaymentData {
-  code_url: string;
-  out_trade_no: string;
-}
+
 
 // Props定义
 const props = defineProps({
