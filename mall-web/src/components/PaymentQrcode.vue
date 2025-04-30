@@ -134,7 +134,7 @@ const createOrderApi = async () => {
       }
     );
     qrcodeUrl.value = data.qrcodeUrl;
-    orderNo.value = data.orderNo;
+    orderNo.value = data.outTradeNo;
   } catch (error) {
     throw new Error("创建订单失败，请重试");
   }
@@ -150,11 +150,14 @@ const startTimers = () => {
     }
     countdown.value--;
   }, 1000);
-  return;
   // 支付状态轮询
   pollingTimer = setInterval(async () => {
     try {
-      const { paid } = await checkPaymentApi(orderNo.value);
+      const { paid } = await request.post(
+        "/ordersmodule/queryWechatPayment",
+        false,
+        { orderNo: orderNo.value }
+      );
       if (paid) {
         handleSuccess();
       }
@@ -171,9 +174,10 @@ const checkPaymentApi = async (
   paid: boolean;
 }> => {
   try {
-    const { data } = await request.get(
-      `/ordersmodule/checkPayStatus/${orderNo}`,
-      false
+    const { data } = await request.post(
+      "/ordersmodule/queryWechatPayment",
+      false,
+      orderNo
     );
 
     return {

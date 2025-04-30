@@ -98,9 +98,7 @@ class OrdersService {
     // 调用微信支付接口
     const params = {
       description: order.description,
-      out_trade_no: `ORDER_${Date.now()}_${Math.random()
-        .toString(36)
-        .substr(2, 8)}`,
+      out_trade_no: order.outTradeNo,
       notify_url: WX_PAY_CONFIG.notify_url,
       amount: {
         total: order.totalFee,
@@ -121,6 +119,30 @@ class OrdersService {
     return this.pay.notifyMiddleware().on("error", (err: any) => {
       console.error("微信回调中间件错误:", err);
     });
+  }
+  async queryWechatPayment(orderNo: string) {
+    try {
+      console.log(
+        "11111111111outTradeNooutTradeNooutTradeNooutTradeNo",
+        orderNo
+      );
+      const result = await this.pay.query({ out_trade_no: orderNo });
+      return this.parsePaymentStatus(result);
+    } catch (error) {
+      console.error("微信支付查询失败:", error);
+      throw new Error("支付状态查询失败");
+    }
+  }
+
+  private parsePaymentStatus(result: any) {
+    const tradeState = result.trade_state || "UNKNOWN";
+    const successStates = ["SUCCESS", "ACCEPT"];
+
+    return {
+      paid: successStates.includes(tradeState),
+      status: tradeState,
+      detail: result,
+    };
   }
   private async createAlipayPayment(order: any) {
     // 调用支付宝接口

@@ -6,10 +6,6 @@ import { Context } from "koa";
 import ordersDao from "../modules/orders/dao";
 @Controller("/ordersmodule")
 class OrdersController {
-  @get("/getOne")
-  async getOne(ctx: Context) {
-    ctx.body = success(111);
-  }
   // 创建订单
   @post("/createNativeOrderDao")
   async createNativeOrderDao(ctx: Context) {
@@ -25,5 +21,11 @@ class OrdersController {
     console.log("res*************************", res);
 
     ctx.body = success(111);
+  }
+  // 查询是否支付成功
+  @post("/queryWechatPayment")
+  async queryWechatPayment(ctx: Context) {
+    const { orderNo } = ctx.request.body;
+    ctx.body = success(await ordersDao.queryWechatPayment(orderNo));
   }
 }
