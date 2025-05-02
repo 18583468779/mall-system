@@ -5,6 +5,7 @@ import { Context, Middleware } from "koa";
 import { sequelize } from "../BaseDao";
 import UserinfoModel from "../../modules/decormodel/Userinfo";
 import RoleModel from "../decormodel/role";
+import { Op } from "sequelize";
 
 export enum ChannelType {
   wechat = "wechat",
@@ -208,16 +209,21 @@ class OrdersService {
           },
         ],
       });
-      console.log("orderorderorderorderorder***********", order);
       if (!order) {
         throw new Error("订单不存在");
       }
+      let orderData = order.get({ plain: true }); // 获取原始数据
       // 幂等性检查：已处理订单直接返回
       if (
-        [StatusType.SUCCESS, StatusType.REFUNDED].includes(order.status as any)
+        [StatusType.SUCCESS, StatusType.REFUNDED].includes(
+          orderData.status as any
+        )
       ) {
         await transaction.commit();
         console.log("事务提交成功，订单状态:", order.status);
+        // 提交后二次验证
+        const updatedUser = await UserinfoModel.findByPk(orderData.userId);
+        console.log("用户最新角色:", updatedUser?.roleId);
         return;
       }
 
@@ -238,11 +244,12 @@ class OrdersService {
       // 3.vip套餐处理
       console.log(
         "order.statusorder.statusorder.status",
-        order.status,
-        order.productType
+        orderData.status,
+        orderData.productType
       );
-      if (data.trade_state === "SUCCESS" && order.productType === "vip") {
-        await this.upgradeToVip(order.userId, transaction);
+      if (data.trade_state === "SUCCESS" && orderData.productType === "vip") {
+        console.log("满足VIP升级条件，开始处理");
+        await this.upgradeToVip(orderData.userId, transaction);
       }
       await transaction.commit();
     } catch (err) {
@@ -322,26 +329,50 @@ class OrdersService {
   }
 
   private async upgradeToVip(userId: number, transaction: any) {
-    // 更新用户角色为VIP
+    const user = await UserinfoModel.findByPk(userId, {
+      transaction,
+      raw: true,
+      lock: transaction.LOCK.UPDATE, // 添加行级锁
+    });
+
+    if (!user) throw new Error(`用户 ${userId} 不存在`);
+
     const vipRole = await RoleModel.findOne({
       where: { permissions: 2 },
-      transaction,
-    });
-    if (!vipRole) throw new Error("VIP角色未配置");
-    // 更新用户角色
-    let params: any = { roleId: vipRole.roleId };
-    console.log(
-      "paramsparamsparamsparamsparams************************",
-      params,
-      userId
-    );
-    const [affectedRows] = await UserinfoModel.update(params, {
-      where: { userid: userId },
+      raw: true,
       transaction,
     });
 
-    if (affectedRows === 0) throw new Error("用户不存在");
+    if (!vipRole) throw new Error("VIP角色未配置");
+    console.log("当前用户角色:", user.roleId, "目标角色:", vipRole?.roleId);
+
+    // 角色已匹配时跳过更新
+    if (user.roleId === vipRole?.roleId) {
+      console.log(`用户 ${userId} 已是VIP，无需更新`);
+      return;
+    }
+
+    const [affected] = await UserinfoModel.update(
+      { roleId: vipRole.roleId },
+      {
+        where: {
+          userid: userId,
+          roleId: { [Op.ne]: vipRole.roleId }, // 仅更新非VIP用户
+        },
+        transaction,
+      }
+    );
+
+    if (affected === 0) {
+      console.error("更新失败，可能原因：", {
+        userIdExists: !!user,
+        currentRole: user.roleId,
+        targetRole: vipRole.roleId,
+      });
+      throw new Error("更新条件不满足");
+    }
   }
+
   private async createAlipayPayment(order: any) {
     // 调用支付宝接口
   }
