@@ -1,15 +1,23 @@
 import { WX_PAY_CONFIG } from "../../config/wxConfig";
 import WxPay from "wechatpay-node-v3"; // 引入微信支付库
 import OrdersModel from "../decormodel/orders";
+import { Context, Middleware } from "koa";
+import { sequelize } from "../BaseDao";
 
 export enum ChannelType {
   wechat = "wechat",
   alipay = "alipay",
 }
-
+export enum StatusType {
+  PENDING = "PENDING",
+  PROCESSING = "PROCESSING",
+  SUCCESS = "SUCCESS",
+  CLOSED = "CLOSED",
+  REFUNDED = "REFUNDED",
+}
 class OrdersService {
   static ordersService: OrdersService = new OrdersService();
-  pay: any;
+  pay: WxPay;
   constructor() {
     // 初始化微信支付实例
     this.pay = new WxPay({
@@ -43,7 +51,7 @@ class OrdersService {
       totalFee: productInfo.amount,
       originalFee: productInfo.originalAmount || productInfo.amount,
       currency: "CNY",
-      status: "pending",
+      status: StatusType.PENDING,
       paymentChannel: channel,
       description: productInfo.description,
       isbn: productInfo.isbn || null,
@@ -115,17 +123,99 @@ class OrdersService {
       out_trade_no: params.out_trade_no,
     };
   }
-  wechatNotifyMiddleware() {
-    return this.pay.notifyMiddleware().on("error", (err: any) => {
-      console.error("微信回调中间件错误:", err);
-    });
+  // 自定义回调中间件
+  wechatNotifyMiddleware(): Middleware {
+    return async (ctx: Context, next: () => Promise<any>) => {
+      try {
+        // 1. 获取微信回调头信息
+        const headers = ctx.headers;
+        const signature = headers["wechatpay-signature"] as string;
+        const timestamp = headers["wechatpay-timestamp"] as string;
+        const nonce = headers["wechatpay-nonce"] as string;
+        const serial = headers["wechatpay-serial"] as string;
+
+        // 2. 获取原始请求体
+        const rawBody = ctx.request.body;
+
+        // 3. 验证签名
+        const isValid = await this.pay.verifySign({
+          timestamp,
+          nonce,
+          body: rawBody,
+          serial,
+          signature,
+          apiSecret: WX_PAY_CONFIG.apiV3Key,
+        });
+
+        if (!isValid) {
+          ctx.status = 403;
+          ctx.body = { code: "SIGNATURE_INVALID" };
+          return;
+        }
+
+        // 4. 解密数据
+        const encryptedData = ctx.request.body;
+        const decrypted = this.pay.decipher_gcm<any>(
+          encryptedData.resource.ciphertext,
+          encryptedData.resource.associated_data,
+          encryptedData.resource.nonce,
+          WX_PAY_CONFIG.apiV3Key
+        );
+
+        // 5. 处理业务逻辑
+        ctx.state.wechatData = decrypted; // 将解密数据存入上下文
+        await this.handlePaymentNotify(decrypted);
+
+        // 6. 返回成功响应
+        ctx.status = 200;
+        ctx.body = { code: "SUCCESS" };
+      } catch (err) {
+        console.error("回调处理失败:", err);
+        ctx.status = 500;
+        ctx.body = { code: "SYSTEM_ERROR" };
+      }
+      await next();
+    };
+  }
+  private async handlePaymentNotify(data: any) {
+    const outTradeNo = data.out_trade_no;
+    console.log("收到支付通知:", data);
+
+    // 事务处理
+    const transaction = await sequelize.transaction();
+    try {
+      const order = await OrdersModel.findOne({
+        where: { outTradeNo },
+        lock: true,
+        transaction,
+      });
+
+      if (!order) {
+        console.error("订单不存在:", outTradeNo);
+        return;
+      }
+
+      if (order.status === "closed") {
+        console.log("订单已处理过:", outTradeNo);
+        return;
+      }
+      let param = {
+        status: data.trade_state,
+        paymentData: data,
+        paidAt: new Date(data.success_time),
+      };
+      await order.update(param, { transaction });
+
+      await transaction.commit();
+      console.log("订单状态更新成功:", outTradeNo);
+    } catch (err) {
+      await transaction.rollback();
+      console.error("订单更新失败:", err);
+      throw err;
+    }
   }
   async queryWechatPayment(orderNo: string) {
     try {
-      console.log(
-        "11111111111outTradeNooutTradeNooutTradeNooutTradeNo",
-        orderNo
-      );
       const result = await this.pay.query({ out_trade_no: orderNo });
       return this.parsePaymentStatus(result);
     } catch (error) {

@@ -1,4 +1,6 @@
+import { Middleware } from "koa";
 import AllRouterLoader from "../common/AllCtrlRouterLoader";
+import { MIDDLEWARE_METADATA_KEY } from "./commondecorator";
 type MethodType = "get" | "post" | "put" | "delete";
 export function Controller(modulePath: string = "") {
   return function (targetClass: { new (...args: any): any }) {
@@ -16,13 +18,23 @@ export function Controller(modulePath: string = "") {
         prototype,
         methodname
       );
+      // 获取中间件元数据
+      const middlewares: Middleware[] =
+        Reflect.getMetadata(MIDDLEWARE_METADATA_KEY, prototype, methodname) ||
+        [];
       const routerHandlerFn = prototype[methodname]; // 具体的方法体
       const rootRouter = AllRouterLoader.app.context.rootRouter;
       if (path && methodType) {
         // 这里可以注册路由，例如：
-        rootRouter[methodType](modulePath + path, routerHandlerFn);
+        rootRouter[methodType](
+          modulePath + path,
+          ...middlewares,
+          routerHandlerFn
+        );
         console.log(
-          `注册路由: ${methodType.toUpperCase()} ${modulePath}${path} -> ${methodname}`
+          `注册路由: ${methodType.toUpperCase()} ${modulePath}${path}\n` +
+            `中间件数: ${middlewares.length}\n` +
+            `处理方法: ${methodname}`
         );
       }
     });

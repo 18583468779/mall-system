@@ -15,10 +15,9 @@ class OrdersController {
   }
   // 支付回调
   @post("/wechat/notify")
-  @use("111")
+  @use(ordersDao.wechatNotifyMiddleware()) // 使用中间件
   async wechatNotify(ctx: Context) {
     const res = ctx.request.body;
-    console.log("res*************************", res);
 
     ctx.body = success(111);
   }

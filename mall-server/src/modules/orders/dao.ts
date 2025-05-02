@@ -8,6 +8,10 @@ class OrdersDao {
   async queryWechatPayment(orderNo: string) {
     return await OrdersService.queryWechatPayment(orderNo);
   }
+  // 获取微信支付回调中间件
+  wechatNotifyMiddleware() {
+    return OrdersService.wechatNotifyMiddleware();
+  }
 }
 
 export default OrdersDao.ordersDao;

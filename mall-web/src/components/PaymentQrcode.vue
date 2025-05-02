@@ -153,6 +153,7 @@ const startTimers = () => {
   // 支付状态轮询
   pollingTimer = setInterval(async () => {
     try {
+      return;
       const { paid } = await request.post(
         "/ordersmodule/queryWechatPayment",
         false,

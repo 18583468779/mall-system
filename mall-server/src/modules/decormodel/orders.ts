@@ -5,9 +5,9 @@ import { Column, DataType, Model, Table } from "sequelize-typescript";
   comment: "订单表",
   timestamps: false,
   indexes: [
-    { fields: ['user_id'] },
-    { fields: ['status'] } // 新增状态索引
-  ]
+    { fields: ["user_id"] },
+    { fields: ["status"] }, // 新增状态索引
+  ],
 })
 export default class OrdersModel extends Model<OrdersModel> {
   // 基础支付信息
@@ -16,7 +16,7 @@ export default class OrdersModel extends Model<OrdersModel> {
     allowNull: false,
     comment: "商户订单号",
     unique: true,
-    field: "out_trade_no"
+    field: "out_trade_no",
   })
   public outTradeNo!: string;
 
@@ -24,16 +24,16 @@ export default class OrdersModel extends Model<OrdersModel> {
   @Column({
     type: DataType.STRING(64),
     comment: "支付平台交易号（微信/支付宝）",
-    field: "payment_transaction_id"
+    field: "payment_transaction_id",
   })
   public paymentTransactionId!: string;
 
   // 新增支付渠道字段
   @Column({
-    type: DataType.ENUM('wechat', 'alipay'),
+    type: DataType.ENUM("wechat", "alipay"),
     allowNull: false,
-    defaultValue: 'wechat',
-    comment: "支付渠道"
+    defaultValue: "wechat",
+    comment: "支付渠道",
   })
   public paymentChannel!: string;
 
@@ -42,15 +42,15 @@ export default class OrdersModel extends Model<OrdersModel> {
     type: DataType.INTEGER,
     allowNull: false,
     comment: "用户ID",
-    field: "user_id"
+    field: "user_id",
   })
   public userId!: number;
 
   // 商品类型系统
   @Column({
-    type: DataType.ENUM('vip', 'file', 'bundle'),
+    type: DataType.ENUM("vip", "file", "bundle"),
     allowNull: false,
-    comment: "商品类型"
+    comment: "商品类型",
   })
   public productType!: string;
 
@@ -59,30 +59,36 @@ export default class OrdersModel extends Model<OrdersModel> {
     type: DataType.INTEGER,
     allowNull: false,
     validate: { min: 1 },
-    comment: "实付金额（单位：分）"
+    comment: "实付金额（单位：分）",
   })
   public totalFee!: number;
 
   @Column({
     type: DataType.INTEGER,
     comment: "原价（单位：分）",
-    defaultValue: 0
+    defaultValue: 0,
   })
   public originalFee!: number;
 
   // 新增货币类型字段
   @Column({
     type: DataType.STRING(3),
-    defaultValue: 'CNY',
-    comment: "货币类型（ISO 4217）"
+    defaultValue: "CNY",
+    comment: "货币类型（ISO 4217）",
   })
   public currency!: string;
 
   // 状态控制
   @Column({
-    type: DataType.ENUM("pending", "processing", "success", "closed", "refunded"),
-    defaultValue: "pending",
-    comment: "订单状态"
+    type: DataType.ENUM(
+      "PENDING",
+      "PROCESSING",
+      "SUCCESS",
+      "CLOSED",
+      "REFUNDED"
+    ),
+    defaultValue: "PENDING",
+    comment: "订单状态",
   })
   public status!: string;
 
@@ -90,14 +96,14 @@ export default class OrdersModel extends Model<OrdersModel> {
   @Column({
     type: DataType.JSON,
     comment: "支付平台返回数据",
-    defaultValue: {}
+    defaultValue: {},
   })
   public paymentData!: Record<string, any>;
 
   // 时间系统
   @Column({
     type: DataType.DATE,
-    comment: "支付完成时间"
+    comment: "支付完成时间",
   })
   public paymentTime!: Date;
 
@@ -105,7 +111,7 @@ export default class OrdersModel extends Model<OrdersModel> {
   @Column({
     type: DataType.INTEGER,
     comment: "商品ISBN编码",
-    allowNull: true
+    allowNull: true,
   })
   public isbn!: number | null;
 
@@ -113,20 +119,20 @@ export default class OrdersModel extends Model<OrdersModel> {
   @Column({
     type: DataType.STRING(255),
     comment: "退款原因",
-    allowNull: true
+    allowNull: true,
   })
   public refundReason!: string | null;
 
   @Column({
     type: DataType.DATE,
     comment: "退款时间",
-    allowNull: true
+    allowNull: true,
   })
   public refundTime!: Date | null;
 
   @Column({
     type: DataType.STRING(512),
-    comment: "系统生成描述"
+    comment: "系统生成描述",
   })
   public description!: string;
 }
