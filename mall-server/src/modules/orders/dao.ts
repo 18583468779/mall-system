@@ -12,6 +12,9 @@ class OrdersDao {
   wechatNotifyMiddleware() {
     return OrdersService.wechatNotifyMiddleware();
   }
+  closeExpiredOrder(orderNo: string) {
+    return OrdersService.closeExpiredOrder(orderNo);
+  }
 }
 
 export default OrdersDao.ordersDao;

@@ -3,6 +3,7 @@ import WxPay from "wechatpay-node-v3"; // 引入微信支付库
 import OrdersModel from "../decormodel/orders";
 import { Context, Middleware } from "koa";
 import { sequelize } from "../BaseDao";
+import { Op } from "sequelize";
 
 export enum ChannelType {
   wechat = "wechat",
@@ -40,6 +41,8 @@ class OrdersService {
     },
     channel: ChannelType
   ) {
+    // 创建订单后设置30分钟过期
+    const TIMEOUT_MINUTES = 30;
     // 1. 基础校验
     if (productInfo.amount <= 0) {
       throw new Error("支付金额必须大于0");
@@ -57,6 +60,7 @@ class OrdersService {
       isbn: productInfo.isbn || null,
       paymentData: {},
       outTradeNo: this.generateOutTradeNo(),
+      expireTime: new Date(Date.now() + TIMEOUT_MINUTES * 60 * 1000),
     };
     // 2. 创建本地订单
     const order = await OrdersModel.create(params);
@@ -73,7 +77,17 @@ class OrdersService {
         paymentData: paymentResult,
         outTradeNo: paymentResult.out_trade_no,
       });
-
+      // 添加定时任务扫描过期订单
+      setInterval(async () => {
+        await order.update(
+          { status: StatusType.CLOSED },
+          {
+            where: {
+              status: StatusType.PENDING,
+            },
+          }
+        );
+      }, 5 * 60 * 1000); // 每5分钟检查一次
       return {
         qrcodeUrl: paymentResult.code_url,
         outTradeNo: orderData.outTradeNo,
@@ -178,49 +192,81 @@ class OrdersService {
     };
   }
   private async handlePaymentNotify(data: any) {
-    const outTradeNo = data.out_trade_no;
-    console.log("收到支付通知:", data);
-
-    // 事务处理
     const transaction = await sequelize.transaction();
     try {
       const order = await OrdersModel.findOne({
-        where: { outTradeNo },
-        lock: true,
+        where: { outTradeNo: data.out_trade_no },
+        lock: transaction.LOCK.UPDATE,
         transaction,
+      });
+      if (!order) {
+        throw new Error("订单不存在");
+      }
+      // 幂等性检查：已处理订单直接返回
+      if (
+        [StatusType.SUCCESS, StatusType.REFUNDED].includes(order.status as any)
+      ) {
+        await transaction.commit();
+        return;
+      }
+
+      // 状态转换安全处理
+      const statusMap: Record<string, StatusType> = {
+        SUCCESS: StatusType.SUCCESS,
+        REFUND: StatusType.REFUNDED,
+        CLOSED: StatusType.CLOSED,
+      };
+
+      await order.update(
+        {
+          status: statusMap[data.trade_state] || StatusType.CLOSED,
+          paymentData: data,
+        },
+        { transaction }
+      );
+
+      await transaction.commit();
+    } catch (err) {
+      await transaction.rollback();
+    }
+  }
+
+  // 修改原queryWechatPayment方法
+  async queryWechatPayment(orderNo: string) {
+    try {
+      // 先查询本地数据库
+      const order = await OrdersModel.findOne({
+        where: { outTradeNo: orderNo },
       });
 
       if (!order) {
-        console.error("订单不存在:", outTradeNo);
-        return;
+        return { paid: false, status: "NOT_FOUND" };
       }
 
-      if (order.status === "closed") {
-        console.log("订单已处理过:", outTradeNo);
-        return;
+      // 如果本地已标记成功直接返回
+      if (order.status === StatusType.SUCCESS) {
+        return { paid: true, status: order.status };
       }
-      let param = {
-        status: data.trade_state,
-        paymentData: data,
-        paidAt: new Date(data.success_time),
-      };
-      await order.update(param, { transaction });
 
-      await transaction.commit();
-      console.log("订单状态更新成功:", outTradeNo);
-    } catch (err) {
-      await transaction.rollback();
-      console.error("订单更新失败:", err);
-      throw err;
-    }
-  }
-  async queryWechatPayment(orderNo: string) {
-    try {
+      // 调用微信接口查询真实状态
       const result = await this.pay.query({ out_trade_no: orderNo });
-      return this.parsePaymentStatus(result);
-    } catch (error) {
-      console.error("微信支付查询失败:", error);
-      throw new Error("支付状态查询失败");
+      const paymentStatus = this.parsePaymentStatus(result);
+      // 同步状态到本地
+      if (paymentStatus.paid && order.status !== StatusType.SUCCESS) {
+        await order.update({
+          status: StatusType.SUCCESS,
+          paymentData: result,
+        });
+      }
+
+      return paymentStatus;
+    } catch (error: any) {
+      // 微信订单不存在时关闭本地订单
+      if (error.response?.status === 404) {
+        await this.closeExpiredOrder(orderNo);
+        return { paid: false, status: "CLOSED" };
+      }
+      throw error;
     }
   }
 
@@ -233,6 +279,25 @@ class OrdersService {
       status: tradeState,
       detail: result,
     };
+  }
+  async closeExpiredOrder(orderNo: string) {
+    const transaction = await sequelize.transaction();
+    try {
+      const order = await OrdersModel.findOne({
+        where: { outTradeNo: orderNo },
+        lock: transaction.LOCK.UPDATE,
+        transaction,
+      });
+
+      if (order && order.status === StatusType.PENDING) {
+        await order.update({ status: StatusType.CLOSED }, { transaction });
+      }
+
+      await transaction.commit();
+    } catch (err) {
+      await transaction.rollback();
+      throw err;
+    }
   }
   private async createAlipayPayment(order: any) {
     // 调用支付宝接口

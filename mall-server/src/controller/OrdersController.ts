@@ -27,4 +27,11 @@ class OrdersController {
     const { orderNo } = ctx.request.body;
     ctx.body = success(await ordersDao.queryWechatPayment(orderNo));
   }
+
+  @post("/closeOrder")
+  async closeOrder(ctx: Context) {
+    const { orderNo } = ctx.request.body;
+    await ordersDao.closeExpiredOrder(orderNo);
+    ctx.body = success(null);
+  }
 }
