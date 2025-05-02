@@ -3,7 +3,8 @@ import WxPay from "wechatpay-node-v3"; // 引入微信支付库
 import OrdersModel from "../decormodel/orders";
 import { Context, Middleware } from "koa";
 import { sequelize } from "../BaseDao";
-import { Op } from "sequelize";
+import UserinfoModel from "../../modules/decormodel/Userinfo";
+import RoleModel from "../decormodel/role";
 
 export enum ChannelType {
   wechat = "wechat",
@@ -192,13 +193,22 @@ class OrdersService {
     };
   }
   private async handlePaymentNotify(data: any) {
+    console.log("开始处理回调，订单号:", data.out_trade_no);
+    console.log("微信回调数据:", JSON.stringify(data, null, 2));
     const transaction = await sequelize.transaction();
     try {
       const order = await OrdersModel.findOne({
         where: { outTradeNo: data.out_trade_no },
         lock: transaction.LOCK.UPDATE,
         transaction,
+        include: [
+          {
+            model: UserinfoModel,
+            attributes: ["userid", "roleId"],
+          },
+        ],
       });
+      console.log("orderorderorderorderorder***********", order);
       if (!order) {
         throw new Error("订单不存在");
       }
@@ -207,6 +217,7 @@ class OrdersService {
         [StatusType.SUCCESS, StatusType.REFUNDED].includes(order.status as any)
       ) {
         await transaction.commit();
+        console.log("事务提交成功，订单状态:", order.status);
         return;
       }
 
@@ -224,10 +235,19 @@ class OrdersService {
         },
         { transaction }
       );
-
+      // 3.vip套餐处理
+      console.log(
+        "order.statusorder.statusorder.status",
+        order.status,
+        order.productType
+      );
+      if (data.trade_state === "SUCCESS" && order.productType === "vip") {
+        await this.upgradeToVip(order.userId, transaction);
+      }
       await transaction.commit();
     } catch (err) {
       await transaction.rollback();
+      console.error("事务处理失败:", err);
     }
   }
 
@@ -257,6 +277,7 @@ class OrdersService {
           status: StatusType.SUCCESS,
           paymentData: result,
         });
+        // TODO: 支付成功，用户角色设置为VIP
       }
 
       return paymentStatus;
@@ -298,6 +319,28 @@ class OrdersService {
       await transaction.rollback();
       throw err;
     }
+  }
+
+  private async upgradeToVip(userId: number, transaction: any) {
+    // 更新用户角色为VIP
+    const vipRole = await RoleModel.findOne({
+      where: { permissions: 2 },
+      transaction,
+    });
+    if (!vipRole) throw new Error("VIP角色未配置");
+    // 更新用户角色
+    let params: any = { roleId: vipRole.roleId };
+    console.log(
+      "paramsparamsparamsparamsparams************************",
+      params,
+      userId
+    );
+    const [affectedRows] = await UserinfoModel.update(params, {
+      where: { userid: userId },
+      transaction,
+    });
+
+    if (affectedRows === 0) throw new Error("用户不存在");
   }
   private async createAlipayPayment(order: any) {
     // 调用支付宝接口

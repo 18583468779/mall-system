@@ -1,11 +1,18 @@
-import { Column, DataType, Model, Table } from "sequelize-typescript";
+import {
+  BelongsTo,
+  Column,
+  DataType,
+  ForeignKey,
+  Model,
+  Table,
+} from "sequelize-typescript";
+import UserinfoModel from "../decormodel/Userinfo";
 
 @Table({
   tableName: "orders",
   comment: "订单表",
   timestamps: false,
   indexes: [
-    { fields: ["user_id"] },
     { fields: ["status"] }, // 新增状态索引
   ],
 })
@@ -38,14 +45,19 @@ export default class OrdersModel extends Model<OrdersModel> {
   public paymentChannel!: string;
 
   // 用户关联
+  @ForeignKey(() => UserinfoModel)
   @Column({
+    field: "user_id",
     type: DataType.INTEGER,
     allowNull: false,
-    comment: "用户ID",
-    field: "user_id",
   })
-  public userId!: number;
+  userId!: number;
 
+  @BelongsTo(() => UserinfoModel, {
+    foreignKey: "userId",
+    as: "user",
+  })
+  user!: UserinfoModel;
   // 商品类型系统
   @Column({
     type: DataType.ENUM("vip", "file", "bundle"),

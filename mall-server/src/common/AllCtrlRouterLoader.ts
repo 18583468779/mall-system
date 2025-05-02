@@ -6,8 +6,8 @@ import Router from "koa-router";
 import globalException from "./GlobalExce";
 import path from "path";
 import koajwt from "koa-jwt";
-import { model as UserinfoModel } from "../modules/userinfo/defmodel/index";
 import RoleModel from "../modules/decormodel/role";
+import UserinfoModel from "../modules/decormodel/Userinfo";
 
 class AllCtrlRouterLoader {
   app!: Koa;
@@ -43,7 +43,7 @@ class AllCtrlRouterLoader {
     );
     this.app.use(async (ctx, next) => {
       if (ctx.state.jwtData) {
-        ctx.state.user = await UserinfoModel.findByPk(
+        let userinfo = await UserinfoModel.findByPk(
           ctx.state.jwtData.data.userid,
           {
             attributes: { exclude: ["password"] },
@@ -55,6 +55,10 @@ class AllCtrlRouterLoader {
             ],
           }
         );
+        if (userinfo) {
+          const userinfoData = userinfo.get({ plain: true }); // 获取原始数据
+          ctx.state.user = userinfoData;
+        }
       }
       await next();
     });

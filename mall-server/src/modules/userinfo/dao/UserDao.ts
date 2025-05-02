@@ -1,5 +1,5 @@
 import { Op, Sequelize } from "sequelize";
-import { model } from "../defmodel";
+import model from "../../../modules/decormodel/Userinfo";
 import RoleModel from "../../../modules/decormodel/role";
 interface FindUserParams {
   username?: string;
@@ -42,14 +42,14 @@ class UserDao {
       nest: true, // 嵌套查询
       where: whereClause,
       include: [
-        { 
+        {
           model: RoleModel, // 关联角色表，假设角色表名为 'role'，关联字段名为 'roleId'
           as: "role",
-          attributes: ['roleName', 'permissions'] // 暴露需要的角色字段
-        }, 
+          attributes: ["roleName", "permissions"], // 暴露需要的角色字段
+        },
       ],
-      attributes: { 
-        exclude: ['password', 'weixin_openid',  'roleId'] // 排除敏感字段
+      attributes: {
+        exclude: ["password", "weixin_openid", "roleId"], // 排除敏感字段
       },
     });
   }
@@ -57,11 +57,9 @@ class UserDao {
     try {
       return await model.create({
         ...userinfo,
-        returning: true,
         roleId: userinfo.roleId || 1, // 显式设置默认角色
         valid: userinfo.valid ?? 1, // 默认激活状态
-        created_at: Sequelize.fn("NOW"),
-      });
+      } as any);
     } catch (error: any) {
       // 处理唯一约束冲突（如邮箱重复注册）
       if (error.name === "SequelizeUniqueConstraintError") {
@@ -83,12 +81,18 @@ class UserDao {
     return model.update(updateParams, { where: whereParams });
   }
 
-    // 根据角色查询用户
-    static findUsersByRole(roleId: number) {
-      return model.findAll({
-        where: { roleId },
-        include: [RoleModel]
-      });
-    }
+  // 根据角色查询用户
+  static findUsersByRole(roleId: number) {
+    return model.findAll({
+      where: { roleId },
+      include: [RoleModel],
+    });
+  }
 }
-export const { findOneUser, createUser, findAllUser, updateUser, findUsersByRole } = UserDao;
+export const {
+  findOneUser,
+  createUser,
+  findAllUser,
+  updateUser,
+  findUsersByRole,
+} = UserDao;
