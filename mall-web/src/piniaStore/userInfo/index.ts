@@ -18,7 +18,8 @@ export default defineStore("userStore", {
       return (
         (state.userinfo.role || storage.get("loginUser")?.role)?.permissions ===
           2 ||
-        (state.userinfo.role || storage.get("loginUser")?.role)?.permissions === 0
+        (state.userinfo.role || storage.get("loginUser")?.role)?.permissions ===
+          0
       );
     },
   },
@@ -42,6 +43,14 @@ export default defineStore("userStore", {
       this.userinfo = userInfo.data;
       storage.set("loginUser", userInfo.data);
       storage.set("token", userInfo.data.token);
+    },
+    async setUserInfo() {
+      let userinfo = this.storeLoginUser;
+      const userInfo: AxiosResponse<UserInfo> = await userApi.getUserInfo(
+        userinfo.userid
+      );
+      this.userinfo = userInfo.data;
+      storage.set("loginUser", userInfo.data);
     },
     logout() {
       router.push("/login");

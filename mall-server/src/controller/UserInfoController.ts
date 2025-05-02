@@ -16,6 +16,12 @@ class UserInfoController {
       ctx.body = fail("用户名或者密码不正确，请检查后再重新登录");
     }
   }
+  @get("/getUserInfo/:userId")
+  async getUserInfo(ctx: Context) {
+    const { userId } = ctx.params;
+    const userInfo = await userService.getUserInfo(userId);
+    ctx.body = success(userInfo);
+  }
   // 发送邮箱验证码
   @post("/sendVerificationCode")
   async sendVerificationCode(ctx: Context) {

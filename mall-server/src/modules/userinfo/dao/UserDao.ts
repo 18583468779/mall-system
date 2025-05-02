@@ -2,6 +2,7 @@ import { Op, Sequelize } from "sequelize";
 import model from "../../../modules/decormodel/Userinfo";
 import RoleModel from "../../../modules/decormodel/role";
 interface FindUserParams {
+  userid?: number;
   username?: string;
   email?: string;
   phone?: string;
