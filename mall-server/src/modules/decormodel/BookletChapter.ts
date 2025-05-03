@@ -1,5 +1,5 @@
 import {
-    BelongsTo,
+  BelongsTo,
   Column,
   DataType,
   ForeignKey,

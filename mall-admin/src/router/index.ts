@@ -66,7 +66,7 @@ const routes = [
             path: "/bookletManage/bookletChapter",
             name: "bookletChapter",
             component: () =>
-              import("../views/bookletManage/bookletContentManage.vue"),
+              import("../views/bookletManage/bookletChaperManage.vue"),
             meta: { title: "小册章节", icon: "Document" },
           },
           {
