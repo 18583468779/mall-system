@@ -20,7 +20,7 @@ class UserApi {
     return request.post(`userinfomodule/login`, false, { type, ...userInfo });
   }
   getUserInfo(userId: number) {
-    return request.get(`userinfomodule/getUserInfo`, false, { userId });
+    return request.get(`userinfomodule/getUserInfo/${userId}`, false);
   }
   getEmailCode(email: string) {
     return request.post(`userinfomodule/sendVerificationCode`, false, {

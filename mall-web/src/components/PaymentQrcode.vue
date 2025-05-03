@@ -8,7 +8,7 @@
       <span class="text-red-500">vip用户</span>
     </h3>
     <p>订单号：{{ orderNo }}</p>
-    <el-button type="success">查看订单</el-button>
+    <el-button type="success" @click="handleToCenter">查看订单</el-button>
   </div>
   <div class="payment-qrcode" v-else>
     <!-- 头部提示 -->
@@ -191,7 +191,7 @@ const startPolling = () => {
 const handleSuccess = () => {
   cleanup();
   paymentStatus.value = PaymentStatus.SUCCESS;
-
+  emit("success", orderNo.value);
   // 显示成功提示
   ElMessage.success({
     message: "支付成功",
@@ -255,7 +255,9 @@ const handlePaymentError = (error: Error) => {
   cleanup();
   emit("fail", error);
 };
-
+const handleToCenter = () => {
+  router.push({ path: "/userCenter" });
+};
 // 清理资源
 const cleanup = () => {
   if (countdownTimer) clearInterval(countdownTimer);

@@ -12,5 +12,5 @@ export const WX_PAY_CONFIG = {
   privateKey: fs.readFileSync(path.join(certDir, "apiclient_key.pem")), // 私钥文件路径
   publicKey: fs.readFileSync(path.join(certDir, "pub_key.pem")), // 公钥文件路径
   // notify_url: "https://www.diamaxiaoku.com/wechat/notify", // 支付回调地址
-  notify_url: "http://1b73ea61.r39.cpolar.top/dang/ordersmodule/wechat/notify", // 支付回调地址 本地内网穿透
+  notify_url: "http://11921b8c.r39.cpolar.top/dang/ordersmodule/wechat/notify", // 支付回调地址 本地内网穿透
 };
