@@ -54,8 +54,29 @@ const routes = [
       {
         path: "/bookletManage",
         name: "bookletManage",
-        component: () => import("../views/bookletManage/bookletManage.vue"),
-        meta: { title: "小册管理", icon: "Document" },
+        meta: { title: "小册管理", icon: "Document", isSubMenu: true },
+        children: [
+          {
+            path: "/bookletManage/bookletList",
+            name: "bookletList",
+            component: () => import("../views/bookletManage/bookletManage.vue"),
+            meta: { title: "小册列表", icon: "Document" },
+          },
+          {
+            path: "/bookletManage/bookletChapter",
+            name: "bookletChapter",
+            component: () =>
+              import("../views/bookletManage/bookletContentManage.vue"),
+            meta: { title: "小册章节", icon: "Document" },
+          },
+          {
+            path: "/bookletManage/bookletContent",
+            name: "bookletContent",
+            component: () =>
+              import("../views/bookletManage/bookletContentManage.vue"),
+            meta: { title: "小册内容", icon: "Document" },
+          },
+        ],
       },
       {
         path: "/ordersManage",
@@ -67,20 +88,20 @@ const routes = [
         path: "/userInfo",
         name: "userInfo",
         component: () => import("../views/userInfo.vue"),
-        meta: { title: "个人中心", icon: "User",showInMenu: false },
-      }
+        meta: { title: "个人中心", icon: "User", showInMenu: false },
+      },
     ],
   },
   {
     path: "/login",
     component: () => import("../views/login.vue"),
-    meta: { guestOnly: true } // 仅游客可访问
+    meta: { guestOnly: true }, // 仅游客可访问
   },
   {
     path: "/:pathMatch(.*)*", // 匹配所有未知路径
     component: () => import("../views/notFound.vue"), // 404页面
-    meta: { title: "404", icon: "Document" } // 404页面的元信息
-  }
+    meta: { title: "404", icon: "Document" }, // 404页面的元信息
+  },
 ];
 
 const router = createRouter({
@@ -91,34 +112,32 @@ const router = createRouter({
 router.beforeEach(async (to, from) => {
   const { tabsStore } = LayoutService;
   const isAuthenticated = checkAuthStatus(); // 检查登录状态
-  
+
   // 标签页管理逻辑
-  if (to.path !== '/login') {
+  if (to.path !== "/login") {
     tabsStore.addTab(to);
   }
 
   // 权限检查逻辑
   if (to.meta.requiresAuth && !isAuthenticated) {
-    return { 
-      path: '/login',
-      query: { redirect: to.fullPath } // 记录原始目标路径
+    return {
+      path: "/login",
+      query: { redirect: to.fullPath }, // 记录原始目标路径
     };
   }
 
   if (to.meta.guestOnly && isAuthenticated) {
-    return from || { path: '/' }; // 阻止已登录用户访问登录页
+    return from || { path: "/" }; // 阻止已登录用户访问登录页
   }
 
   return true;
 });
 
-
 function checkAuthStatus(): boolean {
   // 1. 检查本地是否存在有效token
-  const token = localStorage.getItem('userInfo');
+  const token = localStorage.getItem("userInfo");
   if (!(token && JSON.parse(token).access_token)) return false;
   return true;
-
 }
 
 export default router;
