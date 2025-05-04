@@ -8,6 +8,12 @@ import BookletDao from "../modules/booklet/dao/BookletDao";
 
 @Controller("/bookletmodule")
 class BookletController {
+  @get("/getBookletAndContent/:id")
+  async getBookletAndContentById(ctx: Context) {
+    const { id } = ctx.params;
+    const res = success(await BookletDao.getBookletAndContentById(id));
+    ctx.body = res;
+  }
   @post("/addBooklet")
   async addBooklet(ctx: Context) {
     const data = ctx.request.body;
@@ -30,6 +36,6 @@ class BookletController {
   async deleteBooklet(ctx: Context) {
     const { id } = ctx.request.body;
     const res = success(await BookletDao.deleteBooklet(id));
-    ctx.body = res; 
+    ctx.body = res;
   }
 }
