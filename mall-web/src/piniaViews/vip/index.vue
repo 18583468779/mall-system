@@ -89,7 +89,7 @@
               @click="handleUpgrade"
             >
               <span>
-                {{ userStoreComputed }}
+                {{ currentPlan === "vip" ? "当前方案" : userStoreComputed }}
               </span>
             </el-button>
           </div>
@@ -222,10 +222,8 @@ const paymentVisible = ref(false);
 const userStore = userInfo();
 
 const userStoreComputed = computed(() => {
-  return userStore.storeLoginUser?.role?.permissions == 2 ||
-    userStore.storeLoginUser?.role?.permissions == 3
-    ? "当前方案"
-    : "立即升级";
+  const perm = userStore.storeLoginUser?.role?.permissions || 1;
+  return [2, 3].includes(perm) ? "当前方案" : "立即升级";
 });
 
 const paymentMethods: any = [
@@ -273,6 +271,7 @@ const compareFeatures = [
 const handlePaymentSuccess = (orderNo: any) => {
   console.log("支付成功:", orderNo);
   userStore.setUserInfo(); // 更新用户信息
+  currentPlan.value = "vip";
   paymentVisible.value = false;
   // 更新用户VIP状态等操作...
 };

@@ -1,46 +1,24 @@
 import { WX_PAY_CONFIG } from "../../config/wxConfig";
-import WxPay from "wechatpay-node-v3"; // 引入微信支付库
 import OrdersModel from "../decormodel/orders";
-import { Context, Middleware } from "koa";
+import { Middleware } from "koa";
 import { sequelize } from "../BaseDao";
 import UserinfoModel from "../../modules/decormodel/Userinfo";
 import RoleModel from "../decormodel/role";
 import { Op } from "sequelize";
+import {
+  ChannelType,
+  ProductInfo,
+  StatusType,
+} from "./payment/paymentStrategy";
+import wechatPayStrategy from "./payment/wechatPayStrategy";
 
-export enum ChannelType {
-  wechat = "wechat",
-  alipay = "alipay",
-}
-export enum StatusType {
-  PENDING = "PENDING",
-  PROCESSING = "PROCESSING",
-  SUCCESS = "SUCCESS",
-  CLOSED = "CLOSED",
-  REFUNDED = "REFUNDED",
-}
 class OrdersService {
   static ordersService: OrdersService = new OrdersService();
-  pay: WxPay;
-  constructor() {
-    // 初始化微信支付实例
-    this.pay = new WxPay({
-      appid: WX_PAY_CONFIG.appid,
-      mchid: WX_PAY_CONFIG.mchid,
-      serial_no: WX_PAY_CONFIG.serial_no,
-      publicKey: WX_PAY_CONFIG.publicKey, // 可选（回调验证用）
-      privateKey: WX_PAY_CONFIG.privateKey,
-      key: WX_PAY_CONFIG.apiV3Key, // APIv3密钥
-    });
-  }
+
+  constructor() {}
   async createPayment(
     userId: number,
-    productInfo: {
-      type: "vip" | "file" | "bundle";
-      amount: number;
-      originalAmount?: number;
-      isbn?: number;
-      description: string;
-    },
+    productInfo: ProductInfo,
     channel: ChannelType
   ) {
     // 创建订单后设置30分钟过期
@@ -133,67 +111,18 @@ class OrdersService {
       },
     };
 
-    const result: any = await this.pay.transactions_native(params);
+    const result: any = await wechatPayStrategy.pay.transactions_native(params);
     return {
       code_url: result.data.code_url,
       out_trade_no: params.out_trade_no,
     };
   }
-  // 自定义回调中间件
+  // 自定义微信回调中间件
   wechatNotifyMiddleware(): Middleware {
-    return async (ctx: Context, next: () => Promise<any>) => {
-      try {
-        // 1. 获取微信回调头信息
-        const headers = ctx.headers;
-        const signature = headers["wechatpay-signature"] as string;
-        const timestamp = headers["wechatpay-timestamp"] as string;
-        const nonce = headers["wechatpay-nonce"] as string;
-        const serial = headers["wechatpay-serial"] as string;
-
-        // 2. 获取原始请求体
-        const rawBody = ctx.request.body;
-
-        // 3. 验证签名
-        const isValid = await this.pay.verifySign({
-          timestamp,
-          nonce,
-          body: rawBody,
-          serial,
-          signature,
-          apiSecret: WX_PAY_CONFIG.apiV3Key,
-        });
-
-        if (!isValid) {
-          ctx.status = 403;
-          ctx.body = { code: "SIGNATURE_INVALID" };
-          return;
-        }
-
-        // 4. 解密数据
-        const encryptedData = ctx.request.body;
-        const decrypted = this.pay.decipher_gcm<any>(
-          encryptedData.resource.ciphertext,
-          encryptedData.resource.associated_data,
-          encryptedData.resource.nonce,
-          WX_PAY_CONFIG.apiV3Key
-        );
-
-        // 5. 处理业务逻辑
-        ctx.state.wechatData = decrypted; // 将解密数据存入上下文
-        await this.handlePaymentNotify(decrypted);
-
-        // 6. 返回成功响应
-        ctx.status = 200;
-        ctx.body = { code: "SUCCESS" };
-      } catch (err) {
-        console.error("回调处理失败:", err);
-        ctx.status = 500;
-        ctx.body = { code: "SYSTEM_ERROR" };
-      }
-      await next();
-    };
+    return wechatPayStrategy.wechatNotifyMiddleware();
   }
-  private async handlePaymentNotify(data: any) {
+
+  public async handlePaymentNotify(data: any) {
     console.log("开始处理回调，订单号:", data.out_trade_no);
     console.log("微信回调数据:", JSON.stringify(data, null, 2));
     const transaction = await sequelize.transaction();
@@ -258,7 +187,6 @@ class OrdersService {
     }
   }
 
-  // 修改原queryWechatPayment方法
   async queryWechatPayment(orderNo: string) {
     try {
       // 先查询本地数据库
@@ -276,7 +204,9 @@ class OrdersService {
       }
 
       // 调用微信接口查询真实状态
-      const result = await this.pay.query({ out_trade_no: orderNo });
+      const result = await wechatPayStrategy.pay.query({
+        out_trade_no: orderNo,
+      });
       const paymentStatus = this.parsePaymentStatus(result);
       // 同步状态到本地
       if (paymentStatus.paid && order.status !== StatusType.SUCCESS) {
