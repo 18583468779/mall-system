@@ -1,4 +1,4 @@
-import OrdersService, { ChannelType } from "./service";
+import OrdersService from "./service";
 
 class OrdersDao {
   static ordersDao: OrdersDao = new OrdersDao();
