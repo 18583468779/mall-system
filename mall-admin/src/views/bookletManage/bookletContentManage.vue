@@ -90,11 +90,11 @@ import type { BookletItem } from "./types";
 
 const { getBookletsChapter, ChapterData } = bookletChapterService();
 const {
-  getBookletContent,
   deleteBookletContent,
   contentData,
   tablePageData,
   addBookletContent,
+  getBookletContent,
 } = bookletContentService();
 
 const { dialogFormVisible, onOk, onOpen, formRef } = useVisiblehooks();
@@ -104,12 +104,9 @@ const bookletList = ref<{ label: string; value: string }[]>([]);
 // 状态映射
 
 // 表单数据
-const formData = reactive<Partial<BookletItem>>({
-  title: "",
-  description: "",
-  cover_image: "",
-  price: 0,
-  status: "draft",
+const formData = reactive<Partial<any>>({
+  chapter_id: "",
+  content: "",
 });
 
 // 表单字段配置
@@ -143,12 +140,17 @@ const formRules = {
 const columns = [
   {
     prop: "chapter_id",
-    label: "所属内容",
+    label: "所属章节",
     width: 200,
   },
   {
     prop: "content",
-    label: "章节标题",
+    label: "内容",
+    formatter: (row: any) => {
+      return row.content.length > 300
+        ? row.content.slice(0, 300) + "..."
+        : row.content;
+    },
   },
   {
     label: "操作",
@@ -177,17 +179,17 @@ onMounted(() => {
 const loadData = async () => {
   loading.value = true;
   try {
-    await getBookletContent({
+    await getBookletsChapter({
       page: tablePageData.currentPage,
       pageSize: tablePageData.pageSize,
     });
-    await getBookletsChapter({
+    await getBookletContent({
       page: tablePageData.currentPage,
       pageSize: tablePageData.pageSize,
     });
     bookletList.value = ChapterData.value.map((item: any) => ({
       label: item.title,
-      value: item.booklet_id,
+      value: item.chapter_id,
     }));
   } finally {
     loading.value = false;
