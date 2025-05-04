@@ -33,6 +33,15 @@
             </el-upload>
           </template>
 
+          <!-- 富文本编辑器 -->
+          <template v-else-if="field.type === 'slot'">
+            <RichEditor
+              v-model="modelValue[field.prop]"
+              class="min-h-[400px]"
+            />
+          </template>
+          <!-- 其他组件 -->
+
           <component
             v-else
             :is="getComponent(field.type)"
@@ -62,6 +71,7 @@
 <script setup lang="ts">
 import { ElMessage, type FormInstance, type FormRules } from "element-plus";
 import { ref } from "vue";
+import RichEditor from "../richEditor/RichEditor.vue";
 import request from "../../utils/axiosUtil";
 import type { UploadRequestOptions } from "element-plus/es/components/upload/src/upload";
 
@@ -74,11 +84,13 @@ type FormFieldType =
   | "treeSelect"
   | "upload"
   | "textarea"
+  | "slot";
 
 export interface FormField {
   type: FormFieldType;
   prop: string;
   label: string;
+  slot?: HTMLElement;
   attrs?: Record<string, any>;
   options?: Record<string, any>[];
   listeners?: Record<string, any>;
@@ -120,9 +132,15 @@ const customUpload = async (
 
     if (presignedRes.code === 200) {
       // 2. 上传到MinIO
-      await request.put(url, false, options.file, {
-        headers: { "Content-Type": options.file.type}
-      },true);
+      await request.put(
+        url,
+        false,
+        options.file,
+        {
+          headers: { "Content-Type": options.file.type },
+        },
+        true
+      );
       const urlObj = new URL(url);
       const baseUrlObj = `${urlObj.origin}${urlObj.pathname}`;
       // 3. 构建文件项
@@ -130,7 +148,7 @@ const customUpload = async (
         uid: options.file.uid, // 必须包含uid
         name: options.file.name,
         url: baseUrlObj,
-        type:options.file.type,
+        type: options.file.type,
         status: "success" as const,
       };
 
@@ -156,7 +174,7 @@ const customUpload = async (
   }
 };
 
-const componentMap: Record<FormFieldType, any> = {
+const componentMap: Partial<Record<FormFieldType, any>> = {
   input: "el-input",
   select: "el-select",
   date: "el-date-picker",

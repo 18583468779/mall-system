@@ -86,7 +86,6 @@ import DialogFormComponent from "../../components/dialogCompoennt/DialogFormComp
 import { ElMessage } from "element-plus";
 import bookletChapterService from "./bookletChapter";
 import bookletContentService from "./bookletContent";
-
 import type { BookletItem } from "./types";
 
 const { getBookletsChapter, ChapterData } = bookletChapterService();
@@ -126,13 +125,9 @@ const formFields: any = ref([
     options: bookletList,
   },
   {
-    type: "textarea",
+    type: "slot",
     prop: "content",
     label: "内容",
-    attrs: {
-      placeholder: "请输入内容",
-      clearable: true,
-    },
   },
 ]);
 
