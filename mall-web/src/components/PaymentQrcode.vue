@@ -5,65 +5,81 @@
   >
     <h3 class="flex justify-center items-center gap-1">
       <el-icon class="success-icon"><CircleCheck /></el-icon>支付成功！您现在是
-      <span class="text-red-500">vip用户</span>
+      <span class="text-red-500">VIP用户</span>
     </h3>
     <p>订单号：{{ orderNo }}</p>
     <el-button type="success" @click="handleToCenter">查看订单</el-button>
   </div>
-  <div class="payment-qrcode" v-else>
-    <!-- 头部提示 -->
-    <div class="payment-header">
-      <slot name="header"> </slot>
-    </div>
 
-    <!-- 二维码主体 -->
-    <div class="qrcode-wrapper">
-      <!-- 加载状态 -->
-      <div v-if="loading" class="loading">
-        <el-icon class="loading-icon">
-          <Loading />
-        </el-icon>
-        <span>正在生成支付二维码...</span>
-      </div>
-
-      <!-- 二维码显示 -->
-      <template v-else-if="!isTimeout">
-        <qrcode-vue
-          :value="qrcodeUrl"
-          :size="size"
-          level="H"
-          class="qrcode-img"
+  <div class="payment-container" v-else>
+    <!-- 支付宝支付提示 -->
+    <div v-if="isAlipay && !isTimeout" class="alipay-prompt">
+      <div class="alipay-icon">
+        <img
+          src="https://img.alicdn.com/imgextra/i3/O1CN01Zw4QzW1b3rZq4wQ7y_!!6000000003413-2-tps-200-200.png"
         />
-        <div class="countdown">
-          剩余支付时间：{{ formattedCountdown }}
-          <el-icon v-if="countdown <= 60" class="warning-icon">
-            <Warning />
-          </el-icon>
-        </div>
-      </template>
+      </div>
+      <h3 class="alipay-title">请在支付宝页面完成支付</h3>
+      <p class="alipay-tip">支付页面已在新窗口打开，如未自动跳转请点击按钮</p>
+      <el-button type="primary" @click="openAlipayWindow"
+        >重新打开支付页面</el-button
+      >
+    </div>
 
-      <!-- 超时提示 -->
-      <div v-else class="timeout-message">
-        <el-icon class="timeout-icon"><CircleClose /></el-icon>
-        <p class="timeout-text">二维码已过期</p>
+    <!-- 微信支付二维码 -->
+    <div class="payment-qrcode" v-else-if="!isAlipay">
+      <div class="payment-header">
+        <slot name="header"></slot>
+      </div>
+
+      <div class="qrcode-wrapper">
+        <div v-if="loading" class="loading">
+          <el-icon class="loading-icon"><Loading /></el-icon>
+          <span>正在生成支付二维码...</span>
+        </div>
+
+        <template v-else-if="!isTimeout">
+          <qrcode-vue
+            :value="qrcodeUrl"
+            :size="size"
+            level="H"
+            class="qrcode-img"
+          />
+          <div class="countdown">
+            剩余支付时间：{{ formattedCountdown }}
+            <el-icon v-if="countdown <= 60" class="warning-icon">
+              <Warning />
+            </el-icon>
+          </div>
+        </template>
+
+        <div v-else class="timeout-message">
+          <el-icon class="timeout-icon"><CircleClose /></el-icon>
+          <p class="timeout-text">二维码已过期</p>
+        </div>
+      </div>
+
+      <div class="payment-footer">
+        <el-button @click="handleCancel">取消支付</el-button>
+        <el-button
+          type="primary"
+          @click="handleRefresh"
+          :loading="refreshing"
+          :disabled="isTimeout"
+        >
+          {{ isTimeout ? "重新生成" : "刷新二维码" }}
+        </el-button>
       </div>
     </div>
 
-    <!-- 底部操作 -->
-    <div class="payment-footer">
-      <el-button @click="handleCancel">取消支付</el-button>
-      <el-button
-        type="primary"
-        @click="handleRefresh"
-        :loading="refreshing"
-        :disabled="isTimeout"
-      >
-        {{ isTimeout ? "重新生成" : "刷新二维码" }}
-      </el-button>
+    <!-- 支付宝超时提示 -->
+    <div v-if="isAlipay && isTimeout" class="timeout-message">
+      <el-icon class="timeout-icon"><CircleClose /></el-icon>
+      <p class="timeout-text">订单已超时，请重新下单</p>
+      <el-button type="primary" @click="handleRefresh">重新下单</el-button>
     </div>
   </div>
 </template>
-
 <script setup lang="ts">
 import { ref, computed, onUnmounted, watch } from "vue";
 import QrcodeVue from "qrcode.vue";
@@ -116,6 +132,7 @@ const loading = ref(true);
 const refreshing = ref(false);
 const isTimeout = ref(false);
 const paymentStatus = ref<PaymentStatus>(PaymentStatus.PENDING);
+const alipayWindow = ref<Window | null>(null);
 // 定时器引用
 let countdownTimer: number | null = null;
 let pollingTimer: number | null = null;
@@ -126,7 +143,7 @@ const formattedCountdown = computed(() => {
   const seconds = countdown.value % 60;
   return `${minutes}:${seconds.toString().padStart(2, "0")}`;
 });
-
+const isAlipay = computed(() => props.paymentMethod === "alipay");
 // 初始化支付流程
 const initPayment = async () => {
   try {
@@ -143,9 +160,13 @@ const initPayment = async () => {
         description: "VIP会员升级",
       }
     );
-
-    qrcodeUrl.value = data.qrcodeUrl;
     orderNo.value = data.outTradeNo;
+
+    if (isAlipay.value) {
+      openAlipayWindow(data.qrcodeUrl);
+    } else {
+      qrcodeUrl.value = data.qrcodeUrl;
+    }
 
     startTimers();
     startPolling();
@@ -155,7 +176,14 @@ const initPayment = async () => {
     loading.value = false;
   }
 };
-
+// 打开支付宝窗口
+const openAlipayWindow = (url?: string) => {
+  if (url) {
+    alipayWindow.value = window.open(url, "_blank", "width=600,height=800");
+  } else if (alipayWindow.value) {
+    alipayWindow.value.focus();
+  }
+};
 // 启动倒计时
 const startTimers = () => {
   countdownTimer = window.setInterval(() => {
@@ -168,29 +196,38 @@ const startTimers = () => {
 };
 
 // 修改后的轮询方法
-const startPolling = () => {
-  pollingTimer = window.setInterval(async () => {
+const startPolling = async () => {
+  const poll = async () => {
     try {
-      const { data } = await request.post(
-        "/ordersmodule/queryWechatPayment",
-        false,
-        { orderNo: orderNo.value }
-      );
-      if (data.detail.data.trade_state === "SUCCESS") {
+      const endpoint = isAlipay.value
+        ? "/ordersmodule/queryAlipayPayment"
+        : "/ordersmodule/queryWechatPayment";
+
+      const { data } = await request.post(endpoint, false, {
+        orderNo: orderNo.value,
+      });
+
+      if (data.paid) {
         handleSuccess();
-      } else if (data.detail.data.trade_state === "CLOSED") {
+      } else if (data.status === "CLOSED") {
         handleTimeout();
       }
     } catch (error) {
       console.error("支付状态查询失败:", error);
     }
-  }, props.pollInterval);
+  };
+
+  pollingTimer = window.setInterval(poll, props.pollInterval);
+  poll(); // 立即执行第一次查询
 };
 
 // 处理支付成功
 const handleSuccess = () => {
   cleanup();
   paymentStatus.value = PaymentStatus.SUCCESS;
+  if (alipayWindow.value) {
+    alipayWindow.value.close();
+  }
   emit("success", orderNo.value);
   // 显示成功提示
   ElMessage.success({
@@ -350,6 +387,41 @@ initPayment();
 
     .el-button {
       @apply px-6;
+    }
+  }
+}
+.payment-container {
+  @apply max-w-md mx-auto;
+
+  .alipay-prompt {
+    @apply text-center p-6 bg-white rounded-lg shadow-md;
+
+    .alipay-icon {
+      @apply mb-4;
+
+      img {
+        @apply w-24 h-24 mx-auto;
+      }
+    }
+
+    .alipay-title {
+      @apply text-lg font-semibold text-gray-800 mb-2;
+    }
+
+    .alipay-tip {
+      @apply text-sm text-gray-500 mb-4;
+    }
+  }
+
+  .timeout-message {
+    @apply text-center p-6 bg-red-50 rounded-lg;
+
+    .timeout-icon {
+      @apply text-4xl text-red-500 mb-3;
+    }
+
+    .timeout-text {
+      @apply text-red-500 font-medium mb-4;
     }
   }
 }
