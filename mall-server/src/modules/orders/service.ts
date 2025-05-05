@@ -52,8 +52,7 @@ class OrdersService {
         orderData,
         channel
       );
-
-      // 4. 更新支付信息
+      5; // 4. 更新支付信息
       await order.update({
         paymentData: paymentResult,
         outTradeNo: paymentResult.out_trade_no,

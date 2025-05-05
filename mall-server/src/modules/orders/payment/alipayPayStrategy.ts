@@ -12,19 +12,14 @@ export class AlipayPayStrategy {
   private sdk: AlipaySdk;
 
   constructor() {
-    let params: any = {
+    // ✅ 正确参数配置
+    const params: any = {
       appId: ALI_PAY_CONFIG.appid,
       privateKey: ALI_PAY_CONFIG.privateKey,
-      alipayPublicCertPath: ALI_PAY_CONFIG.alipayPublicCertPath,
-      appCertPath: ALI_PAY_CONFIG.appCertPath,
-      alipayRootCertPath: ALI_PAY_CONFIG.alipayRootCertPath,
-      gateway: ALI_PAY_CONFIG.gateway,
-      signType: "RSA2",
-      charset: "utf-8",
-      version: "1.0",
-      timeout: 5000,
-      camelcase: true,
+      alipayPublicKey: ALI_PAY_CONFIG.alipayPublicKey,
+      keyType: "PKCS1",
     };
+
     this.sdk = new AlipaySdk(params);
   }
 
@@ -38,13 +33,17 @@ export class AlipayPayStrategy {
         notify_url: ALI_PAY_CONFIG.notifyUrl,
       };
 
-      const result = await this.sdk.pageExec("alipay.trade.page.pay", {
-        bizContent,
-        method: "POST",
-      });
+      const result: string = this.sdk.pageExecute(
+        "alipay.trade.page.pay",
+        "GET",
+        {
+          bizContent,
+          returnUrl: "https://www.taobao.com",
+        }
+      );
 
       return {
-        pageUrl: result as string,
+        code_url: result as string,
         outTradeNo: order.outTradeNo,
       };
     } catch (error) {

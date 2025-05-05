@@ -9,6 +9,7 @@ export interface IPaymentStrategy {
 export type PaymentResult = {
   codeUrl?: string;
   pageUrl?: string;
+  code_url?: string;
   outTradeNo: string;
 };
 
