@@ -11,6 +11,7 @@ import {
   StatusType,
 } from "./payment/paymentStrategy";
 import wechatPayStrategy from "./payment/wechatPayStrategy";
+import { AlipayPayStrategy } from "./payment/alipayPayStrategy";
 
 class OrdersService {
   static ordersService: OrdersService = new OrdersService();
@@ -121,10 +122,12 @@ class OrdersService {
   wechatNotifyMiddleware(): Middleware {
     return wechatPayStrategy.wechatNotifyMiddleware();
   }
-
+  alipayNotifyMiddleware(): Middleware {
+    return new AlipayPayStrategy().getNotifyMiddleware();
+  }
   public async handlePaymentNotify(data: any) {
     console.log("开始处理回调，订单号:", data.out_trade_no);
-    console.log("微信回调数据:", JSON.stringify(data, null, 2));
+    console.log("回调数据:", JSON.stringify(data, null, 2));
     const transaction = await sequelize.transaction();
     try {
       const order = await OrdersModel.findOne({
@@ -304,7 +307,12 @@ class OrdersService {
   }
 
   private async createAlipayPayment(order: any) {
-    // 调用支付宝接口
+    const alipayStrategy = new AlipayPayStrategy();
+    return alipayStrategy.createPayment({
+      outTradeNo: order.outTradeNo,
+      description: order.description,
+      totalFee: order.totalFee,
+    });
   }
 }
 export default OrdersService.ordersService;

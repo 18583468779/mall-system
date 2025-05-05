@@ -17,9 +17,7 @@ class OrdersController {
   @post("/wechat/notify")
   @use(ordersDao.wechatNotifyMiddleware()) // 使用中间件
   async wechatNotify(ctx: Context) {
-    const res = ctx.request.body;
-
-    ctx.body = success(111);
+    ctx.request.body;
   }
   // 查询是否支付成功
   @post("/queryWechatPayment")
@@ -27,7 +25,16 @@ class OrdersController {
     const { orderNo } = ctx.request.body;
     ctx.body = success(await ordersDao.queryWechatPayment(orderNo));
   }
-
+  @post("/alipay/notify")
+  @use(ordersDao.alipayNotifyMiddleware())
+  async alipayNotify(ctx: Context) {
+    ctx.request.body;
+  }
+  @post("/queryAlipayPayment")
+  async queryAlipayPayment(ctx: Context) {
+    const { orderNo } = ctx.request.body;
+    ctx.body = success(await ordersDao.queryAlipayPayment(orderNo));
+  }
   @post("/closeOrder")
   async closeOrder(ctx: Context) {
     const { orderNo } = ctx.request.body;

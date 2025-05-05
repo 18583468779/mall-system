@@ -4,6 +4,7 @@
     "prod": "set NODE_ENV=prod&& nodemon --watch src/ -e ts --exec ts-node ./src/app.ts"
   },
   "dependencies": {
+    "alipay-sdk": "^4.14.0",
     "jsonwebtoken": "^9.0.2",
     "koa": "^2.15.3",
     "koa-body": "^6.0.1",

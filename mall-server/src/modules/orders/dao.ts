@@ -1,3 +1,4 @@
+import { AlipayPayStrategy } from "./payment/alipayPayStrategy";
 import OrdersService from "./service";
 
 class OrdersDao {
@@ -14,6 +15,13 @@ class OrdersDao {
   }
   closeExpiredOrder(orderNo: string) {
     return OrdersService.closeExpiredOrder(orderNo);
+  }
+  alipayNotifyMiddleware() {
+    return OrdersService.alipayNotifyMiddleware();
+  }
+  async queryAlipayPayment(orderNo: string) {
+    const alipayStrategy = new AlipayPayStrategy();
+    return alipayStrategy.queryOrder(orderNo);
   }
 }
 
