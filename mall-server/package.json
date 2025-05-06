@@ -1,7 +1,10 @@
 {
   "scripts": {
     "dev": "set NODE_ENV=dev&& nodemon --watch src/ -e ts --exec ts-node ./src/app.ts",
-    "prod": "set NODE_ENV=prod&& nodemon --watch src/ -e ts --exec ts-node ./src/app.ts"
+    "prod": "set NODE_ENV=prod&& nodemon --watch src/ -e ts --exec ts-node ./src/app.ts",
+    "build": "tsc",
+    "start": "cross-env NODE_ENV=production node ./dist/app.js",
+    "start:pm2": "pm2 start ./dist/app.js --name my-api"
   },
   "dependencies": {
     "alipay-sdk": "^4.14.0",

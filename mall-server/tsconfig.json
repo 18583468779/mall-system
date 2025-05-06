@@ -4,10 +4,13 @@
     "useDefineForClassFields": true,
     "module": "commonjs",
     "moduleResolution": "node",
+    "outDir": "./dist",
+    "noEmitOnError": true, // 编译错误时阻止生成
+    "removeComments": true, // 移除注释
     "allowJs": true,
     "declaration": false,
     "strict": true,
-    "sourceMap": true,
+    "sourceMap": false,
     "resolveJsonModule": true,
     "isolatedModules": true,
     "esModuleInterop": true,
@@ -20,5 +23,6 @@
       "@/*": ["src/*"]
     }
   },
-  "include": ["src/**/*.ts", "src/**/*.d.ts"]
+  "include": ["src/**/*"],
+  "exclude": ["node_modules"]
 }
