@@ -1,21 +1,26 @@
 import * as MinIO from "minio";
 
-export const minioConfig = {
-  endPoint: "localhost",
-  port: 9005,
-  useSSL: false,
-  accessKey: "admin",
-  secretKey: "admin888",
-  bucket: "daimaxiaokubucket",
-};
 // export const minioConfig = {
-//   endPoint: "project.test",
+//   endPoint: "localhost",
 //   port: 9005,
 //   useSSL: false,
-//   accessKey: "minioadmin",
-//   secretKey: "minioadmin",
+//   accessKey: "admin",
+//   secretKey: "admin888",
 //   bucket: "daimaxiaokubucket",
 // };
+
+const endPoint =
+  process.env.NODE_ENV === "dev" ? "https://www.diamaxiaoku.com/" : "localhost";
+
+const useSSL = process.env.NODE_ENV === "dev" ? false : true;
+export const minioConfig = {
+  endPoint,
+  port: 9005,
+  useSSL,
+  accessKey: "minioadmin",
+  secretKey: "minioadmin",
+  bucket: "daimaxiaokubucket",
+};
 
 const minioClient = new MinIO.Client(minioConfig);
 // 确保存储桶存在
