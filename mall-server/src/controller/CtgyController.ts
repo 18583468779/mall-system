@@ -9,6 +9,10 @@ import ctgyService from "../modules/ctgy/service/CtgyService";
 
 @Controller("/ctgymodule")
 class CtgyController {
+  @get("/test")
+  async test(ctx: Context) {
+    ctx.body = success("测试成功");
+  }
   @get("/findSecThrdCtgys/:firstctgyid")
   async findSecThrdCtgys(ctx: Context) {
     const { firstctgyid } = ctx.params;

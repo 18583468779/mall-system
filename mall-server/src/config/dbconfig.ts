@@ -36,7 +36,7 @@ class Conf {
         port: 3306,
       },
       prod: {
-        host: "www.newdomain.com",
+        host: "localhost",
         user: "root",
         password: "root",
         database: "dangdang",
