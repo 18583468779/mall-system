@@ -152,7 +152,9 @@ class AllCtrlRouterLoader {
   //   2.加载所有路由文件绝对路由数组
   getAbsoluteFilePaths() {
     // const dir = path.join(process.cwd(), "/src/controller");
-    const dir = path.join(process.cwd(), "/dist/controller");
+    const isProduction = process.env.NODE_ENV === "dev";
+    const baseDir = isProduction ? "src" : "dist";
+    const dir = path.join(process.cwd(), baseDir, "controller");
     const allFiles = this.getFiles(dir);
     const allFullFilePaths: string[] = [];
     for (let file of allFiles) {
@@ -166,9 +168,12 @@ class AllCtrlRouterLoader {
 
   // 是不是控制器文件
   isCtrlFile(file: string) {
+    const isProduction = process.env.NODE_ENV === "dev";
+    const baseDir = isProduction ? ".ts" : ".js";
     const fileName = path.basename(file, path.extname(file)); // [!code ++]
     const extension = path.extname(file); // [!code ++]
-    return fileName.endsWith("Controller") && extension === ".js"; // [!code ++]
+    // return fileName.endsWith("Controller") && extension === ".js"; // [!code ++]
+    return fileName.endsWith("Controller") && extension === baseDir; // [!code ++]
   }
   //   1.加载所有路由文件数组
   getFiles(dir: string) {
