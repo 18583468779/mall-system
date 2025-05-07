@@ -10,7 +10,7 @@ import * as MinIO from "minio";
 // };
 
 const endPoint =
-  process.env.NODE_ENV === "dev" ? "https://www.diamaxiaoku.com/" : "localhost";
+  process.env.NODE_ENV === "dev" ? "localhost" : "www.diamaxiaoku.com";
 
 const useSSL = process.env.NODE_ENV === "dev" ? false : true;
 export const minioConfig = {
