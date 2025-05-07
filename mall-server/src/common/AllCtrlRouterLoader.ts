@@ -50,24 +50,24 @@ class AllCtrlRouterLoader {
     );
     this.app.use(json());
     this.app.use(body());
-    // this.app.use(
-    //   koajwt({
-    //     secret: "aiaiai123456X",
-    //     key: "jwtData", // jwtData 是在登录成功之后设置的 这里是从请求头中获取的jwtData 然后再把jwtData 放到ctx 里面 方便使用
-    //   }).unless({
-    //     path: [
-    //       /^\/dang\/userinfomodule\/login$/,
-    //       /^\/dang\/userinfomodule\/register$/,
-    //       /^\/dang\/userinfomodule\/sendVerificationCode$/,
-    //       /^\/dang\/ctgymodule\/.*$/,        // 排除ctgymodule所有子路径
-    //       /^\/dang\/filemodule\/.*$/,        // 排除filemodule所有子路径
-    //       /^\/dang\/booksmodule\/findBooksByPage$/,
-    //       /^\/dang\/booksmodule\/findBooksByISBN$/,
-    //       /^\/dang\/searchmodule\/.*$/,      // 排除searchmodule所有子路径
-    //       /^\/dang\/ordersmodule\/wechat\/notify$/,
-    //     ],
-    //   })
-    // );
+    this.app.use(
+      koajwt({
+        secret: "aiaiai123456X",
+        key: "jwtData", // jwtData 是在登录成功之后设置的 这里是从请求头中获取的jwtData 然后再把jwtData 放到ctx 里面 方便使用
+      }).unless({
+        path: [
+          /^\/dang\/userinfomodule\/login$/,
+          /^\/dang\/userinfomodule\/register$/,
+          /^\/dang\/userinfomodule\/sendVerificationCode$/,
+          /^\/dang\/ctgymodule\/.*$/, // 排除ctgymodule所有子路径
+          /^\/dang\/filemodule\/.*$/, // 排除filemodule所有子路径
+          /^\/dang\/booksmodule\/findBooksByPage$/,
+          /^\/dang\/booksmodule\/findBooksByISBN$/,
+          /^\/dang\/searchmodule\/.*$/, // 排除searchmodule所有子路径
+          /^\/dang\/ordersmodule\/wechat\/notify$/,
+        ],
+      })
+    );
     this.app.use(globalException);
     this.app.use(async (ctx, next) => {
       if (ctx.state.jwtData) {

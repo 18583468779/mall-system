@@ -29,7 +29,11 @@ class BaseDao {
     });
   }
   addModels() {
-    const modelPath = path.join(process.cwd(), "/src/modules/decormodel");
+    const isProduction =
+      process.env.NODE_ENV === "dev"
+        ? "/src/modules/decormodel"
+        : "/dist/modules/decormodel";
+    const modelPath = path.join(process.cwd(), isProduction);
     this.sequelize.addModels([modelPath]);
   }
   /**
