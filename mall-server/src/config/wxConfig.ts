@@ -11,6 +11,7 @@ if (!fs.existsSync(path.join(certDir, "wxapiclient_key.pem"))) {
 if (!fs.existsSync(path.join(certDir, "pub_key.pem"))) {
   throw new Error("公钥文件 pub_key.pem 缺失！");
 }
+const isDev = process.env.NODE_ENV === "dev";
 
 export const WX_PAY_CONFIG = {
   appid: "wxe9d6a19d79282c9b", // 小程序的appid
@@ -20,5 +21,7 @@ export const WX_PAY_CONFIG = {
   privateKey: fs.readFileSync(path.join(certDir, "wxapiclient_key.pem")), // 私钥文件路径
   publicKey: fs.readFileSync(path.join(certDir, "pub_key.pem")), // 公钥文件路径
   // notify_url: "https://www.diamaxiaoku.com/wechat/notify", // 支付回调地址
-  notify_url: "http://6e034ea4.r39.cpolar.top/dang/ordersmodule/wechat/notify", // 支付回调地址 本地内网穿透
+  notify_url: isDev
+    ? "http://6e034ea4.r39.cpolar.top/dang/ordersmodule/wechat/notify"
+    : "https://www.diamaxiaoku.com/dang/ordersmodule/wechat/notify", // 支付回调地址 本地内网穿透
 };
