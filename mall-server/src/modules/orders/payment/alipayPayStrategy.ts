@@ -30,7 +30,7 @@ export class AlipayPayStrategy {
         out_trade_no: order.outTradeNo,
         total_amount: (order.totalFee / 100).toFixed(2),
         product_code: "FAST_INSTANT_TRADE_PAY",
-        notify_url: ALI_PAY_CONFIG.notifyUrl,
+        notify_url: ALI_PAY_CONFIG.notify_url,
       };
 
       const result: string = this.sdk.pageExecute(
