@@ -34,9 +34,11 @@ class BookletService {
         },
       ],
     });
-    let bookData = booklet?.get({ plain: true })!; // 获取原始数据（不包含关联模型）
+    let bookData: any = booklet?.get({ plain: true })!; // 获取原始数据（不包含关联模型）
+    bookData["isShow"] = true; // 显示
     // 非管理员用户处理内容过滤
     if (!isAdmin && booklet) {
+      bookData["isShow"] = false; // 隐藏
       bookData.chapters.forEach((chapter: any) => {
         if (!chapter.is_free) {
           // 移除非免费章节的内容（彻底删除content字段）

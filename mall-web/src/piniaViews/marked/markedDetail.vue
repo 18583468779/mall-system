@@ -24,18 +24,14 @@
           v-if="!hasPurchased"
           class="mt-6 p-4 bg-yellow-50 border border-yellow-200 rounded-lg"
         >
-          <h3 class="font-medium text-yellow-800 mb-2">付费小册</h3>
+          <h3 class="font-medium text-yellow-800 mb-2">付费内容</h3>
           <p class="text-sm text-yellow-700 mb-4">
-            {{ previewChaptersCount }}章免费试读，购买后解锁全部{{
+            {{ previewChaptersCount }}章免费试读，升级vip会员后解锁全部{{
               totalChapters
             }}章节
           </p>
-          <el-button
-            type="primary"
-            class="w-full"
-            @click="showPurchaseDialog = true"
-          >
-            立即购买 ￥{{ price }}
+          <el-button type="primary" class="w-full" @click="handleToVip">
+            升级会员
           </el-button>
         </div>
       </div>
@@ -51,41 +47,13 @@
         <div v-else class="text-gray-500">请选择左侧章节查看内容</div>
       </div>
     </el-main>
-
-    <!-- 购买对话框 -->
-    <el-dialog v-model="showPurchaseDialog" title="购买小册" width="500px">
-      <div class="p-4">
-        <p class="mb-4">您正在购买《{{ title }}》</p>
-        <div class="flex items-center mb-6">
-          <span class="mr-2">价格：</span>
-          <span class="text-2xl text-red-600 font-bold">￥{{ price }}</span>
-        </div>
-        <el-divider />
-        <div class="grid grid-cols-3 gap-4">
-          <el-button class="col-span-1">
-            <img
-              src="https://img.icons8.com/color/48/000000/alipay.png"
-              class="h-6 mr-2"
-            />
-            支付宝
-          </el-button>
-          <el-button class="col-span-1">
-            <img
-              src="https://img.icons8.com/color/48/000000/wechat.png"
-              class="h-6 mr-2"
-            />
-            微信支付
-          </el-button>
-        </div>
-      </div>
-    </el-dialog>
   </div>
 </template>
 
 <script setup lang="ts">
 import { ref, computed, onMounted } from "vue";
 import request from "../../utils/axiosUtil";
-
+import { useRouter } from "vue-router";
 interface ChapterContent {
   content_id: number;
   chapter_id: number;
@@ -104,14 +72,18 @@ interface Chapter {
 const { id } = defineProps<{
   id: string;
 }>();
+const router = useRouter();
 
 // 真实数据结构
 const detailData = ref<Chapter[]>([]);
-const title = ref("TypeScript 全面指南");
-const price = ref(39.9);
 const hasPurchased = ref(true); // 根据实际购买状态修改
-const showPurchaseDialog = ref(false);
 const activeChapter = ref("1");
+
+const handleToVip = () => {
+  router.push({
+    path: "/vip",
+  });
+};
 
 // 处理章节数据
 const processedChapters = computed(() => {
@@ -154,6 +126,7 @@ const handleGetData = async () => {
           content: "暂无内容",
         },
       }));
+      hasPurchased.value = res.data.isShow; // 假设后端返回了购买状态
       console.log("Processed chapters:", detailData.value);
     }
   } catch (error) {
