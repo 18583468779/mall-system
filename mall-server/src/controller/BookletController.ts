@@ -11,7 +11,8 @@ class BookletController {
   @get("/getBookletAndContent/:id")
   async getBookletAndContentById(ctx: Context) {
     const { id } = ctx.params;
-    const res = success(await BookletDao.getBookletAndContentById(id));
+    let user = ctx.state.user;
+    const res = success(await BookletDao.getBookletAndContentById(id, user));
     ctx.body = res;
   }
   @post("/addBooklet")

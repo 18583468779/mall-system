@@ -15,8 +15,8 @@ interface BookletType {
 class BookletDao {
   static bookletDao: BookletDao = new BookletDao();
 
-  async getBookletAndContentById(booklet_id: number) {
-    return await BookletService.getBookletAndContentById(booklet_id);
+  async getBookletAndContentById(booklet_id: number, user: any) {
+    return await BookletService.getBookletAndContentById(booklet_id, user);
   }
   async addBooklet(data: any) {
     return await Booklet.create(data);
