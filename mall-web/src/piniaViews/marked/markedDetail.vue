@@ -42,9 +42,31 @@
       <div class="max-w-3xl mx-auto p-6">
         <template v-if="currentChapter">
           <h1 class="text-2xl font-bold mb-6">{{ currentChapter.title }}</h1>
-          <div class="prose" v-html="currentChapter.content.content" />
+
+          <!-- 增加模糊容器 -->
+          <div class="relative" :class="{ 'blur-container': shouldBlur }">
+            <div
+              class="prose transition-all duration-300"
+              :class="{ 'blur-sm': shouldBlur }"
+              v-html="currentChapter.content.content"
+            />
+
+            <!-- 模糊遮罩层 -->
+            <div
+              v-if="shouldBlur"
+              class="absolute inset-0 bg-white/80 flex flex-col items-center justify-center cursor-pointer backdrop-blur-[2px]"
+              @click="handleToVip"
+            >
+              <LockClosedIcon class="h-8 w-8 text-blue-600 mb-2" />
+              <p class="text-lg font-medium text-blue-600">
+                订阅后查看完整内容
+              </p>
+              <p class="text-sm text-gray-600 mt-1">
+                已提供{{ previewChaptersCount }}章试读
+              </p>
+            </div>
+          </div>
         </template>
-        <div v-else class="text-gray-500">请选择左侧章节查看内容</div>
       </div>
     </el-main>
   </div>
@@ -100,7 +122,9 @@ const currentChapter = computed(() => {
     (chapter) => chapter.chapter_id.toString() === activeChapter.value
   );
 });
-
+const shouldBlur = computed(() => {
+  return !hasPurchased.value && !currentChapter.value?.is_free;
+});
 // 章节统计
 const previewChaptersCount = computed(() => {
   return detailData.value.filter((c) => c.is_free).length;
@@ -166,5 +190,34 @@ const handleSelectChapter = (id: string) => {
 
 .prose :deep(em) {
   @apply text-green-600;
+}
+
+/* 模糊容器 */
+.blur-container {
+  height: 200px;
+  position: relative;
+  overflow: hidden;
+  border-radius: 8px;
+}
+
+/* 禁用文本选择 */
+.blur-container :deep(*) {
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+/* 保持标题清晰 */
+.blur-container h1 {
+  filter: none !important;
+}
+
+/* 优化模糊过渡效果 */
+.prose {
+  transition: filter 0.3s ease;
+}
+
+/* 自定义锁图标（如果使用Element Plus图标需调整） */
+.lock-icon {
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
 }
 </style>
