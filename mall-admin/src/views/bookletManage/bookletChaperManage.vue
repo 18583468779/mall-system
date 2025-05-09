@@ -214,14 +214,8 @@ onMounted(() => {
 const loadData = async () => {
   loading.value = true;
   try {
-    await getBookletList({
-      page: tablePageData.currentPage,
-      pageSize: tablePageData.pageSize,
-    });
-    await getBookletsChapter({
-      page: tablePageData.currentPage,
-      pageSize: tablePageData.pageSize,
-    });
+    await getBookletList();
+    await getBookletsChapter();
     bookletList.value = tableData.value.map((item: any) => ({
       label: item.title,
       value: item.booklet_id,

@@ -3,7 +3,6 @@ import axios, {
   type AxiosPromise,
   type AxiosRequestConfig,
   type AxiosRequestHeaders,
-  type InternalAxiosRequestConfig,
 } from "axios";
 import { ElMessage } from "element-plus";
 import conf from "../config";
@@ -53,30 +52,28 @@ class AxiosUtil {
   }
   // 1.请求开始之前的请求拦截器
   beforeReqIntercpt() {
-    this.axiosInstance.interceptors.request.use(
-      (request: any) => {
-        // 检查是否需要跳过token
-        if (request?.noAuth) {
-          // 清除配置避免影响后续请求
-          return request; // 直接返回不添加token
-        }
-        const userInfo = localStorage.getItem("userInfo");
-        if (userInfo) {
-          const token = JSON.parse(userInfo).access_token;
-          const headers = request.headers;
-          if (!headers.authorization && token)
-            headers.authorization = `Bearer ${token}`;
-        }
-
-        return request;
+    this.axiosInstance.interceptors.request.use((request: any) => {
+      // 检查是否需要跳过token
+      if (request?.noAuth) {
+        // 清除配置避免影响后续请求
+        return request; // 直接返回不添加token
       }
-    );
+      const userInfo = localStorage.getItem("userInfo");
+      if (userInfo) {
+        const token = JSON.parse(userInfo).access_token;
+        const headers = request.headers;
+        if (!headers.authorization && token)
+          headers.authorization = `Bearer ${token}`;
+      }
+
+      return request;
+    });
   }
   // 2.数据响应之后的响应拦截器
   beforeResponseIntercpt() {
     this.axiosInstance.interceptors.response.use(
       (response) => {
-        const { data, msg, code } = response.data;
+        const { msg, code } = response.data;
         if (code === 200) return response.data;
         else if (code === 500) {
           ElMessage.error(`发生了错误${msg}`);
@@ -92,6 +89,7 @@ class AxiosUtil {
         }
       },
       (err) => {
+        console.log(err);
         ElMessage.error(SERVER_ERR);
       }
     );
@@ -112,7 +110,7 @@ class AxiosUtil {
   // 4. 深入灵活应用ts完成请求method类型自动提示
   reqPrepare() {
     return methods.forEach((method) => {
-      this.request[method] = (url, isMock, data, headers,noAuth) => {
+      this.request[method] = (url, isMock, data, headers, noAuth) => {
         return this.sendRequest({
           url,
           isMock,

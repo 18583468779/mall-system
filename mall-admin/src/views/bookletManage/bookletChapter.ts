@@ -1,5 +1,5 @@
 import { reactive, ref } from "vue";
-import type { BookletItem, BookletListParams } from "./types";
+import type { BookletItem } from "./types";
 import bookletApi from "../../api/BookletChapterApi";
 
 export default function useBookletChapterService() {
@@ -10,7 +10,7 @@ export default function useBookletChapterService() {
     total: 0,
   });
 
-  const getBookletsChapter = async (params: BookletListParams = {}) => {
+  const getBookletsChapter = async () => {
     const res: any = await bookletApi.getBookletsChapter();
     if (res.code === 200) {
       ChapterData.value = res.data;

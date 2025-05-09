@@ -28,6 +28,7 @@ export default defineConfig((mode: ConfigEnv) => {
     };
   }
   return {
+    base: "admin",
     plugins: [vue()],
     server,
   };

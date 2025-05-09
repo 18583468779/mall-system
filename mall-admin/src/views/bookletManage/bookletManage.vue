@@ -266,10 +266,7 @@ onMounted(() => {
 const loadData = async () => {
   loading.value = true;
   try {
-    await getBookletList({
-      page: tablePageData.currentPage,
-      pageSize: tablePageData.pageSize,
-    });
+    await getBookletList();
   } finally {
     loading.value = false;
   }
@@ -286,7 +283,7 @@ const handleOk = async () => {
     //   createBooklet;
     let params: any = {
       ...formData,
-      cover_image: formData.cover_image?.[0]?.url || "",
+      cover_image: (formData as any).cover_image?.[0]?.url || "",
     };
     await createBooklet(params);
 

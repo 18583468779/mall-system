@@ -1,5 +1,5 @@
 import { reactive, ref } from "vue";
-import type { BookletItem, BookletListParams } from "./types";
+import type { BookletItem } from "./types";
 import bookletApi from "../../api/BookletApi";
 
 export default function useBookletService() {
@@ -10,9 +10,9 @@ export default function useBookletService() {
     total: 0,
   });
 
-  const getBookletList = async (params: BookletListParams = {}) => {
-    const res:any = await bookletApi.getBooklets();
-    if (res.code === 200 ) {
+  const getBookletList = async () => {
+    const res: any = await bookletApi.getBooklets();
+    if (res.code === 200) {
       tableData.value = res.data;
     }
   };
@@ -22,12 +22,12 @@ export default function useBookletService() {
 
   const updateBooklet = async (data: BookletItem) => {
     if (!data.booklet_id) return;
-    return bookletApi.updateBooklet(data.booklet_id, data)
+    return bookletApi.updateBooklet(data.booklet_id, data);
   };
 
   const deleteBooklet = async (id: number) => {
     if (!id) return;
-    return bookletApi.deleteBooklet(id)
+    return bookletApi.deleteBooklet(id);
   };
 
   return {
