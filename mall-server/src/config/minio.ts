@@ -1,21 +1,12 @@
 import * as MinIO from "minio";
 
-// export const minioConfig = {
-//   endPoint: "localhost",
-//   port: 9005,
-//   useSSL: false,
-//   accessKey: "admin",
-//   secretKey: "admin888",
-//   bucket: "daimaxiaokubucket",
-// };
-
 const endPoint =
   process.env.NODE_ENV === "dev" ? "localhost" : "www.diamaxiaoku.com";
-
+const port = process.env.NODE_ENV === "dev" ? 9005 : 443;
 const useSSL = process.env.NODE_ENV === "dev" ? false : true;
 export const minioConfig = {
   endPoint,
-  port: 9005,
+  port,
   useSSL,
   accessKey: "minioadmin",
   secretKey: "minioadmin",
@@ -34,6 +25,19 @@ const minioClient = new MinIO.Client(minioConfig);
 
 (async function checkBucketPolicy() {
   try {
+    const sPolicy = {
+      Version: "2012-10-17",
+      Statement: [
+        {
+          Effect: "Allow",
+          Principal: "*",
+          Action: ["s3:GetObject", "s3:PutObject"],
+          Resource: `arn:aws:s3:::${minioConfig.bucket}/*`,
+        },
+      ],
+    };
+
+    minioClient.setBucketPolicy(minioConfig.bucket, JSON.stringify(sPolicy));
     // 1. 获取存储桶当前策略
     const policy = await minioClient.getBucketPolicy(minioConfig.bucket);
     console.log("当前存储桶策略:", JSON.parse(policy));
