@@ -17,7 +17,13 @@ class FileDao {
       objectName,
       60 * 15 // 15分钟有效期
     );
-    return { presignedUrl, objectName };
+    // 插入代理路径前缀
+    const correctedUrl = presignedUrl.replace(
+      `https://${minioConfig.endPoint}/${minioConfig.bucket}/`,
+      `https://${minioConfig.endPoint}/minio-api/${minioConfig.bucket}/`
+    );
+
+    return { presignedUrl: correctedUrl, objectName };
   }
 }
 
