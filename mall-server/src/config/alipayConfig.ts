@@ -14,6 +14,6 @@ export const ALI_PAY_CONFIG = {
   privateKey: fs.readFileSync(path.join(certDir, "privatekey.pem"), "ascii"), // 关键修复点
   gateway: "https://openapi.alipay.com/gateway.do",
   notify_url: isDev
-    ? "http://6e034ea4.r39.cpolar.top/dang/ordersmodule/alipay/notify"
+    ? "http://7f4c2d6f.r39.cpolar.top/dang/ordersmodule/alipay/notify"
     : "https://www.diamaxiaoku.com/dang/ordersmodule/alipay/notify", // 支付回调地址 本地内网穿透
 };

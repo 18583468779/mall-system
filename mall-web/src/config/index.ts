@@ -34,7 +34,7 @@ class EnvConfigClass {
           "https://www.fastmock.site/mock/a244a48ca0f6b7efaa1d57b9e57b2c8b/dangdang/",
       },
       production: {
-        baseApi: "http://yourdomain:80/dang/",
+        baseApi: "https://www.diamaxiaoku.com/dang/",
         mockBaseApi: "",
       },
     };

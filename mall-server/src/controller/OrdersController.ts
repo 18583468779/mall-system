@@ -17,6 +17,7 @@ class OrdersController {
   @post("/wechat/notify")
   @use(ordersDao.wechatNotifyMiddleware()) // 使用中间件
   async wechatNotify(ctx: Context) {
+    console.log("1111111微信支付回调");
     ctx.request.body;
   }
   // 查询是否支付成功
@@ -28,6 +29,7 @@ class OrdersController {
   @post("/alipay/notify")
   @use(ordersDao.alipayNotifyMiddleware())
   async alipayNotify(ctx: Context) {
+    console.log("1111111支付宝支付回调");
     ctx.request.body;
   }
   @post("/queryAlipayPayment")

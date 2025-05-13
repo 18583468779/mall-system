@@ -290,6 +290,7 @@ const handleUpgrade = () => {
     router.push({ path: "/login" });
   }
   if (userStoreComputed.value === "当前方案") return;
+  if (currentPlan.value === "vip") return;
   showPaymentDialog.value = true;
 };
 

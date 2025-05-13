@@ -207,7 +207,7 @@ const startPolling = async () => {
         orderNo: orderNo.value,
       });
 
-      if (data.paid) {
+      if (data.detail.data.trade_state === "SUCCESS") {
         handleSuccess();
       } else if (data.status === "CLOSED") {
         handleTimeout();

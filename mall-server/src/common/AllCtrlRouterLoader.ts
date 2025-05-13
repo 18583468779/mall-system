@@ -33,10 +33,10 @@ class AllCtrlRouterLoader {
     this.app.use(
       cors({
         origin: (ctx: any) => {
-          const isDev = process.env.NODE_ENV === "dev" ? ['*'] : [
-            "https://diamaxiaoku.com",
-            "https://www.diamaxiaoku.com",
-          ];
+          const isDev =
+            process.env.NODE_ENV === "dev"
+              ? ["*"]
+              : ["https://diamaxiaoku.com", "https://www.diamaxiaoku.com"];
           const allowedOrigins = isDev;
           return allowedOrigins.includes(ctx.request.header.origin)
             ? ctx.request.header.origin
@@ -65,6 +65,7 @@ class AllCtrlRouterLoader {
           /^\/dang\/booksmodule\/findBooksByISBN$/,
           /^\/dang\/searchmodule\/.*$/, // 排除searchmodule所有子路径
           /^\/dang\/ordersmodule\/wechat\/notify$/,
+          /^\/dang\/ordersmodule\/alipay\/notify$/,
         ],
       })
     );
