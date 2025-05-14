@@ -36,7 +36,7 @@
         <el-icon class="text-2xl" @click="handleShowSearch">
           <Search />
         </el-icon>
-        <div class="relative cursor-pointer" @click="handleToCart">
+        <!-- <div class="relative cursor-pointer" @click="handleToCart">
           <el-icon class="text-2xl">
             <ShoppingCart />
           </el-icon>
@@ -46,7 +46,7 @@
           >
             {{ totalCount }}
           </span>
-        </div>
+        </div> -->
         <el-dropdown :hide-on-click="false" class="cursor-pointer text-lg">
           <span class="el-dropdown-link flex items-center">
             {{ store?.storeLoginUser?.username || "游客"

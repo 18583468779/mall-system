@@ -126,7 +126,7 @@
 
           <!-- 操作按钮 -->
           <div class="flex justify-start items-center gap-3">
-            <div v-if="getRoleInfo">
+            <div>
               <el-button
                 @click="handleDownloadSource"
                 class="!px-4 !py-4 !bg-red-100 hover:!bg-red-200 !text-red-600 !rounded-lg transition-colors border-none">
@@ -134,7 +134,7 @@
                   <ShoppingCartFull />
                 </el-icon>下载源码</el-button>
             </div>
-            <add-subtrsc v-else :book-item="store.bookDetail" class="mt-0" />
+            <!-- <add-subtrsc v-else :book-item="store.bookDetail" class="mt-0" /> -->
 
           </div>
 
@@ -144,10 +144,6 @@
               <div class="flex items-center gap-2">
                 <span class="text-gray-500">服务：</span>
                 <span class="text-gray-800">源码包下载 · 技术支持 · 持续更新</span>
-              </div>
-              <div class="flex items-center gap-2">
-                <span class="text-gray-500">文档：</span>
-                <span class="text-gray-800">一份</span>
               </div>
               <div class="flex items-center gap-2">
                 <span class="text-gray-500">版本：</span>
@@ -172,10 +168,10 @@ import {
   Lock,
 } from "@element-plus/icons-vue";
 import { ElMessage, ElMessageBox } from 'element-plus';
-import addSubtrsc from "../books/components/addSubtrsc.vue";
+// import addSubtrsc from "../books/components/addSubtrsc.vue";
 import Books from "../books/service";
-import userInfo from "../../piniaStore/userInfo";
-const { getRoleInfo } = userInfo();
+// import userInfo from "../../piniaStore/userInfo";
+// const { getRoleInfo } = userInfo();
 const router = useRouter();
 const { store } = Books;
 const { findBooksByISBN } = store;

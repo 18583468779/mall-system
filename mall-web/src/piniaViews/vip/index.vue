@@ -149,48 +149,62 @@
 
     <!-- 支付弹窗 -->
     <el-dialog v-model="showPaymentDialog" title="选择支付方式" width="400px">
-      <div class="bg-white rounded-xl shadow-sm p-6">
-        <div class="space-y-3">
-          <div
-            v-for="method in paymentMethods"
-            :key="method.id"
-            @click="changePaymentMethod(method.id)"
-            class="flex items-center py-4 border rounded-lg cursor-pointer transition-all"
-            :class="{ 'border-blue-500': paymentMethod === method.id }"
-          >
-            <component :is="method.icon" class="text-2xl mr-3" />
-            <div class="flex-1 flex items-center gap-2">
-              <i
-                v-if="method.id === 'wechat'"
-                class="iconfont icon-zhifu-_weixinzhifu text-[30px] text-green-500"
-              ></i>
-              <i
-                v-else
-                class="iconfont icon-alipay-active text-[30px] text-blue-500"
-              ></i>
-              <div>
-                <p class="font-medium text-gray-900">{{ method.name }}</p>
-                <p class="text-gray-500 text-sm mt-1">
-                  {{ method.description }}
-                </p>
-              </div>
+    <div class="bg-white rounded-xl shadow-sm p-6">
+      <div class="space-y-3">
+        <!-- 支付宝支付（不可用状态） -->
+        <div
+          v-for="method in paymentMethods"
+          :key="method.id"
+          :class="[
+            'flex items-center py-4 border rounded-lg cursor-pointer transition-all',
+            method.isAvailable ? '' : 'bg-gray-50 border-gray-300 text-gray-500 opacity-70 cursor-not-allowed',
+            paymentMethod === method.id && method.isAvailable ? 'border-blue-500' : ''
+          ]"
+          @click="method.isAvailable ? changePaymentMethod(method.id) : null"
+        >
+          <component :is="method.icon" class="text-2xl mr-3" />
+          <div class="flex-1 flex items-center gap-2">
+            <i
+              v-if="method.id === 'wechat'"
+              class="iconfont icon-zhifu-_weixinzhifu text-[30px] text-green-500"
+            ></i>
+            <i
+              v-else
+              class="iconfont icon-alipay-active text-[30px] text-gray-400" 
+            ></i>
+            <div>
+              <p class="font-medium text-gray-900">
+                {{ method.name }}
+                <span v-if="!method.isAvailable" class="text-sm text-gray-500 ml-2">（暂不支持）</span>
+              </p>
+              <p class="text-gray-500 text-sm mt-1" v-if="method.isAvailable">
+                {{ method.description }}
+              </p>
+              <p class="text-gray-500 text-sm mt-1" v-else>
+                该支付方式暂未开放，请选择其他支付方式
+              </p>
             </div>
-            <el-icon
-              v-if="paymentMethod === method.id"
-              class="text-red-500 text-xl"
-            >
-              <CircleCheck />
-            </el-icon>
           </div>
+          <el-icon
+            v-if="paymentMethod === method.id && method.isAvailable"
+            class="text-red-500 text-xl"
+          >
+            <CircleCheck />
+          </el-icon>
         </div>
       </div>
-      <template #footer>
-        <el-button @click="showPaymentDialog = false">取消</el-button>
-        <el-button type="primary" @click="confirmPayment"
-          >立即支付 ¥99</el-button
-        >
-      </template>
-    </el-dialog>
+    </div>
+    <template #footer>
+      <el-button @click="showPaymentDialog = false">取消</el-button>
+      <el-button 
+        type="primary" 
+        :disabled="!paymentMethods.find((m:any) => m.isAvailable && m.id === paymentMethod)"
+        @click="confirmPayment"
+      >
+        立即支付 ¥99
+      </el-button>
+    </template>
+  </el-dialog>
     <el-dialog v-model="paymentVisible" title="会员升级支付" width="500px">
       <PaymentQrcode
         :paymentMethod="paymentMethod"
@@ -227,17 +241,20 @@ const userStoreComputed = computed(() => {
 });
 
 const paymentMethods: any = [
-  {
-    id: "alipay",
-    name: "支付宝支付",
-    description: "数亿用户的选择，轻松快捷",
-    icon: "icon-alipay", // 需要配置图标组件
-  },
+
   {
     id: "wechat",
     name: "微信支付",
     description: "微信用户首选支付方式",
     icon: "icon-wechat",
+    isAvailable: true
+  },
+  {
+    id: "alipay",
+    name: "支付宝支付",
+    description: "数亿用户的选择，轻松快捷",
+    icon: "icon-alipay", // 需要配置图标组件
+    isAvailable: false  // 添加可用性标识
   },
 ];
 const currentPlan = ref<"free" | "vip">("free");
@@ -268,9 +285,9 @@ const compareFeatures = [
 ];
 
 // 支付回调处理
-const handlePaymentSuccess = (orderNo: any) => {
+const handlePaymentSuccess =async (orderNo: any) => {
   console.log("支付成功:", orderNo);
-  userStore.setUserInfo(); // 更新用户信息
+  await userStore.setUserInfo(); // 更新用户信息
   currentPlan.value = "vip";
   paymentVisible.value = false;
   // 更新用户VIP状态等操作...
@@ -321,5 +338,26 @@ const confirmPayment = async () => {
 /* 按钮悬停动画 */
 .hover-scale {
   @apply transition-transform duration-200 hover:scale-105;
+}
+
+/* 添加不可用状态样式 */
+.el-dialog .bg-gray-50 {
+  background-color: #f9fafb !important;
+}
+
+/* 优化支付方式卡片样式 */
+.el-dialog .flex.items-center.py-4 {
+  padding: 12px 16px;
+  border-width: 2px;
+  border-radius: 12px;
+  transition: all 0.3s ease;
+}
+
+.el-dialog .cursor-not-allowed {
+  cursor: not-allowed !important;
+}
+
+.el-dialog .text-gray-500.opacity-70 {
+  opacity: 0.7;
 }
 </style>
