@@ -60,6 +60,8 @@
               <el-dropdown-item>
                 <el-popconfirm
                   title="确认要退出登录吗?"
+                  confirm-button-text="退出"
+                  cancel-button-text="取消"
                   @confirm="handleLogout"
                 >
                   <template #reference> 退出登录 </template>

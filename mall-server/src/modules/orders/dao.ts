@@ -6,6 +6,9 @@ class OrdersDao {
   async createNativeOrderDao(userId: number, order: any) {
     return await OrdersService.createPayment(userId, order, order.channel);
   }
+  async queryOrderDao(userId: number) {
+    return await OrdersService.queryOrder(userId);
+  }
   async queryWechatPayment(orderNo: string) {
     return await OrdersService.queryWechatPayment(orderNo);
   }

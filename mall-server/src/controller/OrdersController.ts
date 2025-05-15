@@ -13,6 +13,12 @@ class OrdersController {
     let userId = ctx.state.user.userid;
     ctx.body = success(await ordersDao.createNativeOrderDao(userId, res));
   }
+  // 查询订单
+  @get("/queryOrderDao/:userId")
+  async queryOrderDao(ctx: Context) {
+    const { userId } = ctx.params;
+    ctx.body = success(await ordersDao.queryOrderDao(userId));
+  }
   // 支付回调
   @post("/wechat/notify")
   @use(ordersDao.wechatNotifyMiddleware()) // 使用中间件

@@ -78,6 +78,14 @@ class OrdersService {
       throw error;
     }
   }
+  // 查询订单
+  async queryOrder(userId: number) {
+    return await OrdersModel.findAll({
+      raw: true,
+      where: { userId },
+      attributes: { exclude: ["paymentData"] }, // 排除paymentData字段
+    });
+  }
   private generateOutTradeNo(): string {
     // 生成订单号的逻辑
     return `ORD${Date.now()}${Math.random()
