@@ -1,9 +1,6 @@
 <template></template>
 
-<script setup lang="ts">
-import { ref } from "vue";
-import Books from "../service";
-</script>
+<script setup lang="ts"></script>
 
 <style scoped>
 .el-radio-group :deep(.el-radio-button__inner) {

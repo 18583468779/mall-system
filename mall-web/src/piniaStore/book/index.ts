@@ -79,7 +79,7 @@ export default defineStore("bookstore", {
     },
   },
   actions: {
-    async getBookListByPage(page = 1, pageSize = 4, isMobile = false) {
+    async getBookListByPage(page = 1, pageSize = 8, isMobile = false) {
       try {
         this.isLoading = true;
         const response = await bookApi.getBookListByPage(page, pageSize);
@@ -172,8 +172,8 @@ export default defineStore("bookstore", {
       const bookList: AxiosResponse<BookInfo[]> =
         await bookApi.findBooksByAutoCompKeyword(autoCompKeyword);
       calDisCount(bookList.data);
-      this.bookList = bookList.data;
-      storage.set("bookList", bookList.data);
+      this.allBookList = bookList.data;
+      storage.set("allBookList", bookList.data);
     },
   },
 });

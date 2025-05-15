@@ -29,6 +29,9 @@ export default class Books {
       },
     });
   };
+  static getBookListByPage() {
+    Books.store.getBookListByPage();
+  }
   static getOperate() {
     Books.isAutoComSearch.value =
       Books.store.getOperate === Operate.AUTOCOMPKEYWORD ? true : false;
@@ -62,7 +65,10 @@ export default class Books {
     await Books.store.findBooksByAutocompKeyword(autoCompKeyword);
     Books.shopCartAndUptBkNum();
   }
-
+  static async findBooksByAutoName(name: string) {
+    await Books.store.findBooksByAutocompKeyword(name);
+    Books.shopCartAndUptBkNum();
+  }
   static async findBooksByThirdCtgyId(
     thirdctgyid?: number,
     sortField: string = "originalprice",
@@ -119,7 +125,7 @@ export default class Books {
     }
     Books.sortField.value = sortField;
     Books.ascOrDesc.value = Books.ascOrDesc.value === "desc" ? "asc" : "desc";
-    Books.findBooksByThirdCtgyId( undefined ,sortField, Books.ascOrDesc.value);
+    Books.findBooksByThirdCtgyId(undefined, sortField, Books.ascOrDesc.value);
   }
   static getCurrentBookItem(bookisbn: string, purcharsenum: number) {
     // 根据图书id获取图书

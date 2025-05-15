@@ -20,7 +20,13 @@
               <el-icon class="text-xl"><search /></el-icon>
             </template>
           </el-input>
-          <el-button type="primary" size="large" class="w-28" color="#1D4ED8"
+          <el-button
+            type="primary"
+            size="large"
+            class="w-28"
+            color="#1D4ED8"
+            @click="findBooksByAutoName(searchKeyword)"
+          >
             >搜索</el-button
           >
         </div>
@@ -66,14 +72,19 @@ import CategoryDropdown from "../../piniaViews/ctgy/components/Ctgy.vue";
 import Books from "./service";
 import { ref, watchEffect } from "vue";
 import { useRoute } from "vue-router";
+import { onMounted } from "vue";
 const route = useRoute();
 const searchKeyword = ref("");
 // 分页参数
 const pageSize = ref(12);
 const totalItems = ref(0);
 
+onMounted(() => {
+  getBookListByPage(); // 初始加载第一页数据
+});
+
 // 获取数据
-const { searchBooks, store } = Books;
+const { searchBooks, store, findBooksByAutoName, getBookListByPage } = Books;
 
 watchEffect(() => {
   if (JSON.stringify(route.query) !== "{}") {
