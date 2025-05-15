@@ -33,9 +33,9 @@
       </nav>
 
       <div class="flex items-center space-x-6">
-        <el-icon class="text-2xl" @click="handleShowSearch">
+        <!-- <el-icon class="text-2xl" @click="handleShowSearch">
           <Search />
-        </el-icon>
+        </el-icon> -->
         <!-- <div class="relative cursor-pointer" @click="handleToCart">
           <el-icon class="text-2xl">
             <ShoppingCart />
@@ -48,13 +48,15 @@
           </span>
         </div> -->
         <el-dropdown :hide-on-click="false" class="cursor-pointer text-lg">
-          <span class="el-dropdown-link flex items-center">
-            {{ store?.storeLoginUser?.username || "游客"
-            }}<el-icon class="el-icon--right"><User /></el-icon>
+          <span class="el-dropdown-link flex items-center gap-3">
+            {{ store?.storeLoginUser?.username || "游客" }}
+            <el-avatar :size="50" :src="avatar" shape="square" />
           </span>
           <template #dropdown>
             <el-dropdown-menu>
-              <el-dropdown-item @click="handleToCenter">个人中心</el-dropdown-item>
+              <el-dropdown-item @click="handleToCenter"
+                >个人中心</el-dropdown-item
+              >
               <el-dropdown-item>
                 <el-popconfirm
                   title="确认要退出登录吗?"
@@ -77,16 +79,17 @@
 </template>
 
 <script setup lang="ts">
-import { Menu, Search, ShoppingCart, User } from "@element-plus/icons-vue";
+import { Menu } from "@element-plus/icons-vue";
+import avatar from "../assets/image/user.png";
 import SearchComponent from "../piniaViews/search/index.vue";
-import ShopCart from "../piniaViews/books/service/shopCart";
+// import ShopCart from "../piniaViews/books/service/shopCart";
 import userInfo from "../piniaStore/userInfo";
 import logo from "../assets/image/logo.png";
-const { handleToCart } = ShopCart;
+// const { handleToCart } = ShopCart;
 const store = userInfo();
 const router = useRouter();
 const { logout } = store;
-const { totalCount } = ShopCart.refreshShopCartList();
+// const { totalCount } = ShopCart.refreshShopCartList();
 import { ref } from "vue";
 import { useRouter } from "vue-router";
 const showSearch = ref(false);
@@ -100,7 +103,7 @@ const handleLogout = () => {
 };
 const handleToCenter = () => {
   router.push({ path: "/userCenter" });
-}
+};
 // 导航项数据结构
 const navItems = [
   {
@@ -133,7 +136,6 @@ const navItems = [
     type: "link",
     path: "/contactUs",
   },
-
 ];
 </script>
 
