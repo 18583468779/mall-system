@@ -23,7 +23,12 @@
               <el-icon class="text-xl"><search /></el-icon>
             </template>
           </el-input>
-          <el-button type="primary" size="large" class="w-28" color="#1D4ED8"
+          <el-button
+            type="primary"
+            size="large"
+            class="w-28"
+            color="#1D4ED8"
+            @click="handleSearch"
             >搜索</el-button
           >
         </div>
@@ -132,6 +137,21 @@ const handleGetProject = async () => {
   let res: any = await request.get("/bookletmodule/getBookletList", false);
   if (res.code == 200) {
     dataList.value = res.data;
+  }
+};
+
+const handleSearch = async () => {
+  if (searchKeyword.value) {
+    let res: any = await request.post(
+      "/bookletmodule/getBookletListKeyword",
+      false,
+      {
+        keyword: searchKeyword.value,
+      }
+    );
+    if (res.code == 200) {
+      dataList.value = res.data;
+    }
   }
 };
 

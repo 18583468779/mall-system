@@ -1,3 +1,4 @@
+import { Op } from "sequelize";
 import { Booklet } from "../../../modules/decormodel/Booklet";
 import BookletService from "../service";
 interface BookletType {
@@ -17,6 +18,11 @@ class BookletDao {
 
   async getBookletAndContentById(booklet_id: number, user: any) {
     return await BookletService.getBookletAndContentById(booklet_id, user);
+  }
+  async getBookletListKeyword(keyword: string) {
+    return await Booklet.findAll({
+      where: { title: { [Op.like]: `%${keyword}%` } },
+    });
   }
   async addBooklet(data: any) {
     return await Booklet.create(data);

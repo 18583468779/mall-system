@@ -27,6 +27,12 @@ class BookletController {
     const res = success(await BookletDao.getBooklets());
     ctx.body = res;
   }
+  @post("/getBookletListKeyword")
+  async getBookletListKeyword(ctx: Context) {
+    const { keyword } = ctx.request.body;
+    const res = success(await BookletDao.getBookletListKeyword(keyword));
+    ctx.body = res;
+  }
   @post("/updateBooklet")
   async updateBooklet(ctx: Context) {
     const { id, ...data } = ctx.request.body;
