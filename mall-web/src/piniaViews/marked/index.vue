@@ -10,22 +10,25 @@
       <p class="text-lg text-gray-600">
         探索实战项目，提升开发技能， 在线文档的形式，方便练习
       </p>
+      <div class="rounded-lg shadow-sm p-4 mb-4">
+        <div class="max-w-3xl mx-auto mb-12 flex gap-3">
+          <el-input
+            v-model="searchKeyword"
+            placeholder="搜索项目名称..."
+            size="large"
+            clearable
+            class="rounded-2xl shadow-lg"
+          >
+            <template #prefix>
+              <el-icon class="text-xl"><search /></el-icon>
+            </template>
+          </el-input>
+          <el-button type="primary" size="large" class="w-28" color="#1D4ED8"
+            >搜索</el-button
+          >
+        </div>
+      </div>
     </header>
-
-    <!-- 搜索栏 -->
-    <div class="max-w-3xl mx-auto mb-12">
-      <el-input
-        v-model="searchKeyword"
-        placeholder="搜索项目名称、技术栈或描述..."
-        size="large"
-        clearable
-        class="rounded-2xl shadow-lg"
-      >
-        <template #prefix>
-          <el-icon class="text-xl"><search /></el-icon>
-        </template>
-      </el-input>
-    </div>
 
     <!-- 项目网格 -->
     <div
