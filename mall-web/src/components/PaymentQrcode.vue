@@ -154,7 +154,7 @@ const initPayment = async () => {
       "/ordersmodule/createNativeOrderDao",
       false,
       {
-        amount: 1, // 测试金额
+        amount: 9900, // 测试金额
         type: "vip",
         channel: props.paymentMethod,
         description: "VIP会员升级",

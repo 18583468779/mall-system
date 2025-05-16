@@ -54,11 +54,14 @@
           </span>
           <template #dropdown>
             <el-dropdown-menu>
-              <el-dropdown-item @click="handleToCenter"
+              <el-dropdown-item
+                @click="handleToCenter"
+                v-if="store.storeLoginUser"
                 >个人中心</el-dropdown-item
               >
               <el-dropdown-item>
                 <el-popconfirm
+                  v-if="store.storeLoginUser"
                   title="确认要退出登录吗?"
                   confirm-button-text="退出"
                   cancel-button-text="取消"
@@ -67,6 +70,11 @@
                   <template #reference> 退出登录 </template>
                 </el-popconfirm>
               </el-dropdown-item>
+              <el-dropdown-item
+                v-if="!store.storeLoginUser"
+                @click="handleToCenter"
+                >去登录</el-dropdown-item
+              >
             </el-dropdown-menu>
           </template>
         </el-dropdown>
