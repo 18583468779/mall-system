@@ -29,12 +29,10 @@ export class FstToThrdCtgy {
     })!;
     FstToThrdCtgy.store.storeFirstCtgy(firstCtgy);
   }
-  static getSecondCtgys() {
-    watchEffect(async () => {
-      await FstToThrdCtgy.store.findSecThrdCtgy(
-        FstToThrdCtgy.firstCtgyActiveIndex.value
-      );
-    });
+  static async getSecondCtgys() {
+    await FstToThrdCtgy.store.findSecThrdCtgy(
+      FstToThrdCtgy.firstCtgyActiveIndex.value
+    );
   }
   static changeTab(index: number) {
     FstToThrdCtgy.firstCtgyActiveIndex.value = index;

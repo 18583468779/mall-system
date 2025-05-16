@@ -36,7 +36,7 @@
       <CategoryDropdown class="shadow-sm" />
       <!-- 空状态展示 -->
       <div
-        v-if="store.getAllBookList.length === 0"
+        v-if="store.getAllBookList?.length === 0"
         class="flex flex-col items-center justify-center min-h-[60vh] animate-fade-in"
       >
         <div class="relative max-w-md text-center space-y-6">
@@ -117,7 +117,7 @@
             </div>
             <!-- 分页/加载更多 -->
             <div
-              v-if="store.getAllBookList.length > 0"
+              v-if="store.getAllBookList?.length > 0"
               class="py-6 flex justify-center"
             >
               <el-pagination

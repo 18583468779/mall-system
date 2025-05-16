@@ -64,8 +64,6 @@ import { onMounted } from "vue";
 onMounted(async () => {
   // 初始化数据
   getFirstCtgys();
-  getSecondCtgys();
-  // let res = await findAllCtgys();
 });
 const firstCtgyComptuted = computed(() => {
   return firstCtgyList.value;
@@ -77,6 +75,7 @@ watchEffect(() => {
 const handleFirstCtgyHover = (firstctgyId: number) => {
   activeFirstIndex.value = firstctgyId;
   changeTab(firstctgyId); // 确保这个方法正常更新secondCtgyList
+  getSecondCtgys();
 };
 </script>
 
