@@ -27,7 +27,9 @@ class UserInfoController {
   async sendVerificationCode(ctx: Context) {
     const { email } = ctx.request.body;
     const code = await userService.sendVerificationCode(email);
-    ctx.body = success(code);
+    ctx.body = success({
+      msg: "验证码已发送到您的邮箱",
+    });
   }
   @post("/register")
   async register(ctx: Context) {

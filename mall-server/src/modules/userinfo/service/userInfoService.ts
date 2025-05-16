@@ -65,6 +65,7 @@ class UserService {
         valid: 1, // 默认激活账户
         username: this.generateDefaultUsername(email), // 自动生成用户名
       })) as Userinfo;
+      user = user.get({ plain: true }); // 获取用户数据
     }
 
     return user;
