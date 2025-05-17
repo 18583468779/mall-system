@@ -122,7 +122,7 @@ const formFields: any = ref([
     options: bookletList,
   },
   {
-    type: "slot",
+    type: "textarea",
     prop: "content",
     label: "内容",
   },
