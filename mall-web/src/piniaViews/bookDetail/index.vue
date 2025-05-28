@@ -13,25 +13,60 @@
 
         <!-- 图片展示 -->
         <div class="bg-white p-4 rounded-xl shadow-sm mb-6">
-          <el-carousel :interval="5000" height="500px" arrow="always" v-model="activeImageIndex">
-            <el-carousel-item v-for="image in store.bookDetail.images" :key="image.url">
-              <img :src="image.url" class="w-full h-full object-contain" :alt="image.filename"
-                @error="handleImageError" />
+          <el-carousel
+            :interval="5000"
+            height="500px"
+            arrow="always"
+            v-model="activeImageIndex"
+          >
+            <el-carousel-item
+              v-for="image in store.bookDetail.images"
+              :key="image.url"
+            >
+              <el-image
+                lazy
+                class="w-full h-full object-contain"
+                :src="image.url"
+                :zoom-rate="1.2"
+                :max-scale="7"
+                :min-scale="0.2"
+                :preview-src-list="image.url"
+                show-progress
+                :initial-index="4"
+                fit="cover"
+                @error="handleImageError"
+              />
             </el-carousel-item>
           </el-carousel>
 
           <!-- 缩略图导航 -->
           <div class="grid grid-cols-4 gap-3 mt-4">
-            <div v-for="(image, index) in store.bookDetail.images" :key="index" class="cursor-pointer relative group"
-              @click="activeImageIndex = index">
-              <img :src="image.url" class="h-20 w-full object-cover rounded-lg border-2 transition-all" :class="{
-                'border-red-500': activeImageIndex === index,
-                'border-gray-200': activeImageIndex !== index,
-              }" />
-              <div class="absolute inset-0 bg-black/30 rounded-lg transition-opacity" :class="activeImageIndex === index
-                ? 'opacity-0'
-                : 'group-hover:opacity-0'
-                " />
+            <div
+              v-for="(image, index) in store.bookDetail.images"
+              :key="index"
+              class="cursor-pointer relative group"
+              @click="activeImageIndex = index"
+            >
+              <el-image
+                lazy
+                class="h-20 w-full object-cover rounded-lg border-2 transition-all"
+                :src="image.url"
+                :zoom-rate="1.2"
+                :max-scale="7"
+                :min-scale="0.2"
+                :preview-src-list="image.url"
+                show-progress
+                :initial-index="4"
+                fit="cover"
+              />
+              <div
+                class="absolute inset-0 bg-black/30 rounded-lg transition-opacity"
+                :class="
+                  activeImageIndex === index
+                    ? 'opacity-0'
+                    : 'group-hover:opacity-0'
+                "
+              />
             </div>
           </div>
         </div>
@@ -61,26 +96,31 @@
 
           <el-tab-pane label="资源下载" name="download">
             <div class="p-4" id="download-section">
-              <div v-for="(file, index) in store.bookDetail.attachments" :key="index"
-                class="flex items-center justify-between p-3 bg-gray-50 rounded-lg mb-2 hover:bg-gray-100 transition-colors">
+              <div
+                v-for="(file, index) in store.bookDetail.attachments"
+                :key="index"
+                class="flex items-center justify-between p-3 bg-gray-50 rounded-lg mb-2 hover:bg-gray-100 transition-colors"
+              >
                 <div class="flex items-center gap-2 min-w-0">
                   <el-icon :size="20" class="text-blue-500 shrink-0">
                     <Document />
                   </el-icon>
-                  <span class="text-gray-800 truncate">{{ file?.filename }}</span>
+                  <span class="text-gray-800 truncate">{{
+                    file?.filename
+                  }}</span>
                 </div>
                 <el-tooltip :content="getDownloadTooltip(file)" placement="top">
-                  <el-button :type="file.url ? 'primary' : 'warning'" size="small" @click="handleDownload(file)"
-                    class="shrink-0">
+                  <el-button
+                    :type="file.url ? 'primary' : 'warning'"
+                    size="small"
+                    @click="handleDownload(file)"
+                    class="shrink-0"
+                  >
                     <template v-if="file.url">
-                      <el-icon class="mr-1">
-                        <Download />
-                      </el-icon>立即下载
+                      <el-icon class="mr-1"> <Download /> </el-icon>立即下载
                     </template>
                     <template v-else>
-                      <el-icon class="mr-1">
-                        <Lock />
-                      </el-icon>会员专享
+                      <el-icon class="mr-1"> <Lock /> </el-icon>会员专享
                     </template>
                   </el-button>
                 </el-tooltip>
@@ -91,7 +131,9 @@
       </div>
 
       <!-- 右侧操作区 -->
-      <div class="pt-4 lg:col-span-4 lg:sticky lg:top-8 lg:h-[calc(100vh-4rem)]">
+      <div
+        class="pt-4 lg:col-span-4 lg:sticky lg:top-8 lg:h-[calc(100vh-4rem)]"
+      >
         <div class="bg-white p-6 pt-10 rounded-xl shadow-sm lg:mt-8">
           <!-- 商品标题 -->
           <h1 class="text-2xl font-bold mb-4">
@@ -129,13 +171,13 @@
             <div>
               <el-button
                 @click="handleDownloadSource"
-                class="!px-4 !py-4 !bg-red-100 hover:!bg-red-200 !text-red-600 !rounded-lg transition-colors border-none">
-                <el-icon :size="16" class="mr-1">
-                  <ShoppingCartFull />
-                </el-icon>下载源码</el-button>
+                class="!px-4 !py-4 !bg-red-100 hover:!bg-red-200 !text-red-600 !rounded-lg transition-colors border-none"
+              >
+                <el-icon :size="16" class="mr-1"> <ShoppingCartFull /> </el-icon
+                >下载源码</el-button
+              >
             </div>
             <!-- <add-subtrsc v-else :book-item="store.bookDetail" class="mt-0" /> -->
-
           </div>
 
           <!-- 促销信息 -->
@@ -143,7 +185,9 @@
             <div class="space-y-3 text-sm">
               <div class="flex items-center gap-2">
                 <span class="text-gray-500">服务：</span>
-                <span class="text-gray-800">源码包下载 · 技术支持 · 持续更新</span>
+                <span class="text-gray-800"
+                  >源码包下载 · 技术支持 · 持续更新</span
+                >
               </div>
               <div class="flex items-center gap-2">
                 <span class="text-gray-500">版本：</span>
@@ -159,7 +203,7 @@
 
 <script setup lang="ts">
 import { ref, nextTick } from "vue";
-import { useRouter } from 'vue-router';
+import { useRouter } from "vue-router";
 import {
   ArrowLeft,
   Document,
@@ -167,7 +211,7 @@ import {
   Download,
   Lock,
 } from "@element-plus/icons-vue";
-import { ElMessage, ElMessageBox } from 'element-plus';
+import { ElMessage, ElMessageBox } from "element-plus";
 // import addSubtrsc from "../books/components/addSubtrsc.vue";
 import Books from "../books/service";
 // import userInfo from "../../piniaStore/userInfo";
@@ -180,64 +224,64 @@ const activeImageIndex = ref(0);
 findBooksByISBN();
 
 const handleDownloadSource = () => {
-  activeTab.value = 'download';
+  activeTab.value = "download";
   nextTick(() => {
-    const downloadSection = document.getElementById('download-section');
+    const downloadSection = document.getElementById("download-section");
     if (downloadSection) {
-      downloadSection.scrollIntoView({ 
-        behavior: 'smooth', 
-        block: 'start' 
+      downloadSection.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
       });
     }
   });
 };
 
 const getDownloadTooltip = (file: { url?: string }) => {
-  return file.url ? '点击下载文件' : '升级会员即可下载';
+  return file.url ? "点击下载文件" : "升级会员即可下载";
 };
 
 const handleDownload = async (file: { url?: string; filename?: string }) => {
   if (file?.url) {
     try {
-      const link = document.createElement('a');
+      const link = document.createElement("a");
       link.href = file.url;
-      link.target = '_blank';
-      link.download = file.filename || file.url.split('/').pop() || 'download';
+      link.target = "_blank";
+      link.download = file.filename || file.url.split("/").pop() || "download";
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
 
       ElMessage({
-        message: '文件开始下载，若未自动下载请检查浏览器设置',
-        type: 'success',
-        duration: 2000
+        message: "文件开始下载，若未自动下载请检查浏览器设置",
+        type: "success",
+        duration: 2000,
       });
     } catch (error) {
       ElMessage({
-        message: '下载失败，请稍后重试',
-        type: 'error',
-        duration: 3000
+        message: "下载失败，请稍后重试",
+        type: "error",
+        duration: 3000,
       });
-      console.error('Download error:', error);
+      console.error("Download error:", error);
     }
   } else {
     try {
       await ElMessageBox.confirm(
-        '此资源为会员专享，立即升级会员享受全部权益',
-        '会员专享资源',
+        "此资源为会员专享，立即升级会员享受全部权益",
+        "会员专享资源",
         {
-          confirmButtonText: '升级会员',
-          cancelButtonText: '取消',
-          type: 'warning',
-          customClass: 'upgrade-message-box'
+          confirmButtonText: "升级会员",
+          cancelButtonText: "取消",
+          type: "warning",
+          customClass: "upgrade-message-box",
         }
       );
-      router.push('/vip');
+      router.push("/vip");
     } catch (cancel) {
       ElMessage({
-        type: 'info',
-        message: '已取消升级',
-        duration: 1500
+        type: "info",
+        message: "已取消升级",
+        duration: 1500,
       });
     }
   }
@@ -288,7 +332,8 @@ const handleImageError = () => {
       @apply !bg-gradient-to-r from-orange-400 to-orange-500 !border-0 !text-white hover:opacity-90;
     }
 
-    .el-button--default {}
+    .el-button--default {
+    }
   }
 }
 </style>

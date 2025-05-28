@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="aspect-square relative">
-      <img
+      <LazyImage
         :src="product?.images[0]?.url"
         class="w-full h-full object-cover"
         alt="图片"
@@ -40,7 +40,7 @@
 
 <script setup lang="ts">
 import { computed } from "vue";
-
+import LazyImage from "../../../components/LazyImage.vue";
 const props = defineProps({
   product: {
     type: Object,

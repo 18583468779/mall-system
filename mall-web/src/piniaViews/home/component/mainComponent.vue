@@ -5,7 +5,10 @@
     <div class="container mx-auto px-4">
       <el-carousel height="400px" :interval="5000" arrow="always">
         <el-carousel-item v-for="i in imgList" :key="i" class="text-center">
-          <img :src="i" class="h-full object-cover rounded-xl shadow-lg" />
+          <LazyImage
+            :src="i"
+            class="h-full object-cover rounded-xl shadow-lg"
+          />
         </el-carousel-item>
       </el-carousel>
     </div>
@@ -58,6 +61,7 @@ import Books from "../../books/service";
 import lun1 from "../../../assets/image/lun1.png";
 import lun2 from "../../../assets/image/lun2.png";
 import lun3 from "../../../assets/image/lun3.png";
+import LazyImage from "../../../components/LazyImage.vue";
 const { handleToPage } = Books;
 import HomeClass from "../service";
 import { onMounted, onUnmounted, ref } from "vue";

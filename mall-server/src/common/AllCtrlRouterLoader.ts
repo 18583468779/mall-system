@@ -63,6 +63,7 @@ class AllCtrlRouterLoader {
           /^\/dang\/filemodule\/.*$/, // 排除filemodule所有子路径
           /^\/dang\/booksmodule\/findBooksByPage$/,
           /^\/dang\/booksmodule\/findBooksByISBN\/([0-9]+)$/,
+          /^\/dang\/booksmodule\/findBooksByThirdCtgyId\/([0-9]+)\/.*$/, // 排除findBooksByThirdCtgyId相关路径
           /^\/dang\/bookletmodule\/getBookletList$/,
           /^\/dang\/bookletmodule\/getBookletAndContent\/([0-9]+)$/,
           /^\/dang\/searchmodule\/.*$/, // 排除searchmodule所有子路径

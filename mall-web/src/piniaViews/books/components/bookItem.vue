@@ -2,7 +2,10 @@
   <div class="cursor-pointer" @click="handleToPage(product)">
     <!-- 商品图片 -->
     <div class="aspect-square relative">
-      <img :src="product.images?.[0]?.url" class="w-full h-full object-cover" />
+      <LazyImage
+        :src="product.images?.[0]?.url"
+        class="w-full h-full object-cover"
+      />
       <!-- 折扣标签 -->
       <div
         v-if="product.discount"
@@ -45,6 +48,7 @@ import addSubtrsc from "../components/addSubtrsc.vue";
 import { BookInfo } from "../../../piniaStore/book/state";
 import Books from "../service";
 import { computed } from "vue";
+import LazyImage from "../../../components/LazyImage.vue";
 const { handleToPage } = Books;
 type Props = {
   product: BookInfo;
